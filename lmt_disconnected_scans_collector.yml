@@ -28,8 +28,8 @@
     - name: Clean up packages on endpoints   
       file:
         state: absent
-        path: "{{item}}"
-      loop: "{{ files_to_copy }}"
+        path: "{{scanner_output_path}}/{{item}}"
+      loop: "{{ files_to_copy.stdout_lines }}"
 
 - hosts: lmtserver
   gather_facts: no
