@@ -25,11 +25,11 @@
         flat: yes
       loop: "{{ files_to_copy.stdout_lines }}"
 
-    # - name: Clean up packages on endpoints   
-    #   file:
-    #     state: absent
-    #     path: "{{item}}"
-    #   loop: "{{ files_to_copy }}"
+    - name: Clean up packages on endpoints   
+      file:
+        state: absent
+        path: "{{item}}"
+      loop: "{{ files_to_copy }}"
 
 - hosts: lmtserver
   gather_facts: no
