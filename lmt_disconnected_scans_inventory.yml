@@ -4,8 +4,6 @@ all:
     lmtserver:
       ansible_host: localhost
       ansible_connection: local
-    vars:
-      #Path to disconnected datasource 
       lmt_datasource_path: /opt/ibm/LMT/temp/
 
   children:
