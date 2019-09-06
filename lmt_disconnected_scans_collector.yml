@@ -14,22 +14,22 @@
 
   tasks:
     - name: Getting info about scans
-      shell: "ls {{scanner_output_path}}"
-      changed_when: false
+      find: 
+        paths: "{{scanner_output_path}}"
       register: files_to_copy
 
     - name: "Fetch packages from endpoints"
       fetch: 
-        src: "{{scanner_output_path}}/{{item}}"
+        src: "{{item.path}}"
         dest: "{{temp_file_storage_path | default('./tmp')}}/"
         flat: yes
-      loop: "{{ files_to_copy.stdout_lines }}"
+      loop: "{{ files_to_copy.files }}"
 
     - name: Clean up packages on endpoints   
       file:
         state: absent
-        path: "{{scanner_output_path}}/{{item}}"
-      loop: "{{ files_to_copy.stdout_lines }}"
+        path: "{{item.path}}"
+      loop: "{{ files_to_copy.files }}"
 
 - hosts: lmtserver
   gather_facts: no
