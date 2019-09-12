@@ -39,13 +39,13 @@ To use Ansible for automation, you need a control node where you can run the Ans
 
 - Control node cannot run on Windows.
 
-- For a full list of requirements, check [here]([https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
+- For a full list of requirements, check [here](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
 
 **Procedure**
 
-1. [Install Ansible]([https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
+1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
 
-2. [Choose the most suitable connection method]([https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information).
+2. [Choose the most suitable connection method](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information).
 
 3. Optional: If you want to create a dedicated user for Ansible to increase security, make sure that this user has the **rwx** privileges in the home directory and **rw** privileges in directory with the disconnected scanner package.
 
