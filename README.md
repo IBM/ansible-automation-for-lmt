@@ -96,7 +96,7 @@ lmtserver:
 
 7. Run the lmt_disconnected_scans_collector.yml script from the repository with the following command:
 
-`ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml/inventory_file_path`
+`ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml`
 
 ___
 
