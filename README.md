@@ -1,48 +1,118 @@
-Ansible_docs_v1
 # Managing disconnected scans with Ansible
 
 ## Disconnected scans
-Disconnected scans are an alternative way of discovering software and hardware inventory in your infrastructure. It is a BigFix-less solution which does not require the connection between the scanned computers and the BigFix server. The scripts designed for the diconnected scanner initiate software and capacity scans, and prepare scan results that you later on upload to License Metric Tool.
 
->**Note:** For more detailed description, see: [Discovering software and hardware with disconnected scanner on Windows and UNIX](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/c_disc_sys_main.html)
+Disconnected scans are an alternative way of discovering software and hardware inventory in your infrastructure. It is a BigFix-less solution which does not require the connection between the scanned computers and the BigFix server. The scripts designed for the disconnected scanner initiate software and capacity scans, and prepare scan results that you later on upload to License Metric Tool.
 
+>**Note:** For more detailed description, see: [Discovering software and hardware with disconnected scanner on Windows and UNIX](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/c_disc_sys_main.html).
 
-## Automating diconnected scans with Ansible
+## Automating collection of the disconnected scan results with Ansible 
 
 [**Ansible**](https://docs.ansible.com/ansible/latest/index.html#about-ansible) is an open source automation tool that is used to automate applications and IT tasks. You can use it to automate the management of the disconnected scanners by performing the following configuration steps.
-1. [Configure Ansible to manage the selected computers](###Configure-Ansible-to-manage-the-selected-computers).  
-2. [Instrument the disconnected scanners to periodically scan the selected computers and generate output packages](###Instrument-disconnected-scanners-to-periodically-scan-the-selected-computers-and-generate-output-packages).
-3. Define the disconnected data source.
 
-### Configure Ansible to manage the selected computers 
-To use Ansible for automation, you need a control node where you can run the Ansible playbook. The control node might be on the same machine as the LMT server. Control node comunicates with the managed notes (endpoints) and collects the disconnected scanner output.
+
+1. [Define the disconnected data source](#define-the-disconnected-data-source)
+
+1. [Install and instrument the disconnected scanners to periodically scan the selected computers and generate output packages](#instrument-the-disconnected-scanners-to-periodically-scan-the-selected-computers-and-generate-output-packages).
+
+
+1. [Configure Ansible to manage the selected computers](#configure-ansible-to-manage-the-selected-computers).
+
+### Install and instrument the disconnected scanners to periodically scan the selected computers and generate output packages
+
+[Download and configure the disconnected scanner following official documentation](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_sys_setup_all.html).
+
+> Remember about enabling software scans scheduling!
+
+### Define the disconnected data source
+[Define the disconnected data source](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_sys_datasource.html).   
+
+
+
+### Configure Ansible to manage the selected computers
+
+To use Ansible for automation, you need a control node where you can run the Ansible playbook. The control node might be on the same machine as the LMT server. Control node communicates with the managed notes (endpoints) and collects the disconnected scanner output.
 
 **Requirements**
-- Ansible can run on any host where Python 2 (version 2.7) or Python 3 (versions 3.5 and higher) is installed. 
+
+- Ansible can run on any host where Python 2 (version 2.7) or Python 3 (versions 3.5 and higher) is installed.
+
 - Control node cannot run on Windows.
-- For a full list of requirements, check [here](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
 
-1. [Istall Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
-2. [Choose the most suitable connection method](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information).
+- For a full list of requirements, check [here]([https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
+
+**Procedure**
+
+1. [Install Ansible]([https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
+
+2. [Choose the most suitable connection method]([https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information).
+
 3. Optional: If you want to create a dedicated user for Ansible to increase security, make sure that this user has the **rwx** privileges in the home directory and **rw** privileges in directory with the disconnected scanner package.
-4. Clone the Github repository. (name)
-5. Edit the `/etc/ansible/hosts`inventory, or create a new inventory.
-The inventory needs to consist of two sections: endpoints and lmtserver. 
-- Define managed nodes in the endpoints section. Provide the following information for each endpoint:
-    -  `ansible_host`- an IP address of an endpoint
-    - `ansible_user`- a username
-    - `scanner_output_path`- define a path where the scan packages are stored on an endpoint
--   Define the LMT server in the lmtserver section. Provide the following information:
-    - `ansible_host`- ?
-    - `ansible_user`- ?
-    - `lmt_datasource_path`- define a disconnected data source on the LMT server
-    - `ansible_connection`- set the parameter to `local`if the control node is located on the same machine as the LMT server.
-Example: file in repo.
-6. Save the changes.
-7. Run the scans_collector scripr from the repository with the following command:
-8. 
-- If you use the`/etc/ansible/hosts` inventory run: `ansible-playbook lmt_disconnected_scans_collector.yml`
-- If you use an inventory file that you created run: `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml/inventory_file_path`
 
-### Instrument the disconnected scanners to periodically scan the selected computers and generate output packages
+4. Clone or download the Github repository.
 
+5. Open and edit the `lmt_disconnected_scans_inventory.yml` file.
+- Edit lmtserver host
+    - If you are running ansible playbook on the same host as LMT Server is installed all you have to do is choose proper path for a disconnected datasource
+    - If you are running ansible playbook on the different host as LMT Server is installed you have to remove line with ansible_connection parameter and 
+
+- Prepare unix_endpoints group 
+    - Add here endpoints from which you want to collect disconnected scanners result packages
+    - You can define scanner_output_path in vars section or for each endpoints separately.
+    >Remember: scanner_output_path is a path to directory with scan results not to a directory where disconnected scanner is installed. 
+
+Exemplary script running on the same machine as lmt server:
+
+```
+---
+all:
+  hosts:
+    lmtserver:
+      ansible_host: localhost
+      ansible_connection: local
+      lmt_datasource_path: /opt/ibm/LMT/temp/
+    children:
+      unix_endpoints:
+        hosts:
+          endpoint1:
+            ansible_host: 192.168.0.2
+            ansible_user: ansible
+          endpoint2:
+            ansible_host: 192.168.0.4
+            ansible_user: user1
+  vars:
+    scanner_output_path: /home/ansible/disconnected-scanner/output
+...
+```
+
+>If you run the scripts on a different host than lmt server, make appropriate changes in the lmtserver section, for example:
+
+```
+lmtserver:
+  ansible_host: 192.168.0.11
+  ansible_username: ansible
+  lmt_datasource_path: /opt/ibm/LMT/temp/
+```
+
+7. Run the lmt_disconnected_scans_collector.yml script from the repository with the following command:
+
+`ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml/inventory_file_path`
+
+___
+
+## Using AWX/Tower to manage Disconnected Scanner
+
+Something about what AWX/Tower is....
+
+1.  Install AWX/Tower
+
+2.  Create New Project with SCM TYPE as Git and provide URL to our repo
+
+3.  Create New Inventory. It has to same structure as Inventory in repo so 
+it needs lmtserver, unix_endpoints group and endpoints inside this groups, we have to also create all this required variables etc...
+
+4.  Choose Credential type and define it....
+
+5.  Create Job Template. Name it, provide inventory, credentials, project and then you can choose playbook, choose lmt_disconnected_scans_collector.yml.
+
+6.  Now you can schedule it or lunch it manually.
