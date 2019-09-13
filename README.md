@@ -54,12 +54,14 @@ To use Ansible for automation, you need a control node where you can run the Ans
 5. Open and edit the `lmt_disconnected_scans_inventory.yml` file.
 - Edit lmtserver host
     - If you are running ansible playbook on the same host as LMT Server is installed all you have to do is choose proper path for a disconnected datasource
-    - If you are running ansible playbook on the different host as LMT Server is installed you have to remove line with ansible_connection parameter and 
+    - If you are running ansible playbook on the different host as LMT Server is installed you have to remove line with ansible_connection parameter and define proper ansible_user (username) and ansible_host(Adders IP)
 
 - Prepare unix_endpoints group 
     - Add here endpoints from which you want to collect disconnected scanners result packages
     - You can define scanner_output_path in vars section or for each endpoints separately.
     >Remember: scanner_output_path is a path to directory with scan results not to a directory where disconnected scanner is installed. 
+
+- Read more about inventories [here](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
 Exemplary script running on the same machine as lmt server:
 
