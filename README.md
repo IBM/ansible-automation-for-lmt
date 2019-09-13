@@ -63,7 +63,7 @@ To use Ansible for automation, you need a control node where you can run the Ans
 
 - Read more about inventories [here](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
-Exemplary script running on the same machine as lmt server:
+Exemplary inventory for playbook running on the same host as lmt server:
 
 ```
 ---
@@ -102,18 +102,22 @@ lmtserver:
 
 ___
 
-## Using AWX/Tower to manage Disconnected Scanner
+## Using AWX or Tower to manage Disconnected Scanner
 
-Something about what AWX/Tower is....
+AWX is the open source, easy-to-use UI, dashboard and REST API for Ansible. 
+More about AWX [here](https://github.com/ansible/awx) 
 
-1.  Install AWX/Tower
+Ansible Tower is commercial version of AWX supported by Red Hat 
+More about Tower [here](https://www.ansible.com/products/tower)
+
+1.  Install AWX or Tower
 
 2.  Create New Project with SCM TYPE as Git and provide URL to our repo
 
 3.  Create New Inventory. It has to same structure as Inventory in repo so 
 it needs lmtserver, unix_endpoints group and endpoints inside this groups, we have to also create all this required variables etc...
 
-4.  Choose Credential type and define it....
+4.  Choose Credential type and define it.
 
 5.  Create Job Template. Name it, provide inventory, credentials, project and then you can choose playbook, choose lmt_disconnected_scans_collector.yml.
 
