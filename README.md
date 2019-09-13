@@ -18,16 +18,14 @@ Disconnected scans are an alternative way of discovering software and hardware i
 
 1. [Configure Ansible to manage the selected computers](#configure-ansible-to-manage-the-selected-computers).
 
+### Define the disconnected data source
+[Define the disconnected data source](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_sys_datasource.html).   
+
 ### Install and instrument the disconnected scanners to periodically scan the selected computers and generate output packages
 
 [Download and configure the disconnected scanner following official documentation](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_sys_setup_all.html).
 
 > Remember about enabling software scans scheduling!
-
-### Define the disconnected data source
-[Define the disconnected data source](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_sys_datasource.html).   
-
-
 
 ### Configure Ansible to manage the selected computers
 
