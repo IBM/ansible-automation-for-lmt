@@ -1,3 +1,4 @@
+
 # Managing disconnected scans with Ansible
 
 ## Disconnected scans
@@ -63,10 +64,9 @@ To use Ansible for automation, you need a control node where you can run the Ans
 - Read more about inventories [here](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
 Exemplary inventory for playbook running on the same host as LMT Server:
-
 ```
 ---
-all:
+all: 
   hosts:
     lmtserver:
       ansible_host: localhost
@@ -85,7 +85,6 @@ all:
     scanner_output_path: /home/ansible/disconnected-scanner/output
 ...
 ```
-
 >If you run the scripts on a different host than LMT Server, make appropriate changes in the lmtserver section, for example:
 
 ```
