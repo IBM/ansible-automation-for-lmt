@@ -1,0 +1,7 @@
+---
+catalog_path: "{{ lmt_server_installation_path }}/wlp/usr/servers/server1/data/sam/public/catalogs/"
+disconnected_scanner_package_path: "{{ lmt_server_installation_path  }}/disconnected-scanners"
+CIT_catalog_AIX: "{{catalog_path}}/CIT_catalog_AIX.xml"
+CIT_catalog_HPUX: "{{catalog_path}}/CIT_catalog_HPUX.xml"
+CIT_catalog_LINUX: "{{catalog_path}}/CIT_catalog_LINUX.xml"
+CIT_catalog_SUN: "{{catalog_path}}/CIT_catalog_SUN.xml"

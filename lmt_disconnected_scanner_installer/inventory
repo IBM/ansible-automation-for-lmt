@@ -1,0 +1,15 @@
+9.174.38.143 ansible_user=ansible 
+
+[all:vars]
+
+disconnected_scanner_installation_path=/opt/ibm/Disconnected
+lmt_server_installation_path=/opt/ibm/LMT/
+
+SW_SCAN_SCHEDULE_ENABLED=TRUE
+SW_SCAN_FREQUENCY=DAILY
+PACKAGE_OUTPUT_DIR=/output
+
+#disconnected_scanner_for_linux=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-linux-9.2.16.0-20190805-1420.tar.gz
+#disconnected_scanner_for_solaris=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-solaris-9.2.16.0-20190805-1420.tar.gz
+#disconnected_scanner_for_aix=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-aix-9.2.16.0-20190805-1420.tar.gz
+#disconnected_scanner_for_hp_ux=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-hp-ux-9.2.16.0-20190805-1420.tar.gz

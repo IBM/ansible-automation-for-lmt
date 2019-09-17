@@ -1,0 +1,42 @@
+---
+- name: Create installation directory
+  file: 
+    path: "{{ disconnected_scanner_installation_path }}"
+    state: directory
+  become: yes
+
+- name: Installation for Solaris
+  include_tasks: solaris_installer.yml
+  when: ansible_facts['os_family'] == "Solaris"
+
+- name: Installation for AIX
+  include_tasks: aix_installer.yml
+  when: ansible_facts['os_family'] == "AIX"
+
+- name: Installation for HP-UX
+  include_tasks: hp_ux_installer.yml
+  when: ansible_facts['os_family'] == "HP-UX"
+
+- name: Installation for Linux
+  include_tasks: linux_installer.yml
+  when: ansible_facts['os_family'] in [ 'RedHat', 'Debian', 'Suse', 'FreeBSD', 'Archlinux' ]
+
+- name: setup_config.ini update
+  template: 
+    src: setup_config.ini.j2
+    dest: "{{ disconnected_scanner_installation_path }}/config/setup_config.ini"
+  become: true
+
+- name: Creating output direcotry
+  file:
+    path: "{{ PACKAGE_OUTPUT_DIR | regex_replace('^\\.', disconnected_scanner_installation_path ) }}"
+    state: directory
+    mode: '777'
+  become: true
+
+- name: Setup
+  command:  "{{ disconnected_scanner_installation_path }}/setup.sh"
+  become: true
+  register: setup_output
+
+...

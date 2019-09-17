@@ -1,0 +1,22 @@
+---
+- name: Searching for Linux package
+  find: 
+    path: "{{ disconnected_scanner_package_path }}"
+    patterns: "LMT-DisconnectedScanner-linux-*.tar.gz"
+  register: disconnected_scanner_for_linux
+- name: Searching for Solaris package
+  find: 
+    path: "{{ disconnected_scanner_package_path }}"
+    patterns: "LMT-DisconnectedScanner-solaris-*.tar.gz"
+  register: disconnected_scanner_for_solaris
+- name: Searching for AIX package
+  find: 
+    path: "{{ disconnected_scanner_package_path }}"
+    patterns: "LMT-DisconnectedScanner-aix-*.tar.gz"
+  register: disconnected_scanner_for_aix
+- name: Searching for HP-UX package
+  find: 
+    path: "{{ disconnected_scanner_package_path }}"
+    patterns: "LMT-DisconnectedScanner-hp-ux-*.tar.gz"
+  register: disconnected_scanner_for_hp_ux
+...

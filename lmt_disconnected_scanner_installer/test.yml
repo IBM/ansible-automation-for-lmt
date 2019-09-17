@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars: 
+    out: a./outuput 
+    elo: asddsa
+  tasks:
+    - debug:
+          msg: "{{ out | regex_replace('^\\.', elo) }}"
+...

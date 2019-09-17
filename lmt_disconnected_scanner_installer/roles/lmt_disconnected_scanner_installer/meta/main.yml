@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Kacper Krzyzak
+  description: Ansible automation for LMT Disconnected Scanners installation
+  company: IBM
+
+  license: MIT
+
+  min_ansible_version: 2.8
+
+  galaxy_tags: [IBM, LMT, Disconnected, Scanner, installation ]
+
+  

@@ -1,0 +1,26 @@
+- name: Copy and unpack scanner package to Solaris
+  block:
+    - name: "Solaris: Deploy with Ansible module"
+      unarchive:
+        src: "{{hostvars['localhost']['disconnected_scanner_for_solaris'].files[0].path }}"
+        dest: "{{ disconnected_scanner_installation_path }}"
+      become: yes
+  rescue:
+    - name: Emergency Deploy 
+      copy:
+        src: "{{hostvars['localhost']['disconnected_scanner_for_solaris'].files[0].path }}"
+        dest: "{{ disconnected_scanner_installation_path }}"
+    - name: Unpack
+      command: tar -xzf "{{hostvars['localhost']['disconnected_scanner_for_solaris'].files[0].path.split("/")[-1] }}"
+      args:
+        chdir: "{{ disconnected_scanner_installation_path }}"
+        warn: false
+    - name: Clean
+      file:
+        path: "{{ disconnected_scanner_installation_path }}/{{ hostvars['localhost']['disconnected_scanner_for_solaris'].files[0].path.split('/')[-1] }}"
+        state: absent
+- name: Copying catalog file to Solaris
+  copy:
+    src: "{{ CIT_catalog_SUN }}"
+    dest: "{{disconnected_scanner_installation_path}}/config/"
+  become: yes

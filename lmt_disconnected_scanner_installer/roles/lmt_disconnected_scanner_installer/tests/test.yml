@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Searching for Disconnected Scanners
+      import_role:
+        name: lmt_disconnected_scanner_installer
+        tasks_from: scanner_search
+
+- hosts: all
+  strategy: free
+  tasks:
+    - name: Searching for Disconnected Scanners
+      import_role:
+        name: lmt_disconnected_scanner_installer
+...

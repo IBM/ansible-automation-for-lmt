@@ -1,0 +1,8 @@
+---
+disconnected_scanner_installation_path: /opt/ibm/DisconnectedScanner
+lmt_server_installation_path: /opt/ibm/LMT/
+disconnected_scanner_output_directory: /opt/ibm/DisconnectedScanner/output/
+SW_SCAN_SCHEDULE_ENABLED: "TRUE"
+SW_SCAN_FREQUENCY: WEEKLY
+PACKAGE_OUTPUT_DIR: ./output
+...

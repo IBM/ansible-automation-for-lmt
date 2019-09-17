@@ -1,0 +1,19 @@
+#					DISCONNECTED SCANNER CONFIGURATION
+###################################################################################
+#					SOFTWARE SCAN SCHEDULER SETTINGS
+#	SW_SCAN_SCHEDULE_ENABLED - TRUE/FALSE
+#	SW_SCAN_FREQUENCY - Set the frequency of software scans: DAILY/WEEKLY
+#	If you set SW_SCAN_SCHEDULE_ENABLED to TRUE, the first software scan is initiated
+#	after you install the scanner. Subsequent scans will run on that time with the
+#	frequency you choose (defined by SW_SCAN_FREQUENCY).
+###################################################################################
+SW_SCAN_SCHEDULE_ENABLED={{ SW_SCAN_SCHEDULE_ENABLED }}
+SW_SCAN_FREQUENCY={{ SW_SCAN_FREQUENCY }}
+#----------------------------------------------------------------------------------
+###################################################################################
+#					OUTPUT DIRECTORY
+#	Change PACKAGE_OUTPUT_DIR value to select a different directory to store output packages.
+#	Base directory for a relative path is disconnected scanner installation directory.
+###################################################################################
+PACKAGE_OUTPUT_DIR={{ PACKAGE_OUTPUT_DIR }}
+#----------------------------------------------------------------------------------
