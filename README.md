@@ -3,7 +3,8 @@
 
 ## Disconnected scans
 
-Disconnected scans are an alternative way of discovering software and hardware inventory in your infrastructure. It is a BigFix-less solution which does not require the connection between the scanned computers and the BigFix server. The scripts designed for the disconnected scanner initiate software and capacity scans, and prepare scan results that you later on upload to License Metric Tool.
+Disconnected scans are an alternative way of discovering software and hardware inventory in your infrastructure which does not require the connection between the scanned computers and the BigFix server. The scripts designed for the disconnected scanner initiate software and capacity scans, and prepare scan results that you later on upload to License Metric Tool.
+You can use Ansible to automate the process of uploading the scan results from the endpoints to the LMT server.
 
 >**Note:** For more detailed description, see: [Discovering software and hardware with disconnected scanner on Windows and UNIX](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/c_disc_sys_main.html).
 
@@ -14,8 +15,7 @@ Disconnected scans are an alternative way of discovering software and hardware i
 
 1. [Define the disconnected data source](#define-the-disconnected-data-source)
 
-1. [Install and setup disconnected scans](#instrument-the-disconnected-scanners-to-periodically-scan-the-selected-computers-and-generate-output-packages).
-
+1. [Install and setup disconnected scans](#install-and-setup-disconnected-scans).
 
 1. [Configure Ansible to manage the selected computers](#configure-ansible-to-manage-the-selected-computers).
 
@@ -25,9 +25,9 @@ Perform the appropriate actions to [define the disconnected data source](https:/
 
 ### Install and setup disconnected scans
 
-[Download and configure the disconnected scanner following official documentation](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_sys_downloading.html).
+Perform the appropriate actions to [download and configure the disconnected scanner](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_sys_downloading.html).
 
-> Remember about scheduling regular software scans!
+> **Tip**:Remember about scheduling regular software scans!
 
 ### Configure Ansible to manage the selected computers
 
@@ -39,7 +39,7 @@ To use Ansible for automation, you need a control node where you can run the Ans
 
 - Control node cannot run on Windows.
 
-- For a full list of requirements, check [here](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
+- For a full list of requirements, see: [Requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
 
 **Procedure**
 
@@ -59,7 +59,7 @@ To use Ansible for automation, you need a control node where you can run the Ans
 - Prepare unix_endpoints group 
     - Define endpoints from which you want to collect disconnected scanner result packages
     - You can define `scanner_output_path` in vars section for all endpoints, or for each endpoint separately.
-    >Remember: `scanner_output_path` is a path to directory with scan results not to a directory where disconnected scanner is installed. 
+    >**Note:** `scanner_output_path` is a path to directory with scan results not to a directory where disconnected scanner is installed. 
 
 - Read more about inventories [here](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
@@ -94,7 +94,7 @@ lmtserver:
   lmt_datasource_path: /opt/ibm/LMT/temp/
 ```
 
-7. Run the lmt_disconnected_scans_collector.yml script from the repository with the following command:
+7. Add the following command to Crontab:
 
 `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml`
 
