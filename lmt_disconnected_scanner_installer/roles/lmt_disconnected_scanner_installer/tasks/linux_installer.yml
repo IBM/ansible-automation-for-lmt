@@ -19,6 +19,7 @@
       file:
         path: "{{ disconnected_scanner_installation_path }}/{{ hostvars['localhost']['disconnected_scanner_for_linux'].files[0].path.split('/')[-1] }}"
         state: absent
+  become: yes
 - name: Copying catalog file to Linux
   copy:
     src: "{{ CIT_catalog_LINUX }}"
