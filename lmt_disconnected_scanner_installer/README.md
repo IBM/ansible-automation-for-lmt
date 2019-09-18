@@ -18,7 +18,7 @@
     - SW_SCAN_SCHEDULE_ENABLED - disconnected scanner option - TRUE/FALSE
     - SW_SCAN_FREQUENCY - disconnected scanner option - WEEKLY/DAILY
     - PACKAGE_OUTPUT_DIR - disconnected scanner option - Possible relative and absolute path, relative from Disconnected Scanner installation path
-    - disconnected_scanner_for_linux solaris etc... - you can provide path to disconnected scanner on your own
+    - disconnected_scanner_for_linux solaris etc... - NOT REQUIRED- you can provide path to disconnected scanner on your own
 1. Run playbook using
 
 `ansible-playbook lmt_disconnected_scanner_installer.yml -i inventory --ask-become`
