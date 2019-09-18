@@ -22,3 +22,15 @@
 1. Run playbook using
 
 `ansible-playbook lmt_disconnected_scanner_installer.yml -i inventory --ask-become`
+
+
+
+
+### Technical note
+
+In playbook we search for disconnected scanner package in our LMT Server directory so we must perform some action on localhost. So if we want to use our role we can use this tasks that find it automatically like in our sample playbook or we can provide path to disconnected scanners package manually in inventory by defining variables: 
+- disconnected_scanner_for_linux
+- disconnected_scanner_for_solaris
+- disconnected_scanner_for_aix
+- disconnected_scanner_for_hp_ux
+
