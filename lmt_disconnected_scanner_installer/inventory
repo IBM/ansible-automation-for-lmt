@@ -9,7 +9,7 @@ SW_SCAN_SCHEDULE_ENABLED=TRUE
 SW_SCAN_FREQUENCY=WEEKLY
 PACKAGE_OUTPUT_DIR=./output
 
-#disconnected_scanner_for_linux=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-linux-9.2.16.0-20190805-1420.tar.gz
-#disconnected_scanner_for_solaris=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-solaris-9.2.16.0-20190805-1420.tar.gz
-#disconnected_scanner_for_aix=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-aix-9.2.16.0-20190805-1420.tar.gz
-#disconnected_scanner_for_hp_ux=/opt/ibm/LMT/disconnected-scanners/LMT-DisconnectedScanner-hp-ux-9.2.16.0-20190805-1420.tar.gz
+#disconnected_scanner_for_linux=
+#disconnected_scanner_for_solaris=
+#disconnected_scanner_for_aix=
+#disconnected_scanner_for_hp_ux=
