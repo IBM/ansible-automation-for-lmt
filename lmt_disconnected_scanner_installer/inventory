@@ -1,4 +1,4 @@
-9.174.38.143 ansible_user=ansible 
+<IP address> ansible_user=<hostname> 
 
 [all:vars]
 

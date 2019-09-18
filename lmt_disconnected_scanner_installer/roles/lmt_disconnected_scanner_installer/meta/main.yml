@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: lmt_disconnected_scanner_installer
   author: Kacper Krzyzak
   description: Ansible automation for LMT Disconnected Scanners installation
   company: IBM
