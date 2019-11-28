@@ -43,15 +43,11 @@ To use Ansible for automation, you need a control node where you can run the Ans
 
 **Procedure**
 
-1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
+1. Clone or download the Github repository.
 
-2. [Choose the most suitable connection method](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information).
+2. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
 
-3. Optional: If you want to create a dedicated user for Ansible to increase security, make sure that this user has the **rwx** privileges in the home directory and **rw** privileges in directory with the disconnected scanner package.
-
-4. Clone or download the Github repository.
-
-5. Open and edit the `lmt_disconnected_scans_inventory.yml` file.
+3. Open and edit the `lmt_disconnected_scans_inventory.yml` file.
 - Edit lmtserver host
     - If you are running Ansible playbook on the same host where LMT Server is installed, all you have to do is choose proper path for a disconnected datasource.
     - If you are running Ansible playbook on a different host where LMT Server is installed, you have to remove the line with `ansible_connection` parameter and define proper `ansible_user`(username) and `ansible_host`(Adders IP)
@@ -94,7 +90,11 @@ lmtserver:
   lmt_datasource_path: /opt/ibm/LMT/temp/
 ```
 
-7. Add the following command to Crontab:
+4. [Choose the most suitable connection method](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information).
+
+5. Optional: If you want to create a dedicated user for Ansible to increase security, make sure that this user has the **rwx** privileges in the home directory and **rw** privileges in directory with the disconnected scanner package.
+
+6. Add the following command to Crontab:
 
 `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml`
 
