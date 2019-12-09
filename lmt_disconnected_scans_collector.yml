@@ -16,6 +16,8 @@
     - name: Getting info about scans
       find: 
         paths: "{{scanner_output_path}}"
+        use_regex: yes
+        patterns: ['^\d{12}-.+-\d{10}\.tar\.gz$']
       register: files_to_copy
 
     - name: "Fetch packages from endpoints"
