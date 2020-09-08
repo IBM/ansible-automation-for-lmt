@@ -31,7 +31,7 @@ Perform the appropriate actions to [download and configure the disconnected scan
 
 ### Configure Ansible to manage the selected computers
 
-To use Ansible for automation, you need a control node where you can run the Ansible playbook. The control node might be on the same machine as the LMT server. Control node communicates with the managed notes (endpoints) and collects the disconnected scanner output.
+To use Ansible for automation, you need a control node where you can run the Ansible playbook. The control node might be on the same machine as the LMT server. Control node communicates with the managed nodes (endpoints) and collects the disconnected scanner output.
 
 **Requirements**
 
