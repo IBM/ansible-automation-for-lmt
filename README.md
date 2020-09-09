@@ -31,15 +31,21 @@ Perform the appropriate actions to [download and configure the disconnected scan
 
 ### Configure Ansible to manage the selected computers
 
-To use Ansible for automation, you need a control node where you can run the Ansible playbook. The control node might be on the same machine as the LMT server. Control node communicates with the managed notes (endpoints) and collects the disconnected scanner output.
+To use Ansible for automation, you need a control node where you can run the Ansible playbook. The control node might be on the same machine as the LMT server. Control node communicates with the managed nodes (endpoints) and collects the disconnected scanner output.
 
 **Requirements**
+
+- Tested on Ansible version 2.8.
 
 - Ansible can run on any host where Python 2 (version 2.7) or Python 3 (versions 3.5 and higher) is installed.
 
 - Control node cannot run on Windows.
 
-- For a full list of requirements, see: [Requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
+- For a full list of control nodes requirements, see: [Control node requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
+
+- For a full list of managed nodes requirements, see: [Managed node requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#managed-node-requirements).
+
+    >**Note:** If you have SELinux enabled on LMT Server and it's not a control node, but a remote one, you will have to install libselinux-python on it to be able to copy the disconnected scanner outputs, see: [Managed node requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#managed-node-requirements) for details.
 
 **Procedure**
 
