@@ -1,28 +1,54 @@
 ---
 all: 
   hosts:
-    lmtserver:
+    lmt_server:
       ansible_host: localhost
       ansible_connection: local
       #Path to disconnected datasource in LMT Server
       lmt_datasource_path: /opt/ibm/LMT/temp/
 
   children:
-    unix_endpoints:
+    lmt_scanners_unix:
       hosts:
-        #Custom name 
+        #Custom endpoint name 
         endpoint1:
           ansible_host: <ip_address_of_endpoint1> 
           ansible_user: <username_for_endpoint1>
-          #Absolute path to disconnected scanners output directory for specific endpoint
-          scanner_output_path: /path/to/disconnected_scanners/outputs/
+          
+          #Absolute path to disconnected scanners output directory for a specific endpoint
+          scanner_output_path: /path/to/disconnected_scanners/outputs/on/this/endpoint
         endpoint2:
           ansible_host: <ip_address_of_endpoint2>
           ansible_user: <username_for_endpoint2>
 
       vars:
-        #Absolute path to disconnected scanners output directory for all endpoints without specified path
-        scanner_output_path: /path/to/disconnected_scanners/outputs/
-    win_endpoints:
-    #not supported yet
+        #Absolute path to disconnected scanners output directory for all endpoints
+        scanner_output_path: /path/to/disconnected_scanners/outputs
+        
+    lmt_scanners_windows:
+      hosts:
+        #Custom endpoint name 
+        win_endpoint1:
+          ansible_host: <ip_address_of_win_endpoint1> 
+          ansible_user: <username_for_win_endpoint1>
+          ansible_password: <password_for_win_endpoint1>
+          
+          #Absolute path to disconnected scanners output directory for a specific endpoint
+          scanner_output_path: c:\path\to\disconnected_scanners\outputs\on\this\endpoint
+        win_endpoint2:
+          ansible_host: <ip_address_of_win_endpoint2> 
+          ansible_user: <username_for_win_endpoint2>
+          ansible_password: <password_for_win_endpoint2>
+          
+      vars:
+        #Absolute path to disconnected scanners output directory for all endpoints
+        scanner_output_path: c:\path\to\disconnected_scanners\outputs
+        
+        #Set the common connection settings for all Windows endpoints, e.g.
+        #ansible_port: 5986
+        #ansible_connection: winrm
+        #Certificate validation has to be ignored for self-signed certificates (not recommended, to be used in test environments only)
+        #ansible_winrm_server_cert_validation: ignore
+        #ansible_winrm_transport: ntlm
+
 ...
