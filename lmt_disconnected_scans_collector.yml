@@ -2,51 +2,81 @@
 - hosts: localhost
   connection: local
   gather_facts: no
-  
-  tasks:  
-    - name: "Creating temporary scans directory"
+
+  tasks:
+    - name: "Creating a local directory with scan results packages"
       file:
         path: "{{temp_file_storage_path | default('./tmp')}}/"
         state: directory
 
-- hosts: unix_endpoints
+- hosts: lmt_scanners_windows
   gather_facts: no
 
   tasks:
-    - name: Getting info about scans
-      find: 
+    - name: Getting info about scan results packages
+      win_find:
+        paths: "{{scanner_output_path}}"
+        use_regex: yes
+        patterns: ['^\d{12}-.+-\d{10}\.zip$']
+      register: files_to_copy
+
+- hosts: lmt_scanners_unix
+  gather_facts: no
+
+  tasks:
+    - name: Getting info about scan results packages
+      find:
         paths: "{{scanner_output_path}}"
         use_regex: yes
         patterns: ['^\d{12}-.+-\d{10}\.tar\.gz$']
       register: files_to_copy
 
-    - name: "Fetch packages from endpoints"
-      fetch: 
+- hosts: lmt_scanners_windows:lmt_scanners_unix
+  gather_facts: no
+
+  tasks:
+    - name: "Fetching scan results packages"
+      fetch:
         src: "{{item.path}}"
         dest: "{{temp_file_storage_path | default('./tmp')}}/"
         flat: yes
-      loop: "{{ files_to_copy.files }}"
+      with_items: "{{ files_to_copy.files }}"
 
-    - name: Clean up packages on endpoints   
+- hosts: lmt_scanners_unix
+  gather_facts: no
+
+  tasks:
+    - name: Removing scan results packages from endpoints
       file:
         state: absent
         path: "{{item.path}}"
-      loop: "{{ files_to_copy.files }}"
+      with_items: "{{ files_to_copy.files }}"
 
-- hosts: lmtserver
+- hosts: lmt_scanners_windows
+  gather_facts: no
+
+  tasks:
+    - name: Removing scan results packages from endpoints
+      win_file:
+        state: absent
+        path: "{{item.path}}"
+      with_items: "{{ files_to_copy.files }}"
+
+- hosts: lmt_server
   gather_facts: no
   tasks:
-    - name: "Uploading scans to ILTM Server"
+    - name: "Uploading scan results packages to ILMT Server"
       copy:
         src: "{{temp_file_storage_path | default('./tmp')}}/"
-        dest: "{{lmt_datasource_path}}/"
+        dest: "{{ lmt_datasource_path }}"
 
 - hosts: localhost
   connection: local
   gather_facts: no
   tasks:
-    - name: "Cleaning scans from Control Node"
+    - name: "Removing local scan results packages"
       file:
         path: "{{temp_file_storage_path | default('./tmp')}}/"
         state: absent
+
 ...
