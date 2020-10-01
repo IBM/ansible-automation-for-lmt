@@ -67,62 +67,62 @@ To use Ansible for automation, you need a control node where you can run the Ans
 2. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
 
 3. Open and edit the `lmt_disconnected_scans_inventory_new_ansible_setup.yml` file.
-- Edit lmt_server host
-    - If you are running Ansible playbook on the same host where LMT Server is installed, all you have to do is choose proper path for a disconnected datasource.
-    - If you are running Ansible playbook on a different host where LMT Server is installed, you have to remove the line with `ansible_connection` parameter and define proper `ansible_user`(username) and `ansible_host`(ip address)
+   - Edit lmt_server host
+     - If you are running Ansible playbook on the same host where LMT Server is installed, all you have to do is choose proper path for a disconnected datasource.
+     - If you are running Ansible playbook on a different host where LMT Server is installed, you have to remove the line with `ansible_connection` parameter and define proper `ansible_user`(username) and `ansible_host`(ip address)
 
->If you run the scripts on a different host than LMT Server, make appropriate changes in the lmt_server section, for example:
+     >If you run the scripts on a different host than LMT Server, make appropriate changes in the lmt_server section, for example:
 
-```
-lmt_server:
-  ansible_host: 192.168.0.11
-  ansible_username: ansible
-  lmt_datasource_path: /opt/ibm/LMT/temp/
-```
+     ```
+     lmt_server:
+       ansible_host: 192.168.0.11
+       ansible_username: ansible
+       lmt_datasource_path: /opt/ibm/LMT/temp/
+     ```
 
-- Prepare lmt_scanners_unix and lmt_scanners_windows groups
-    - Define endpoints, which you want to collect disconnected scanner result packages from.
-    - You can define `scanner_output_path` in vars section for all Unix/Windows endpoints, or for each endpoint separately.
-    >**Note:** `scanner_output_path` is a path to a directory with scan results not to a directory where the disconnected scanner is installed. 
+   - Prepare lmt_scanners_unix and lmt_scanners_windows groups
+     - Define endpoints, which you want to collect disconnected scanner result packages from.
+     - You can define `scanner_output_path` in vars section for all Unix/Windows endpoints, or for each endpoint separately.
+     >**Note:** `scanner_output_path` is a path to a directory with scan results not to a directory where the disconnected scanner is installed. 
 
-- Read more about [inventories](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
+   - Read more about [inventories](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
-Exemplary inventory for a playbook running on the same host as LMT Server:
-```
----
-all: 
-  hosts:
-    lmt_server:
-      ansible_host: localhost
-      ansible_connection: local
-      lmt_datasource_path: /opt/ibm/LMT/temp/
-    children:
-      lmt_scanners_unix:
-        hosts:
-          unix_endpoint1:
-            ansible_host: 192.168.0.1
-            ansible_user: ansible
-          unix_endpoint2:
-            ansible_host: 192.168.0.2
-            ansible_user: user1
-        vars:
-          scanner_output_path: /home/ansible/disconnected-scanner/output
+   Exemplary inventory for a playbook running on the same host as LMT Server:
+   ```
+   ---
+   all: 
+     hosts:
+       lmt_server:
+         ansible_host: localhost
+         ansible_connection: local
+         lmt_datasource_path: /opt/ibm/LMT/temp/
+       children:
+         lmt_scanners_unix:
+           hosts:
+             unix_endpoint1:
+               ansible_host: 192.168.0.1
+               ansible_user: ansible
+             unix_endpoint2:
+               ansible_host: 192.168.0.2
+               ansible_user: user1
+           vars:
+             scanner_output_path: /home/ansible/disconnected-scanner/output
           
-      lmt_scanners_windows:
-        hosts:
-          windows_endpoint1:
-            ansible_host: 192.168.0.3
-            ansible_user: ansible
-            ansible_password: secret_pass1
+         lmt_scanners_windows:
+           hosts:
+             windows_endpoint1:
+               ansible_host: 192.168.0.3
+               ansible_user: ansible
+               ansible_password: secret_pass1
           
-        vars:
-          scanner_output_path: c:\path\to\disconnected_scanners\outputs
+           vars:
+             scanner_output_path: c:\path\to\disconnected_scanners\outputs
         
-          ansible_port: 5986
-          ansible_connection: winrm
-          ansible_winrm_transport: ntlm
+             ansible_port: 5986
+             ansible_connection: winrm
+             ansible_winrm_transport: ntlm
 
-```
+   ```
 
 4. \[**Unix**\] [Choose the most suitable connection method](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information).
 
@@ -130,74 +130,73 @@ all:
 
 6. To run the playbook, add the following command to Crontab on a control node:
 
-`ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory_new_ansible_setup.yml`
+   `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory_new_ansible_setup.yml`
 
 **Procedure for an existing Ansible environment**
 
 1. Clone or download the Github repository.
 
 2. Open and edit the `lmt_disconnected_scans_inventory_existing_ansible_setup.yml` file.
-- Edit lmt_server host
-    - If you are running Ansible playbook on the same host where LMT Server is installed, all you have to do is choose proper path for a disconnected datasource.
-    - If you are running Ansible playbook on a different host where LMT Server is installed, you have to remove the line with `ansible_connection` parameter and define proper `ansible_user`(username) and `ansible_host`(ip address)
+   - Edit lmt_server host
+     - If you are running Ansible playbook on the same host where LMT Server is installed, all you have to do is choose proper path for a disconnected datasource.
+     - If you are running Ansible playbook on a different host where LMT Server is installed, you have to remove the line with `ansible_connection` parameter and define proper `ansible_user`(username) and `ansible_host`(ip address)
 
->If you run the scripts on a different host than LMT Server, make appropriate changes in the lmt_server section, for example:
+     >If you run the scripts on a different host than LMT Server, make appropriate changes in the lmt_server section, for example:
 
-```
-lmt_server:
-  ansible_host: 192.168.0.11
-  ansible_username: ansible
-  lmt_datasource_path: /opt/ibm/LMT/temp/
-```
+     ```
+     lmt_server:
+       ansible_host: 192.168.0.11
+       ansible_username: ansible
+       lmt_datasource_path: /opt/ibm/LMT/temp/
+     ```
 
-- Prepare lmt_scanners_unix and lmt_scanners_windows groups
-    - Specify your existing groups (under 'children') and/or existing endpoints (under 'hosts') from which you want to collect disconnected scanner result packages.
-    - You can define `scanner_output_path` in vars section for all Unix/Windows endpoints, or for each endpoint separately.
-    >**Note:** `scanner_output_path` is a path to a directory with scan results not to a directory where the disconnected scanner is installed. 
+   - Prepare lmt_scanners_unix and lmt_scanners_windows groups
+     - Specify your existing groups (under 'children') and/or existing endpoints (under 'hosts') from which you want to collect disconnected scanner result packages.
+     - You can define `scanner_output_path` in vars section for all Unix/Windows endpoints, or for each endpoint separately.
+     >**Note:** `scanner_output_path` is a path to a directory with scan results not to a directory where the disconnected scanner is installed. 
 
+   Exemplary inventory for a playbook running on the same host as LMT Server:
+   ```
+   ---
+   all: 
+     hosts:
+       lmt_server:
+         ansible_host: localhost
+         ansible_connection: local
+         #Path to disconnected datasource in LMT Server
+         lmt_datasource_path: /opt/ibm/LMT/temp/
 
-Exemplary inventory for a playbook running on the same host as LMT Server:
-```
----
-all: 
-  hosts:
-    lmt_server:
-      ansible_host: localhost
-      ansible_connection: local
-      #Path to disconnected datasource in LMT Server
-      lmt_datasource_path: /opt/ibm/LMT/temp/
+     children:
+       lmt_scanners_unix:
+         hosts:
+           your_exisiting_unix_endpoint1:
+           your_exisiting_unix_endpoint2:
 
-  children:
-    lmt_scanners_unix:
-      hosts:
-        your_exisiting_unix_endpoint1:
-        your_exisiting_unix_endpoint2:
+         children:
+           your_exisiting_unix_group1:
 
-      children:
-        your_exisiting_unix_group1:
-
-      vars:
-        #Absolute path to disconnected scanners output directory for all Unix endpoints
-        scanner_output_path: /path/to/disconnected_scanners/outputs
+         vars:
+           #Absolute path to disconnected scanners output directory for all Unix endpoints
+           scanner_output_path: /path/to/disconnected_scanners/outputs
         
-    lmt_scanners_windows:
-      hosts:
-        your_exisiting_windows_endpoint1:
+       lmt_scanners_windows:
+         hosts:
+           your_exisiting_windows_endpoint1:
 
-      children:
-        your_exisiting_windows_group1:
+         children:
+           your_exisiting_windows_group1:
   
-      vars:
-        #Absolute path to disconnected scanners output directory for all Windows endpoints
-        scanner_output_path: c:\path\to\disconnected_scanners\outputs
+         vars:
+           #Absolute path to disconnected scanners output directory for all Windows endpoints
+           scanner_output_path: c:\path\to\disconnected_scanners\outputs
 
-```
+     ```
 
 3. Prepare your existing inventory file (or choose a different method of providing your inventory), where your existing groups and/or endpoints you added to lmt_scanners_unix and/or lmt_scanners_windows groups are defined.
 
 4. To run the playbook, add the following command to Crontab on a control node:
 
-ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory_existing_ansible_setup.yml -i <your_existing_inventory_file_name>`
+   ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory_existing_ansible_setup.yml -i <your_existing_inventory_file_name>`
 ___
 
 ## Using AWX or Tower to manage Disconnected Scanner
