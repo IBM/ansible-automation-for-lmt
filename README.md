@@ -196,7 +196,7 @@ To use Ansible for automation, you need a control node where you can run the Ans
 
 4. To run the playbook, add the following command to Crontab on a control node:
 
-   ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory_existing_ansible_setup.yml -i <your_existing_inventory_file_name>`
+   `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory_existing_ansible_setup.yml -i <your_existing_inventory_file_name>`
 ___
 
 ## Using AWX or Tower to manage Disconnected Scanner
