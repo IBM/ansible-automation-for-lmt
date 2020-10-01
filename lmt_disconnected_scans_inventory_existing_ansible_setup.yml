@@ -1,0 +1,42 @@
+---
+all: 
+  hosts:
+    lmt_server:
+      ansible_host: localhost
+      ansible_connection: local
+      #Path to disconnected datasource in LMT Server
+      lmt_datasource_path: /opt/ibm/LMT/temp/
+
+  children:
+    lmt_scanners_unix:
+      hosts:
+        #Your existing Unix endpoint names (uncomment and specify your Unix endpoint name), e.g.
+        #your_exisiting_unix_endpoint1:
+        #your_exisiting_unix_endpoint2:
+          #Absolute path to disconnected scanners output directory for a specific endpoint, uncomment and specify the path for this endpoint in case it differs from the rest
+          #scanner_output_path: /path/to/disconnected_scanners/outputs/on/this/endpoint
+
+      children:
+        #Your existing Unix endpoints group names (uncomment and specify your Unix group name), e.g.
+        #your_exisiting_unix_group1:
+        #your_exisiting_unix_group2:
+      vars:
+        #Absolute path to disconnected scanners output directory for all Unix endpoints
+        scanner_output_path: /path/to/disconnected_scanners/outputs
+        
+    lmt_scanners_windows:
+      hosts:
+        #Your existing Windows endpoint names (uncomment and specify your Windows endpoint name), e.g.
+        #your_exisiting_windows_endpoint1:
+        #your_exisiting_windows_endpoint2:
+          #Absolute path to disconnected scanners output directory for a specific endpoint, uncomment and specify the path for this endpoint in case it differs from the rest
+          #scanner_output_path: /path/to/disconnected_scanners/outputs/on/this/endpoint
+
+      children:
+        #Your existing Windows endpoints group names (uncomment and specify your Windows group name), e.g.
+        #your_exisiting_windows_group1:
+        #your_exisiting_windows_group2:
+          
+      vars:
+        #Absolute path to disconnected scanners output directory for all Windows endpoints
+        scanner_output_path: c:\path\to\disconnected_scanners\outputs
