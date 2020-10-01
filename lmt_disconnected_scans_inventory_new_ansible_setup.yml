@@ -10,45 +10,62 @@ all:
   children:
     lmt_scanners_unix:
       hosts:
-        #Custom endpoint name 
-        endpoint1:
-          ansible_host: <ip_address_of_endpoint1> 
-          ansible_user: <username_for_endpoint1>
+        #Custom Unix endpoint name 
+        unix_endpoint1:
+          ansible_host: <ip_address_of_unix_endpoint1> 
+          ansible_user: <username_for_unix_endpoint1>
           
           #Absolute path to disconnected scanners output directory for a specific endpoint
           scanner_output_path: /path/to/disconnected_scanners/outputs/on/this/endpoint
-        endpoint2:
-          ansible_host: <ip_address_of_endpoint2>
-          ansible_user: <username_for_endpoint2>
+        unix_endpoint2:
+          ansible_host: <ip_address_of_unix_endpoint2>
+          ansible_user: <username_for_unix_endpoint2>
 
       vars:
-        #Absolute path to disconnected scanners output directory for all endpoints
+        #Absolute path to disconnected scanners output directory for all Unix endpoints
         scanner_output_path: /path/to/disconnected_scanners/outputs
         
     lmt_scanners_windows:
       hosts:
-        #Custom endpoint name 
-        win_endpoint1:
-          ansible_host: <ip_address_of_win_endpoint1> 
-          ansible_user: <username_for_win_endpoint1>
-          ansible_password: <password_for_win_endpoint1>
+        #Custom Windows endpoint name 
+        windows_endpoint1:
+          ansible_host: <ip_address_of_windows_endpoint1> 
+          ansible_user: <username_for_windows_endpoint1>
+          ansible_password: <password_for_windows_endpoint1>
           
           #Absolute path to disconnected scanners output directory for a specific endpoint
           scanner_output_path: c:\path\to\disconnected_scanners\outputs\on\this\endpoint
-        win_endpoint2:
-          ansible_host: <ip_address_of_win_endpoint2> 
-          ansible_user: <username_for_win_endpoint2>
-          ansible_password: <password_for_win_endpoint2>
+        windows_endpoint2:
+          ansible_host: <ip_address_of_windows_endpoint2> 
+          ansible_user: <username_for_windows_endpoint2>
+          ansible_password: <password_for_windows_endpoint2>
           
       vars:
-        #Absolute path to disconnected scanners output directory for all endpoints
+        #Absolute path to disconnected scanners output directory for all Windows endpoints
         scanner_output_path: c:\path\to\disconnected_scanners\outputs
         
-        #Set the common connection settings for all Windows endpoints, e.g.
+        #
+        #Set the common connection settings for all Windows endpoints
+        #
+        #Example to configure an HTTPs connection over WinRM using NTLM transport with a self-signed certificate (self-signed certificates are not recommended, to be used in test environments only)
         #ansible_port: 5986
         #ansible_connection: winrm
-        #Certificate validation has to be ignored for self-signed certificates (not recommended, to be used in test environments only)
         #ansible_winrm_server_cert_validation: ignore
         #ansible_winrm_transport: ntlm
+        #
+        #This is an example only, consult
+        #https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
+        #for all connection settings available and other details
+        
+        # The port WinRM will run over, HTTPS is 5986 which is the default while HTTP is 5985
+        ansible_port: <port_winrm_will_run_over>
+        
+        #Connection type to the host. This can be the name of any of ansible’s connection plugins. For Windows 'winrm' is supported only ('ssh' support using Win32-OpenSSH is still experimental at the time of writing this document)
+        ansible_connection: winrm
+        
+        #Specify one or more authentication transport options as a comma-separated list. By default, Ansible will use kerberos, basic if the kerberos module is installed and a realm is defined, otherwise it will be plaintext
+        ansible_winrm_transport: <authentication_transport_options>
+        
+        #Certificate validation has to be ignored for self-signed certificates (not recommended, to be used in test environments only)
+        #ansible_winrm_server_cert_validation: ignore
 
-...
