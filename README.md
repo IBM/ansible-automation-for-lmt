@@ -86,10 +86,10 @@ Tested on Ansible version 2.8.
 
 1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
 
-1. Create your inventory
+1. Create your inventory.
 
-   - Define `lmt_server` host connection settings, where LMT server is installed
-     - If you are running the playbook on the same host where LMT Server is located, use the default settings
+   - Define `lmt_server` host connection settings, where LMT server is installed.
+     - If you are running the playbook on the same host where LMT Server is located, use the default settings.
      - If you are running the playbook on a different host than LMT Server, you have to remove the line with `ansible_connection` parameter and define `ansible_host`(hostname or ip address) and `ansible_user`(username) if it's different than the local user.
 
      Example of LMT Server located on a different host than the control node (192.168.0.11 in this example):
@@ -99,14 +99,14 @@ Tested on Ansible version 2.8.
        ansible_username: ansible
      ```
      
-   - Define all managed hosts from where you want to collect disconnected scanner scan results and their connection settings
+   - Define all managed hosts from where you want to collect disconnected scanner scan results and their connection settings.
    
-     Example of a linux machine with a default user
+     Example of a linux machine with a default user:
      ```
      linux1:
        ansible_host: 192.168.0.1
      ```
-   - (Optional) Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment. The settings, which are in `lmt_disconnected_scans_inventory.yml` inventory file, are the following
+   - (Optional) Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment. The settings, which are in `lmt_disconnected_scans_inventory.yml` inventory file, are the following:
      - `lmt_file_storage_path` (default ./lmt_file_storage, which is created as a subdirectory of a directory where the `lmt_disconnected_scans_collector.yml` playbook is located) - a path on a control node where LMT files are stored. It will contain disconnected scanner result packages fetched from all endpoints.
      - `lmt_scanner_output_path_windows` (default "\<ProgramFiles\>\IBM\LMTScanner\output") - a disconnected scanner output path where scan result packages are generated on Windows
      - `lmt_scanner_output_path_unix` (default /var/opt/ibm/lmt_scanner/output) - a disconnected scanner output path where scan result packages are generated on Unix/Linux
@@ -167,7 +167,7 @@ Tested on Ansible version 2.8.
        # section removed for clarity - DO NOT REMOVE IT from the inventory file
    ```
 
-1. Configure connections to managed nodes
+1. Configure connections to managed nodes.
    - **\[Unix/Linux\]** [Connecting to remote nodes](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#connecting-to-remote-nodes)
    - **\[Windows\]** 
      - [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information)
