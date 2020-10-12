@@ -90,7 +90,7 @@ Tested on Ansible version 2.8.
 
    - Define `lmt_server` host connection settings, where LMT server is installed.
      - If you are running the playbook on the same host where LMT Server is located, use the default settings.
-     - If you are running the playbook on a different host than LMT Server, define `ansible_host`(hostname or ip address) and `ansible_user`(username) if it's different than the local user.
+     - If you are running the playbook on a different host than LMT Server, define host connection settings.
 
      Example of LMT Server located on a different host than the control node (192.168.0.11 in this example):
      ```
@@ -107,18 +107,18 @@ Tested on Ansible version 2.8.
        ansible_host: 192.168.0.1
      ```
    - Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment. The settings, which are in `lmt_disconnected_scans_inventory.yml` inventory file, are the following:
-     - `lmt_file_storage_path` (default ./lmt_file_storage, which is created as a subdirectory of a directory where the `lmt_disconnected_scans_collector.yml` playbook is located) - a path on a control node where LMT files are stored. It will contain disconnected scanner result packages fetched from all endpoints.
+     - `lmt_local_file_storage_path` (default ./lmt_file_storage, which is created as a subdirectory of a directory where the `lmt_disconnected_scans_collector.yml` playbook is located) - a path on a control node where LMT files are stored. It will contain disconnected scanner result packages fetched from all endpoints. Do not place the directory in a temporary location (e.g. `/tmp`) as this is expected to be a persistent storage of LMT files.
      - `lmt_scanner_output_path_windows` (default \<ProgramFiles\>\IBM\LMTScanner\output) - a disconnected scanner output path where scan result packages are generated on Windows
      - `lmt_scanner_output_path_unix` (default /var/opt/ibm/lmt_scanner/output) - a disconnected scanner output path where scan result packages are generated on Unix/Linux
-     - `lmt_datasource_path` (default /opt/ibm/LMT/temp) - a path to a disconnected data source directory on LMT Server
+     - `lmt_server_datasource_path` (default /opt/ibm/LMT/temp) - a path to a disconnected data source directory on LMT Server
        
-     Example:
+     Example, which configures `c:\my\lmt_scanner\output` as a disconnected scanner output directory on all Windows machines and `/my/disconnected/datasource` as a disconnected datasource directory configured on LMT server leaving defaults for 2 remaining settings:
      ```
        vars:
-         lmt_file_storage_path: /tmp/lmt_file_storage
-         lmt_scanner_output_path_windows: C:\ilmt_disconnected\output
-         lmt_scanner_output_path_unix: /ilmt_disconnected/output
-         lmt_datasource_path: /opt/ibm/LMT/disconnected_data_source1
+         lmt_local_file_storage_path: ''
+         lmt_scanner_output_path_windows: 'c:\\my\\lmt_scanner\\output'
+         lmt_scanner_output_path_unix: ''
+         lmt_server_datasource_path: '/my/disconnected/datasource'
      ```
 
    - Read more about [inventories](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
@@ -155,16 +155,10 @@ Tested on Ansible version 2.8.
         #https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
      
      vars:
-       lmt_file_storage_path: '/tmp/lmt_scan_file_storage'
-       lmt_scanner_output_path_windows: 'C:\ilmt_disconnected\output'
-       lmt_scanner_output_path_unix: '/ilmt_disconnected/output'
-       lmt_datasource_path: '/opt/ibm/LMT/disconnected_data_source1'
-
-       #
-       # LMT default internal settings - DO NOT MODIFY
-       # 
-       
-       # section removed for clarity - DO NOT REMOVE IT from the inventory file
+       lmt_local_file_storage_path: ''
+       lmt_scanner_output_path_windows: 'c:\\my\\lmt_scanner\\output'
+       lmt_scanner_output_path_unix: ''
+       lmt_server_datasource_path: '/my/disconnected/datasource'
    ```
 
 1. Configure connections to managed nodes.
