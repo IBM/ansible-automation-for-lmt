@@ -64,12 +64,12 @@ Tested on Ansible version 2.8.
   >**Note:** If you have SELinux enabled on LMT Server (`lmt_server` host) and it's not running on a control node, but a managed node, you need `libselinux-python` installed to be able to copy the disconnected scanner outputs, see: [Managed node requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#managed-node-requirements) for details.
     
   **\[Windows\]** 
-    - Ansible can generally manage Windows versions under current and extended support from Microsoft. Ansible can manage desktop OSs including Windows 7, 8.1, and 10, and server OSs including Windows Server 2008, 2008 R2, 2012, 2012 R2, 2016, and 2019.
-    - Ansible requires PowerShell 3.0 or newer and at least .NET 4.0 to be installed on the Windows host.
-    - A WinRM listener should be created and activated.
-    - The user is a member of the local Administrators group or has been explicitly granted access.
+  - Ansible can generally manage Windows versions under current and extended support from Microsoft. Ansible can manage desktop OSs including Windows 7, 8.1, and 10, and server OSs including Windows Server 2008, 2008 R2, 2012, 2012 R2, 2016, and 2019.
+  - Ansible requires PowerShell 3.0 or newer and at least .NET 4.0 to be installed on the Windows host.
+  - A WinRM listener should be created and activated.
+  - The user is a member of the local Administrators group or has been explicitly granted access.
 
-    - For a full list of managed nodes requirements and the most up-to-date information, see: [Managed node requirements on Windows](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html#windows-setup).
+  - For a full list of managed nodes requirements and the most up-to-date information, see: [Managed node requirements on Windows](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html#windows-setup).
 
 </details>
 
