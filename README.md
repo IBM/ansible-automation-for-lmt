@@ -97,7 +97,6 @@ Tested on Ansible version 2.8.
      lmt_server:
        ansible_host: 192.168.0.11
        ansible_username: ansible
-       lmt_datasource_path: /opt/ibm/LMT/temp/
      ```
      
    - Define all managed hosts from where you want to collect disconnected scanner scan results and their connection settings
@@ -128,11 +127,6 @@ Tested on Ansible version 2.8.
    ```
    ---
    all:
-     vars:
-       lmt_file_storage_path: /tmp/lmt_scan_file_storage
-       lmt_scanner_output_path_windows: C:\ilmt_disconnected\output
-       lmt_scanner_output_path_unix: /ilmt_disconnected/output
-       lmt_datasource_path: /opt/ibm/LMT/disconnected_data_source1/
      hosts:
        lmt_server:
          ansible_host: localhost
@@ -159,6 +153,18 @@ Tested on Ansible version 2.8.
         # It an example for a test purposes only - Windows endpoints can be configured in a more secure manner, refer to the existing documentation for details:
         #https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html#winrm-setup
         #https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
+     
+     vars:
+       lmt_file_storage_path: '/tmp/lmt_scan_file_storage'
+       lmt_scanner_output_path_windows: 'C:\ilmt_disconnected\output'
+       lmt_scanner_output_path_unix: '/ilmt_disconnected/output'
+       lmt_datasource_path: '/opt/ibm/LMT/disconnected_data_source1'
+
+       #
+       # LMT default internal settings - DO NOT MODIFY
+       # 
+       
+       # section removed for clarity - DO NOT REMOVE IT from the inventory file
    ```
 
 1. Configure connections to managed nodes
