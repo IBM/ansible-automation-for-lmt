@@ -4,7 +4,6 @@ all:
   hosts:
     lmt_server:
       ansible_host: localhost
-      ansible_connection: local
 
     # custom name of your unix/linux endpoint 1
     unix1:
