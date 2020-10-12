@@ -108,17 +108,17 @@ Tested on Ansible version 2.8.
      ```
    - (Optional) Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment. The settings, which are in `lmt_disconnected_scans_inventory.yml` inventory file, are the following:
      - `lmt_file_storage_path` (default ./lmt_file_storage, which is created as a subdirectory of a directory where the `lmt_disconnected_scans_collector.yml` playbook is located) - a path on a control node where LMT files are stored. It will contain disconnected scanner result packages fetched from all endpoints.
-     - `lmt_scanner_output_path_windows` (default "\<ProgramFiles\>\IBM\LMTScanner\output") - a disconnected scanner output path where scan result packages are generated on Windows
+     - `lmt_scanner_output_path_windows` (default \<ProgramFiles\>\IBM\LMTScanner\output) - a disconnected scanner output path where scan result packages are generated on Windows
      - `lmt_scanner_output_path_unix` (default /var/opt/ibm/lmt_scanner/output) - a disconnected scanner output path where scan result packages are generated on Unix/Linux
-     - `lmt_datasource_path` (default /opt/ibm/LMT/temp/) - a path to a disconnected data source directory on LMT Server   
+     - `lmt_datasource_path` (default /opt/ibm/LMT/temp) - a path to a disconnected data source directory on LMT Server   
        
      Example:
      ```
        vars:
-         lmt_file_storage_path: /tmp/lmt_scan_file_storage
+         lmt_file_storage_path: /tmp/lmt_file_storage
          lmt_scanner_output_path_windows: C:\ilmt_disconnected\output
          lmt_scanner_output_path_unix: /ilmt_disconnected/output
-         lmt_datasource_path: /opt/ibm/LMT/disconnected_data_source1/
+         lmt_datasource_path: /opt/ibm/LMT/disconnected_data_source1
      ```
 
    - Read more about [inventories](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
@@ -180,11 +180,14 @@ Tested on Ansible version 2.8.
    `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml`
    
    E.g. to schedule the command to run everyday at 2:30 am in crontab, run 
-   - `crontab -e` 
+   
+   `crontab -e` 
    
    and edit the crontab configuration by adding the line:
    
-   - `30 2 * * * "ansible-playbook /path/to/lmt_disconnected_scans_collector.yml -i /path/to/lmt_disconnected_scans_inventory.yml"`
+   `30 2 * * * "ansible-playbook <LMT_upload_playbook_files_directory>/lmt_disconnected_scans_collector.yml -i <LMT_upload_playbook_files_directory>/lmt_disconnected_scans_inventory.yml"`
+   
+   where <LMT_upload_playbook_files_directory> is the directory where the playbook files are stored.
 
 **Procedure for an existing Ansible environment**
 
