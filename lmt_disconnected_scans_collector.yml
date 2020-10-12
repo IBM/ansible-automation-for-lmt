@@ -1,16 +1,34 @@
 ---
+- hosts: all, localhost
+  gather_facts: yes
+  gather_subset: "!all,!min"
+  tasks:
+
+    - name: "Setting ILMT defaults"
+      set_fact:
+        lmt_server_datasource_path_fn: "{{lmt_server_datasource_path if (lmt_server_datasource_path is defined and lmt_server_datasource_path != '') else '/opt/ibm/LMT/temp/'}}"
+        lmt_local_file_storage_result_packages_path_fn: "{{lmt_local_file_storage_path + lmt_local_file_storage_packages_suffix if (lmt_local_file_storage_path is defined and lmt_local_file_storage_path != '') else './lmt_file_storage' + '/scan_result_packages'}}"
+
+    - name: "Setting ILMT defaults specific to Windows"
+      set_fact:
+        lmt_scanner_output_path_windows_fn: "{{lmt_scanner_output_path_windows if (lmt_scanner_output_path_windows is defined and lmt_scanner_output_path_windows != '') else ansible_env['ProgramFiles'] + '\\IBM\\LMTScanner\\output'}}"
+      when: ansible_facts['os_family'] == "Windows"
+
+    - name: "Setting ILMT defaults specific to Unix/Linux"
+      set_fact:
+        lmt_scanner_output_path_unix_fn: "{{lmt_scanner_output_path_unix if (lmt_scanner_output_path_unix is defined and lmt_scanner_output_path_unix != '') else '/var/opt/ibm/lmt_scanner/output'}}"
+      when: ansible_facts['os_family'] != "Windows"
+    
 - hosts: localhost
-  connection: local
-  gather_facts: no
-  
-  tasks:  
-    - name: "Creating {{lmt_file_storage_path_fn}} for storing scan result packages"
+  gather_facts: no  
+  tasks:
+    - name: "Creating {{lmt_local_file_storage_result_packages_path_fn}} for storing scan result packages"
       file:
-        path: "{{lmt_file_storage_path_fn}}"
+        path: "{{lmt_local_file_storage_result_packages_path_fn}}"
         state: directory
 
 - hosts: all
-  gather_facts: true
+  gather_facts: yes
   gather_subset: "!all,!min"
   tasks:
     - name: "Getting list of scan result packages on Windows"
@@ -21,7 +39,7 @@
       register: files_to_copy_windows
       when: ansible_facts['os_family'] == "Windows"
 
-    - name: "Getting list of scan result packages on Unix"
+    - name: "Getting list of scan result packages on Unix/Linux"
       find: 
         paths: "{{lmt_scanner_output_path_unix_fn}}"
         use_regex: yes
@@ -32,7 +50,7 @@
     - name: "Fetch packages from endpoints"
       fetch: 
         src: "{{item.path}}"
-        dest: "{{lmt_file_storage_path_fn}}"
+        dest: "{{lmt_local_file_storage_result_packages_path_fn}}"
         flat: yes
       register: fetched_files
       with_items: "{{ files_to_copy_unix.files if (ansible_facts['os_family'] != 'Windows') else files_to_copy_windows.files }}"
@@ -60,13 +78,13 @@
   tasks:
     - name: "Uploading scan result packages to ILMT Server"
       copy:
-        src: "{{lmt_file_storage_path_fn}}"
-        dest: "{{ lmt_datasource_path_fn }}"
+        src: "{{lmt_local_file_storage_result_packages_path_fn}}"
+        dest: "{{ lmt_server_datasource_path_fn }}"
       register: uploaded_files
     
     - name: "Cleaning scan result packages from Control Node"
       file:
-        path: "{{lmt_file_storage_path_fn}}"
+        path: "{{lmt_local_file_storage_result_packages_path_fn}}"
         state: absent
       delegate_to: localhost
       when: uploaded_files is succeeded
