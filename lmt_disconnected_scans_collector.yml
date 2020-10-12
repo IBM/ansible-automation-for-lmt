@@ -4,49 +4,70 @@
   gather_facts: no
   
   tasks:  
-    - name: "Creating temporary scans directory"
+    - name: "Creating {{lmt_file_storage_path_fn}} for storing scan result packages"
       file:
-        path: "{{temp_file_storage_path | default('./tmp')}}/"
+        path: "{{lmt_file_storage_path_fn}}"
         state: directory
 
-- hosts: unix_endpoints
-  gather_facts: no
-
+- hosts: all
+  gather_facts: true
+  gather_subset: "!all,!min"
   tasks:
-    - name: Getting info about scans
+    - name: "Getting list of scan result packages on Windows"
+      win_find:
+        paths: "{{lmt_scanner_output_path_windows_fn}}"
+        use_regex: yes
+        patterns: ['^\d{12}-.+-\d{10}\.zip$']
+      register: files_to_copy_windows
+      when: ansible_facts['os_family'] == "Windows"
+
+    - name: "Getting list of scan result packages on Unix"
       find: 
-        paths: "{{scanner_output_path}}"
+        paths: "{{lmt_scanner_output_path_unix_fn}}"
         use_regex: yes
         patterns: ['^\d{12}-.+-\d{10}\.tar\.gz$']
-      register: files_to_copy
+      register: files_to_copy_unix
+      when: ansible_facts['os_family'] != "Windows"
 
     - name: "Fetch packages from endpoints"
       fetch: 
         src: "{{item.path}}"
-        dest: "{{temp_file_storage_path | default('./tmp')}}/"
+        dest: "{{lmt_file_storage_path_fn}}"
         flat: yes
-      loop: "{{ files_to_copy.files }}"
+      register: fetched_files
+      with_items: "{{ files_to_copy_unix.files if (ansible_facts['os_family'] != 'Windows') else files_to_copy_windows.files }}"
 
-    - name: Clean up packages on endpoints   
+    - name: "Clean up packages on Windows endpoints"
+      win_file:
+        state: absent
+        path: "{{item.path}}"
+      with_items: "{{ files_to_copy_windows.files }}"
+      when: 
+        - ansible_facts['os_family'] == "Windows" 
+        - fetched_files is succeeded
+
+    - name: "Clean up packages on Unix endpoints"
       file:
         state: absent
         path: "{{item.path}}"
-      loop: "{{ files_to_copy.files }}"
+      with_items: "{{ files_to_copy_unix.files }}"
+      when: 
+        - ansible_facts['os_family'] != "Windows" 
+        - fetched_files is succeeded
 
-- hosts: lmtserver
+- hosts: lmt_server
   gather_facts: no
   tasks:
-    - name: "Uploading scans to ILTM Server"
+    - name: "Uploading scan result packages to ILMT Server"
       copy:
-        src: "{{temp_file_storage_path | default('./tmp')}}/"
-        dest: "{{lmt_datasource_path}}/"
-
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: "Cleaning scans from Control Node"
+        src: "{{lmt_file_storage_path_fn}}"
+        dest: "{{ lmt_datasource_path_fn }}"
+      register: uploaded_files
+    
+    - name: "Cleaning scan result packages from Control Node"
       file:
-        path: "{{temp_file_storage_path | default('./tmp')}}/"
+        path: "{{lmt_file_storage_path_fn}}"
         state: absent
-...
+      delegate_to: localhost
+      when: uploaded_files is succeeded
+
