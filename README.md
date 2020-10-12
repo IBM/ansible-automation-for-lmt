@@ -41,7 +41,7 @@ Tested on Ansible version 2.8.
 </details>
 
 <details>
-><summary>Control node requirements</summary>
+<summary>Control node requirements</summary>
 
   - Python 2 (version 2.7) or Python 3 (versions 3.5 and higher) installed. This includes Red Hat, Debian, CentOS, macOS, any of the BSDs, and so on.
   
@@ -86,15 +86,7 @@ Tested on Ansible version 2.8.
 
 1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
 
-1. Create your inventory of hosts and optionally define LMT variables for a custom configuration
-   - Define all managed hosts from where you want to collect disconnected scanner scan results and their connection settings (e.g. ansible_host, ansible_user) including `lmt_server` host, which is where LMT Server is installed
-   - (Optional) Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment. The settings, which are in `lmt_disconnected_scans_inventory.yml` inventory file, are the following
-     - `lmt_file_storage_path` (default ./lmt_file_storage, which is created as a subdirectory of a directory where the `lmt_disconnected_scans_collector.yml` playbook is located) - a path on a control node where LMT files are stored. It will contain disconnected scanner result packages fetched from all endpoints.
-     - `lmt_scanner_output_path_windows` (default "\<ProgramFiles\>\IBM\LMTScanner\output") - a disconnected scanner output path where scan result packages are generated on Windows
-     - `lmt_scanner_output_path_unix` (default /var/opt/ibm/lmt_scanner/output) - a disconnected scanner output path where scan result packages are generated on Unix/Linux
-     - `lmt_datasource_path` (default /opt/ibm/LMT/temp/) - a path to a disconnected data source directory on LMT Server   
-   
-   Step by step instructions:
+1. Create your inventory
 
    - Define `lmt_server` host connection settings, where LMT server is installed
      - If you are running the playbook on the same host where LMT Server is located, use the default settings
@@ -108,32 +100,31 @@ Tested on Ansible version 2.8.
        lmt_datasource_path: /opt/ibm/LMT/temp/
      ```
      
-     - Define all your hosts that you want to gather disconnected scanner results from
-     
-     Example of a linux machine with a default user and a solaris machine with a non-default user and a custom path with scan result packages:
+   - Define all managed hosts from where you want to collect disconnected scanner scan results and their connection settings
+   
+     Example of a linux machine with a default user
      ```
      linux1:
        ansible_host: 192.168.0.1
-     solaris1:
-       ansible_host: 192.168.0.3
-       ansible_user: different_user
-       lmt_scanner_output_path_unix: /ilmt_disconnected/custom/path/output
      ```
-   - (Optional) Customize `lmt_file_storage_path`, `lmt_scanner_output_path_windows`, `lmt_scanner_output_path_unix`, `lmt_datasource_path`
+   - (Optional) Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment. The settings, which are in `lmt_disconnected_scans_inventory.yml` inventory file, are the following
+     - `lmt_file_storage_path` (default ./lmt_file_storage, which is created as a subdirectory of a directory where the `lmt_disconnected_scans_collector.yml` playbook is located) - a path on a control node where LMT files are stored. It will contain disconnected scanner result packages fetched from all endpoints.
+     - `lmt_scanner_output_path_windows` (default "\<ProgramFiles\>\IBM\LMTScanner\output") - a disconnected scanner output path where scan result packages are generated on Windows
+     - `lmt_scanner_output_path_unix` (default /var/opt/ibm/lmt_scanner/output) - a disconnected scanner output path where scan result packages are generated on Unix/Linux
+     - `lmt_datasource_path` (default /opt/ibm/LMT/temp/) - a path to a disconnected data source directory on LMT Server   
        
      Example:
      ```
-     all:
        vars:
          lmt_file_storage_path: /tmp/lmt_scan_file_storage
          lmt_scanner_output_path_windows: C:\ilmt_disconnected\output
          lmt_scanner_output_path_unix: /ilmt_disconnected/output
          lmt_datasource_path: /opt/ibm/LMT/disconnected_data_source1/
-       ```
+     ```
 
    - Read more about [inventories](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
-   Exemplary inventory for a playbook running on the same host as LMT Server with 4 managed nodes defined (2 Linux, 1 Solaris and 1 Windows machines):
+   Exemplary inventory for a playbook running on the same host as LMT Server with 4 managed nodes defined (2 Linux, 1 Solaris with a custom user and a custom path to scan result packages and 1 Windows machines):
    ```
    ---
    all:
@@ -166,8 +157,8 @@ Tested on Ansible version 2.8.
         ansible_winrm_server_cert_validation: ignore
 
         # It an example for a test purposes only - Windows endpoints can be configured in a more secure manner, refer to the existing documentation for details:
-         #https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html#winrm-setup
-         #https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
+        #https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html#winrm-setup
+        #https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
    ```
 
 1. Configure connections to managed nodes
@@ -184,7 +175,8 @@ Tested on Ansible version 2.8.
    
    E.g. to schedule the command to run everyday at 2:30 am in crontab, run 
    - `crontab -e` 
-   >and edit the crontab configuration by adding the line:
+   
+   and edit the crontab configuration by adding the line:
    
    - `30 2 * * * "ansible-playbook /path/to/lmt_disconnected_scans_collector.yml -i /path/to/lmt_disconnected_scans_inventory.yml"`
 
