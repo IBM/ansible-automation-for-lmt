@@ -187,7 +187,7 @@ Tested on Ansible version 2.8.
    
    `30 2 * * * "ansible-playbook <LMT_upload_playbook_files_directory>/lmt_disconnected_scans_collector.yml -i <LMT_upload_playbook_files_directory>/lmt_disconnected_scans_inventory.yml"`
    
-   where <LMT_upload_playbook_files_directory> is the directory where the playbook files are stored.
+   where `<LMT_upload_playbook_files_directory>` is the directory where the playbook files are stored.
 
 **Procedure for an existing Ansible environment**
 
