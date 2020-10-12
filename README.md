@@ -37,10 +37,11 @@ To use Ansible for automation, you need a control node where you can run the Ans
 
 <details>
 <summary>Tested on Ansible version 2.8.</summary>
+Tested on Ansible version 2.8.
 </details>
 
 <details>
-<summary>Control node requirements</summary>
+><summary>Control node requirements</summary>
 
   - Python 2 (version 2.7) or Python 3 (versions 3.5 and higher) installed. This includes Red Hat, Debian, CentOS, macOS, any of the BSDs, and so on.
   
@@ -54,8 +55,6 @@ To use Ansible for automation, you need a control node where you can run the Ans
 
 <details>
 <summary>Managed node requirements</summary>
-
-  - ILMT disconnected scanner requirements must be met, see [Supported operating systems for ILMT 9.2.21 disconnected scanners](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/osForProduct?deliverableId=5CBD9B00A02711EA88F5BE8EBF8F323B&osPlatforms=AIX|HP|IBM%20i|Linux|Solaris|Windows&duComponentIds=A002)
 
   **\[Unix/Linux\]** 
   - a way to communicate, which is normally SSH. By default this uses SFTP. If that’s not available, you can switch to SCP in ansible.cfg. 
@@ -78,7 +77,8 @@ To use Ansible for automation, you need a control node where you can run the Ans
 <summary>LMT requirements for managed nodes</summary>
 
   - ILMT disconnected scanner requirements must be met, see [Supported operating systems for ILMT 9.2.21 disconnected scanners](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/osForProduct?deliverableId=5CBD9B00A02711EA88F5BE8EBF8F323B&osPlatforms=AIX|HP|IBM%20i|Linux|Solaris|Windows&duComponentIds=A002)
-  
+
+</details>
   
 **Procedure for a new environment setup of Ansible**
 
