@@ -28,8 +28,7 @@
         state: directory
 
 - hosts: all
-  gather_facts: yes
-  gather_subset: "!all,!min"
+  gather_facts: no
   tasks:
     - name: "Getting list of scan result packages on Windows"
       win_find:
