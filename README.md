@@ -187,9 +187,15 @@ Tested on Ansible version 2.8.
 
 1. Clone or download the Github repository.
 
-1. Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment.
+1. Update your existing inventory.
+   - Define `lmt_server` host connection settings.
+   - Review the default LMT settings (prefixed with `lmt_`) and if needed customize them to fit your environment.
+   
+   LMT settings are described above.
 
 1. Schedule to run `lmt_disconnected_scans_collector.yml` playbook everyday.
+
+>**Note:** The playbook is configured to target all machines (it uses the default `all` group).
 
 ___
 
