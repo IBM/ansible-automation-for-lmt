@@ -45,5 +45,5 @@ all:
     lmt_scanner_output_path_unix: ''
     
     # path to a disconnected datasource on LMT Server (if empty, the default is used)
-    # default: /opt/ibm/LMT/temp/
+    # default: /opt/ibm/LMT/temp
     lmt_server_datasource_path: ''
