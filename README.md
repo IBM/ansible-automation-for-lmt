@@ -168,7 +168,10 @@ Tested on Ansible version 2.8.
      - [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information)
      - [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html)
 
-1. **\[Unix/Linux\]** Optional: If you want to create a dedicated user for Ansible to increase security, make sure that this user has the **rwx** privileges in the home directory and **rw** privileges in a directory with the disconnected scanner scan result packages (`lmt_scanner_output_path_unix` directory).
+1. For non-root or non-Administrator user for Ansible, make sure that the correct permissions are assigned to disconnected scanner directory with scan result packages for that user.
+   - **\[Unix/Linux\]** Make sure that the user has the **rwx** privileges in the home directory of the disconnected scanner and **rw** privileges in a directory with  scan result packages (`lmt_scanner_output_path_unix` directory).
+   
+   - **\[Windows\]** Make sure that the user has the `List folder contents`, `Read` and `Write` privileges in a directory with scan result packages (`lmt_scanner_output_path_windows` directory) and the directory has inheritance enabled (click `Advanced Security Settings` tab and `Enable inheritance` button if not already enabled), which should apply to `This folder, subfolder and files` (click `Advanced Security Settings` tab and the `View` button to check after you selected the user).
 
 1. Schedule the following command to run the playbook everyday.
 
