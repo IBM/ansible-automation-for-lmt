@@ -6,17 +6,25 @@
 
     - name: "Setting ILMT defaults"
       set_fact:
-        lmt_server_datasource_path_fn: "{{lmt_server_datasource_path if (lmt_server_datasource_path is defined and lmt_server_datasource_path != '') else '/opt/ibm/LMT/temp'}}"
-        lmt_local_file_storage_result_packages_path_fn: "{{lmt_local_file_storage_path + lmt_local_file_storage_packages_suffix if (lmt_local_file_storage_path is defined and lmt_local_file_storage_path != '') else './lmt_file_storage' + '/scan_result_packages'}}"
+        lmt_server_datasource_path_fn: "{{lmt_server_datasource_path\
+          if (lmt_server_datasource_path is defined and lmt_server_datasource_path != '')\
+          else '/opt/ibm/LMT/temp'}}"
+        lmt_local_file_storage_result_packages_path_fn: "{{lmt_local_file_storage_path + lmt_local_file_storage_packages_suffix\
+          if (lmt_local_file_storage_path is defined and lmt_local_file_storage_path != '')\
+          else './lmt_file_storage' + '/scan_result_packages'}}"
 
     - name: "Setting ILMT defaults specific to Windows"
       set_fact:
-        lmt_scanner_output_path_windows_fn: "{{lmt_scanner_output_path_windows if (lmt_scanner_output_path_windows is defined and lmt_scanner_output_path_windows != '') else ansible_env['ProgramFiles'] + '\\IBM\\LMTScanner\\output'}}"
+        lmt_scanner_output_path_windows_fn: "{{lmt_scanner_output_path_windows\
+          if (lmt_scanner_output_path_windows is defined and lmt_scanner_output_path_windows != '')\
+          else ansible_env['ProgramFiles'] + '\\IBM\\LMTScanner\\output'}}"
       when: ansible_facts['os_family'] == "Windows"
 
     - name: "Setting ILMT defaults specific to Unix/Linux"
       set_fact:
-        lmt_scanner_output_path_unix_fn: "{{lmt_scanner_output_path_unix if (lmt_scanner_output_path_unix is defined and lmt_scanner_output_path_unix != '') else '/var/opt/ibm/lmt_scanner/output'}}"
+        lmt_scanner_output_path_unix_fn: "{{lmt_scanner_output_path_unix\ 
+          if (lmt_scanner_output_path_unix is defined and lmt_scanner_output_path_unix != '')\
+          else '/var/opt/ibm/lmt_scanner/output'}}"
       when: ansible_facts['os_family'] != "Windows"
     
 - hosts: localhost
@@ -77,7 +85,7 @@
   tasks:
     - name: "Uploading scan result packages to ILMT Server"
       copy:
-        src: "{{lmt_local_file_storage_result_packages_path_fn}}"
+        src: "{{lmt_local_file_storage_result_packages_path_fn}}/"
         dest: "{{ lmt_server_datasource_path_fn }}/"
       register: uploaded_files
     
