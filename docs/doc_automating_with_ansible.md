@@ -23,7 +23,7 @@ To use Ansible for automation, you need a control node where you can run the Ans
 <details>
 <summary>Ansible version</summary>
 
-The solution is tested on Ansible 2.8.
+The solution is tested on Ansible 2.10.2.
 
 </details>
 
