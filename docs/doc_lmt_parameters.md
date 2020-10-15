@@ -1,0 +1,4 @@
+- `lmt_local_file_storage_path` (default ./lmt_file_storage, which is created as a subdirectory of a directory where the `lmt_disconnected_scans_collector.yml` playbook is located) - a path on a control node where LMT files are stored. It will contain disconnected scanner result packages fetched from all endpoints. Do not place the directory in a temporary location (e.g. `/tmp`) as this is expected to be a persistent storage of LMT files.
+- `lmt_scanner_output_path_windows` (default \<ProgramFiles\>\IBM\LMTScanner\output) - a disconnected scanner output path where scan result packages are generated on Windows
+- `lmt_scanner_output_path_unix` (default /var/opt/ibm/lmt_scanner/output) - a disconnected scanner output path where scan result packages are generated on Unix/Linux
+- `lmt_server_datasource_path` (default /opt/ibm/LMT/temp) - a path to a disconnected data source directory on LMT Server
