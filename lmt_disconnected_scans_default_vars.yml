@@ -1,1 +1,10 @@
+---
+lmt_server_datasource_path_default: '/opt/ibm/LMT/temp'
 
+lmt_local_file_storage_path_default: './lmt_file_storage'
+lmt_local_file_storage_output_path_suffix: '/scan_result_packages'
+lmt_local_file_storage_output_path_default: "{{ lmt_local_file_storage_path_default + lmt_local_file_storage_output_path_suffix }}"
+
+lmt_scanner_output_path_windows_default: "{{ ansible_env['ProgramFiles'] }}'\\IBM\\LMTScanner\\output'"
+
+lmt_scanner_output_path_unix_default: '/var/opt/ibm/lmt_scanner/output'
