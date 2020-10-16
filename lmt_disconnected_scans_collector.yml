@@ -46,9 +46,8 @@
         patterns: ['^\d{12}-.+-\d{10}\.zip$']
       register: files_to_copy_windows
       when: ansible_facts['os_family'] == "Windows"
-
     - name: "Getting list of scan result packages on Unix/Linux"
-      find: 
+      find:
         paths: "{{lmt_scanner_output_path_unix_fn}}"
         use_regex: yes
         patterns: ['^\d{12}-.+-\d{10}\.tar\.gz$']
@@ -56,7 +55,7 @@
       when: ansible_facts['os_family'] != "Windows"
 
     - name: "Fetch packages from endpoints"
-      fetch: 
+      fetch:
         src: "{{item.path}}"
         dest: "{{lmt_local_file_storage_output_path_fn}}/"
         flat: yes
@@ -85,11 +84,19 @@
 - hosts: lmt_server
   gather_facts: no
   tasks:
-    - name: "Uploading scan result packages to ILMT Server"
+    - name: "Uploading scan result packages to ILMT Server on Windows"
+      win_copy:
+        src: "{{lmt_local_file_storage_output_path_fn}}\\"
+        dest: "{{ lmt_server_datasource_path_fn }}\\"
+      register: uploaded_files
+      when: ansible_facts['os_family'] == 'Windows'
+      
+    - name: "Uploading scan result packages to ILMT Server on Linux"
       copy:
         src: "{{lmt_local_file_storage_output_path_fn}}/"
         dest: "{{ lmt_server_datasource_path_fn }}/"
       register: uploaded_files
+      when: ansible_facts['os_family'] != 'Windows'
     
     - name: "Cleaning scan result packages from Control Node"
       file:
