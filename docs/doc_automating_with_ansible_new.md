@@ -9,7 +9,7 @@
 
 2. Configure connections to your managed nodes.
    - **\[UNIX/Linux\]** For more information, see: [Connecting to remote nodes](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#connecting-to-remote-nodes) in the Ansible documentation.
-   - **\[Windows\]** For more information, see: [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/windows.html) and [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html) in the Ansible documentation.
+   - **\[Windows\]** For more information, see: [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information) and [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html) in the Ansible documentation.
 
 
 3. To create an inventory of your managed nodes, edit the `lmt_disconnected_scans_inventory.yml` inventory file.
@@ -38,12 +38,10 @@
        
      **Example**
 
-     In the following example, the `c:\my\lmt_scanner\output` directory is specified as a disconnected scanner output directory on all Windows computers and the `/my/disconnected/datasource` is specified as a disconnected data source directory configured on the License Metric Tool server. The remaining parameters use the default values.
+     In the following example, the `c:\my\lmt_scanner\output` directory is specified as a disconnected scanner output directory on all Windows computers and the `/my/disconnected/datasource` is specified as a disconnected data source directory configured on the License Metric Tool server. The remaining parameters, which are not defined, use the default values.
      ```
      vars:
-       lmt_local_file_storage_path: ''
        lmt_scanner_output_path_windows: 'c:\\my\\lmt_scanner\\output'
-       lmt_scanner_output_path_unix: ''
        lmt_server_datasource_path: '/my/disconnected/datasource'
      ```
 
@@ -79,9 +77,7 @@
         #https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
      
      vars:
-       lmt_local_file_storage_path: ''
        lmt_scanner_output_path_windows: 'c:\\my\\lmt_scanner\\output'
-       lmt_scanner_output_path_unix: ''
        lmt_server_datasource_path: '/my/disconnected/datasource'
    ```
     For more information about inventories, see: [How to build your inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) in the Ansible documentation.
