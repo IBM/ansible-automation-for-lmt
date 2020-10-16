@@ -9,7 +9,7 @@
 
 2. Configure connections to your managed nodes.
    - **\[UNIX/Linux\]** For more information, see: [Connecting to remote nodes](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#connecting-to-remote-nodes) in the Ansible documentation.
-   - **\[Windows\]** For more information, see: [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information) and [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html) in the Ansible documentation.
+   - **\[Windows\]** For more information, see: [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/windows.html) and [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html) in the Ansible documentation.
 
 
 3. To create an inventory of your managed nodes, edit the `lmt_disconnected_scans_inventory.yml` inventory file.
