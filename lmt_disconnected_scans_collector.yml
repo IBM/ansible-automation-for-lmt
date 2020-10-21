@@ -1,52 +1,137 @@
 ---
+- hosts: all, localhost
+  gather_facts: yes
+  gather_subset: "!all,!min"
+  tasks:
+    - include_vars: lmt_disconnected_scans_default_vars.yml
+    - name: "Setting default parameters"
+      set_fact:
+        lmt_local_file_storage_output_path_fn: "{{lmt_local_file_storage_path + \
+          lmt_local_file_storage_output_path_suffix \
+          if (lmt_local_file_storage_path is defined and lmt_local_file_storage_path != '') \
+          else lmt_local_file_storage_output_path_default}}"
+
+    - name: "Setting default parameters specific for Windows"
+      set_fact:
+        lmt_scanner_output_path_windows_fn: "{{lmt_scanner_output_path_windows \
+          if (lmt_scanner_output_path_windows is defined and lmt_scanner_output_path_windows != '') \
+          else lmt_scanner_output_path_windows_default}}"
+        lmt_server_datasource_path_windows_fn: "{{lmt_server_datasource_path \
+          if (lmt_server_datasource_path is defined and lmt_server_datasource_path != '') \
+          else lmt_server_datasource_path_windows_default}}"
+      when: ansible_facts['os_family'] == "Windows"
+
+    - name: "Setting default parameters specific for UNIX/Linux"
+      set_fact:
+        lmt_scanner_output_path_unix_fn: "{{lmt_scanner_output_path_unix\ 
+          if (lmt_scanner_output_path_unix is defined and lmt_scanner_output_path_unix != '') \
+          else lmt_scanner_output_path_unix_default}}"
+        lmt_server_datasource_path_unix_fn: "{{lmt_server_datasource_path \
+          if (lmt_server_datasource_path is defined and lmt_server_datasource_path != '') \
+          else lmt_server_datasource_path_unix_default}}"
+      when: ansible_facts['os_family'] != "Windows"
+    
 - hosts: localhost
-  connection: local
-  gather_facts: no
-  
-  tasks:  
-    - name: "Creating temporary scans directory"
+  gather_facts: no  
+  tasks:
+    - name: "Creating a directory for storing packages with scan results \
+        {{'(' + lmt_local_file_storage_output_path_fn + ')'}}"
       file:
-        path: "{{temp_file_storage_path | default('./tmp')}}/"
+        path: "{{lmt_local_file_storage_output_path_fn}}"
         state: directory
 
-- hosts: unix_endpoints
+- hosts: all
   gather_facts: no
-
   tasks:
-    - name: Getting info about scans
-      find: 
-        paths: "{{scanner_output_path}}"
+    - name: "Getting the list of packages with scan results on Windows"
+      win_find:
+        paths: "{{lmt_scanner_output_path_windows_fn}}"
+        use_regex: yes
+        patterns: ['^\d{12}-.+-\d{10}\.zip$']
+      register: files_to_copy_windows
+      when: ansible_facts['os_family'] == "Windows"
+
+    - name: "Getting the list of packages with scan results on UNIX/Linux"
+      find:
+        paths: "{{lmt_scanner_output_path_unix_fn}}"
         use_regex: yes
         patterns: ['^\d{12}-.+-\d{10}\.tar\.gz$']
-      register: files_to_copy
+      register: files_to_copy_unix
+      when: ansible_facts['os_family'] != "Windows"
 
-    - name: "Fetch packages from endpoints"
-      fetch: 
+    - name: "Fetching packages with scan results from computers"
+      fetch:
         src: "{{item.path}}"
-        dest: "{{temp_file_storage_path | default('./tmp')}}/"
+        dest: "{{lmt_local_file_storage_output_path_fn}}/"
         flat: yes
-      loop: "{{ files_to_copy.files }}"
+      register: fetched_files
+      with_items: "{{ files_to_copy_unix.files if (ansible_facts['os_family'] != 'Windows') \
+      else files_to_copy_windows.files }}"
 
-    - name: Clean up packages on endpoints   
+    - name: "Cleaning up packages on Windows computers"
+      win_file:
+        state: absent
+        path: "{{item.path}}"
+      with_items: "{{ files_to_copy_windows.files }}"
+      when: 
+        - ansible_facts['os_family'] == "Windows" 
+        - fetched_files is succeeded
+      ignore_errors: yes
+
+    - name: "Cleaning up packages on UNIX computers"
       file:
         state: absent
         path: "{{item.path}}"
-      loop: "{{ files_to_copy.files }}"
+      with_items: "{{ files_to_copy_unix.files }}"
+      when: 
+        - ansible_facts['os_family'] != "Windows" 
+        - fetched_files is succeeded
+      ignore_errors: yes
 
-- hosts: lmtserver
+- hosts: lmt_server
   gather_facts: no
   tasks:
-    - name: "Uploading scans to ILTM Server"
+    - name: "Checking if a datasource directory exists on Windows \
+        {{ '(' + lmt_server_datasource_path_windows_fn + ')' \
+        if lmt_server_datasource_path_windows_fn is defined else ''}}"
+      win_stat:
+        path: "{{ lmt_server_datasource_path_windows_fn }}"
+      register: datasource_directory
+      failed_when: not (datasource_directory.stat.exists and datasource_directory.stat.isdir)
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Uploading packages with scan results to the License Metric Tool server on Windows \
+        {{ '(' + lmt_server_datasource_path_windows_fn + ')' \
+        if lmt_server_datasource_path_windows_fn is defined else ''}}"
+      win_copy:
+        src: "{{lmt_local_file_storage_output_path_fn}}/"
+        dest: "{{ lmt_server_datasource_path_windows_fn }}\\"
+      register: uploaded_files
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Checking if a datasource directory exists on Linux \
+        {{ '(' + lmt_server_datasource_path_unix_fn + ')' \
+        if lmt_server_datasource_path_unix_fn is defined else ''}}"
+      stat:
+        path: "{{ lmt_server_datasource_path_unix_fn }}"
+      register: datasource_directory
+      failed_when: not (datasource_directory.stat.exists and datasource_directory.stat.isdir)
+      when: ansible_facts['os_family'] != 'Windows'
+
+    - name: "Uploading packages with scan results to the License Metric Tool server on Linux \
+        {{ '(' + lmt_server_datasource_path_unix_fn + ')' \
+        if lmt_server_datasource_path_unix_fn is defined else ''}}"
       copy:
-        src: "{{temp_file_storage_path | default('./tmp')}}/"
-        dest: "{{lmt_datasource_path}}/"
+        src: "{{lmt_local_file_storage_output_path_fn}}/"
+        dest: "{{ lmt_server_datasource_path_unix_fn }}/"
+      register: uploaded_files
+      when: ansible_facts['os_family'] != 'Windows'
 
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: "Cleaning scans from Control Node"
+    - name: "Cleaning packages with scan results from the control node \
+        {{'(' + lmt_local_file_storage_output_path_fn + ')'}}"
       file:
-        path: "{{temp_file_storage_path | default('./tmp')}}/"
+        path: "{{lmt_local_file_storage_output_path_fn}}"
         state: absent
-...
+      delegate_to: localhost
+      when: uploaded_files is succeeded
+
