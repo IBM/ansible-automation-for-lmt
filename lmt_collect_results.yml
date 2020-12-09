@@ -1,0 +1,41 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: ilmt_scanner
+        tasks_from: create_scan_result_packages_folder
+
+- hosts: all
+  gather_facts: true
+  strategy: free
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Collect ILMT scanners results from WINDOWS endpoints"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: collect_scan_results_windows
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Collect ILMT scanners results from UNIX/Linux endpoints"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: collect_scan_results_unix
+      when: ansible_facts['os_family'] != 'Windows'
+
+- hosts: lmt_server
+  gather_facts: false
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Upload collected results to ILMT server on Windows"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: upload_to_server_windows
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Upload collected results to ILMT server on Linux"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: upload_to_server_unix
+      when: ansible_facts['os_family'] != 'Windows'

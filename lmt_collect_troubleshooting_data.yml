@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "Create folder for troubleshooting data on Control Node"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: create_troubleshooting_data_storage_folder
+
+- name: "Check ILMT scanners version"
+  hosts: all
+  strategy: free
+  gather_facts: true
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Check ILMT scanners version on WINDOWS endpoints"
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: collect_troubleshooting_data_windows
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Check ILMT scanners version on UNIX/Linux endpoints"
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: collect_troubleshooting_data_unix
+      when: ansible_facts['os_family'] != 'Windows'

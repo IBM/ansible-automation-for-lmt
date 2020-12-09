@@ -1,0 +1,41 @@
+---
+- name: "Refreshing scanners installer cache on Control Node"
+  hosts: lmt_server
+  gather_facts: true
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Refreshing scanners installer cache from ILMT server on Windows"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: refresh_installers_cache_windows
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Refreshing scanners installer cache from ILMT server on Linux"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: refresh_installers_cache_unix
+      when: ansible_facts['os_family'] != 'Windows'
+
+- name: "Install or upgrade ILMT scanners"
+  hosts: all
+  strategy: free
+  gather_facts: true
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Install or upgrade ILMT scanners on WINDOWS endpoints"
+      become: true
+      become_user: system
+      become_method: runas
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: install_scanner_windows
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Install or upgrade ILMT scanners on UNIX/Linux endpoints"
+      become: true
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: install_scanner_unix
+      when: ansible_facts['os_family'] != 'Windows'

@@ -1,0 +1,24 @@
+---
+- name: "Uninstall ILMT scanners"
+  hosts: all
+  strategy: free
+  gather_facts: true
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Uninstall ILMT scanners from WINDOWS endpoints"
+      become: true
+      become_user: system
+      become_method: runas
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: uninstall_scanner_windows
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Uninstall ILMT scanners from UNIX/Linux endpoints"
+      become: true
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: uninstall_scanner_unix
+      when: ansible_facts['os_family'] != 'Windows'
