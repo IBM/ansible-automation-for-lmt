@@ -1,0 +1,29 @@
+---
+- name: "Getting list of scan result packages from Windows endpoints"
+  win_find:
+    paths: "{{lmt_scanner_output_path_windows \
+              if (lmt_scanner_output_path_windows is defined) \
+              else lmt_scanner_path_windows + '\\output'}}"
+    use_regex: true
+    patterns: ['^\d{12}-.+-\d{10}\.zip$']
+  register: files_to_copy_windows
+
+- name: "Fetch packages from Windows endpoints"
+  fetch:
+    src: "{{ item.path }}"
+    dest: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
+    flat: true
+  register: fetched_files
+  with_items: "{{ files_to_copy_windows.files }}"
+  loop_control:
+    label: "{{ item.filename }}"
+
+- name: "Clean up packages on Windows endpoints"
+  win_file:
+    state: absent
+    path: "{{ item.path }}"
+  with_items: "{{ files_to_copy_windows.files }}"
+  when: fetched_files is succeeded
+  ignore_errors: true
+  loop_control:
+    label: "{{ item.filename }}"

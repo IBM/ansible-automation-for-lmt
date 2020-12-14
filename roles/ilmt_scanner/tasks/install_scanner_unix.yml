@@ -1,0 +1,216 @@
+---
+ # besides of RHEL into the RedHat os_family belongs e.g. Oracle Linux and CentOS
+ # besides of Debian into the Debian os_family belongs e.g. Ubuntu
+- name: "Fail on unsupported platforms on UNIX/Linux endpoints"
+  fail:
+    msg: "ILMT Scanner is not supported on {{ ansible_facts['os_family'] }} system."
+  when: not (ansible_facts['os_family'] == 'RedHat' or
+        ansible_facts['os_family'] == 'Suse' or
+        ansible_facts['os_family'] == 'Debian' or
+        ansible_facts['os_family'] == 'AIX' or
+        ansible_facts['os_family'] == 'Solaris' or
+        ansible_facts['os_family'] == 'HP-UX')
+
+- name: "Set platform fact on UNIX/Linux endpoints."
+  set_fact:
+    lmt_scanner_platform: '{{ {"RedHat": "linux", "Suse": "linux", "Debian": "linux", "AIX": "aix",
+              "Solaris": "solaris", "HP-UX": "hp-ux"}[ansible_facts["os_family"]] }}'
+
+- name: "Check if {{ lmt_scanner_path_unix }} directory exists on UNIX/Linux endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_unix }}"
+  register: ilmt_scanner_path_exists_unix
+
+- name: "Check if endpoint_id file exists on UNIX/Linux endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_unix }}/config/endpoint_id.txt"
+  register: ilmt_scanner_installed_unix
+
+- name: "Find isotag file on UNIX/Linux endpoints"
+  find:
+    paths: "{{ lmt_scanner_path_unix }}/iso-swid/"
+    use_regex: true
+    patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
+  register: scanner_installer_names
+  when: ilmt_scanner_path_exists_unix.stat.exists
+
+- name: "Setting scanner version variable on UNIX/Linux endpoints"
+  set_fact:
+    scanner_version_on_endpoint: "{{ scanner_installer_names.files[0].path | regex_replace('.*ibm.com_IBM_License_Metric_Tool-(.+).swidtag$', '\\1') }}"
+  when: (scanner_installer_names is defined) and
+        (scanner_installer_names.files is defined) and
+        (scanner_installer_names.files|length > 0)
+
+- name: "Set scanner version variable to 0.0 if still not set on UNIX/Linux endpoints"
+  set_fact:
+    scanner_version_on_endpoint: "0.0"
+  when: (scanner_installer_names is not defined) or
+        (scanner_installer_names.files is not defined) or
+        (scanner_installer_names.files|length == 0)
+
+- name: "Set local facts with cached scanner version from Control Node"
+  set_fact:
+    cached_scanner_version: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/version.txt', errors='ignore') }}"
+    cached_scanner_build: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/build_date.txt', errors='ignore') }}"
+
+- block:
+  - block:
+    - name: "Check if {{ lmt_scanner_path_unix }} directory is empty before proceeding on UNIX/Linux endpoints"
+      find:
+        paths: "{{ lmt_scanner_path_unix }}"
+      register: files_in_scanner_folder_unix
+
+    - name: "Fail when {{ lmt_scanner_path_unix }} directory exists and is not empty and has no scanner installed on UNIX/Linux endpoints"
+      fail:
+        msg: "Directory {{ lmt_scanner_path_unix }} configured in lmt_scanner_path_unix parameter is not empty. \
+              Please clear it (e.g. using uninstall playbook) or configure a different one."
+      when: files_in_scanner_folder_unix.matched > 0
+    when: ilmt_scanner_path_exists_unix.stat.exists and
+          scanner_version_on_endpoint == '0.0' and
+          not ilmt_scanner_installed_unix.stat.exists
+
+  - name: "Removing previous installation preserving config backup on UNIX/Linux endpoints"
+    include_role:
+      name: ilmt_scanner
+      tasks_from: uninstall_scanner_unix
+    vars:
+      leave_config_backup: "{{ ilmt_scanner_installed_unix.stat.exists }}"
+    when: (scanner_version_on_endpoint != '0.0' or ilmt_scanner_installed_unix.stat.exists)
+
+  - name: "Define installation root directory on UNIX/Linux endpoints"
+    set_fact:
+      unix_root_dir: "{{'/' + lmt_scanner_path_unix.split('/')[1] | lower + '/' + lmt_scanner_path_unix.split('/')[2] | lower \
+        if (lmt_scanner_path_unix.split('/')|length > 3) \
+        else ( \
+        '/' + lmt_scanner_path_unix.split('/')[1] | lower \
+        if (lmt_scanner_path_unix.split('/')|length > 2) \
+        else '/' \
+        )}}"
+
+  - name: "Checking if there is enough space to install scanner on LINUX Platform"
+    block:
+      - name: "gathering disk stats"
+        shell: df -m "{{ unix_root_dir }}" --total | grep -i total |
+          awk '{print $4}'
+        register: linux_available_disk_space
+
+      - name: Fail when file size exceeds on Linux
+        fail:
+          msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
+            Disk Space is: {{ linux_available_disk_space.stdout }} MB, Required
+            Disk Space is : {{ lmt_scanner_linux_scanner_minimum_disk_space }} MB'
+        when: linux_available_disk_space.stdout | int <
+          lmt_scanner_linux_scanner_minimum_disk_space | int
+    when: lmt_scanner_platform == 'linux'
+
+  - name: "Checking if there is enough space to install scanner on SOLARIS Platform"
+    block:
+      - name: "gathering disk stats"
+        shell: df -k "{{ unix_root_dir }}" |awk '{s+=$4} END {print s/1024}'
+        register: sun_available_disk_space
+
+      - name: Fail when file size exceeds on Solaris
+        fail:
+          msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
+            Disk Space is: {{ sun_available_disk_space.stdout }} MB, Required
+            Disk Space is : {{ lmt_scanner_solaris_scanner_minimum_disk_space }} MB'
+        when: sun_available_disk_space.stdout | int <
+          lmt_scanner_solaris_scanner_minimum_disk_space | int
+    when: lmt_scanner_platform == 'solaris'
+
+  - name: "Checking if there is enough space to install scanner on AIX Platform"
+    block:
+      - name: "gathering disk stats"
+        shell: df -m "{{ unix_root_dir }}" |awk '{s+=$3} END {print s}'
+        register: aix_available_disk_space
+
+      - name: Fail when file size exceeds on AIX
+        fail:
+          msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
+            Disk Space is: {{ aix_available_disk_space.stdout }} MB, Required
+            Disk Space is : {{ lmt_scanner_aix_scanner_minimum_disk_space }} MB'
+        when: aix_available_disk_space.stdout | int <
+          lmt_scanner_aix_scanner_minimum_disk_space | int
+    when: lmt_scanner_platform == 'aix'
+
+  - name: "Checking if there is enough space to install scanner on HPUX Platform"
+    block:
+      - name: "gathering disk stats"
+        shell: df -m "{{ unix_root_dir }}" --total | grep -i total |
+          awk '{print $4}'
+        register: hpux_available_disk_space
+
+      - name: Fail when file size exceeds on Linux
+        fail:
+          msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
+            Disk Space is: {{ hpux_available_disk_space.stdout }} MB, Required
+            Disk Space is : {{ lmt_scanner_linux_scanner_minimum_disk_space }} MB'
+        when: hpux_available_disk_space.stdout | int <
+          lmt_scanner_linux_scanner_minimum_disk_space | int
+    when: lmt_scanner_platform == 'hpux'
+
+  - name: "Creating disconnected scanner directory on UNIX/Linux endpoints"
+    file:
+      path: "{{ lmt_scanner_path_unix }}"
+      state: directory
+      mode: '0755'
+
+  - name: "Upload scanner installer from Control Node to UNIX/Linux endpoints"
+    vars:
+      source_file: "{{ scanner_package_file }}"
+    copy:
+      src: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' + scanner_package_file }}"
+      dest: "{{ lmt_scanner_path_unix }}"
+      force: true
+      mode: '0644'
+
+  - name: "Unpack Scanner package on UNIX/Linux endpoints"
+    shell: "gzip -dc '{{ lmt_scanner_path_unix }}/{{ scanner_package_file }}' | tar -xf -"
+    args:
+      chdir: "{{ lmt_scanner_path_unix }}/"
+      warn: false
+
+  - name: "Removing scanner installer package from UNIX/Linux endpoints"
+    file:
+      path: "{{ lmt_scanner_path_unix }}/{{ scanner_package_file }}"
+      state: absent
+
+  - name: "Checking if config_backup exists on UNIX/Linux endpoints"
+    stat:
+      path: "{{ lmt_scanner_path_unix }}/config_backup"
+    register: config_backup_folder_unix
+
+  - name: "Restore config from backup on UNIX/Linux endpoints"
+    copy:
+      src: "{{ lmt_scanner_path_unix }}/config_backup/{{ item }}"
+      dest: "{{ lmt_scanner_path_unix }}/config/"
+      remote_src: yes
+      mode: preserve
+    with_items:
+      - endpoint_id.txt
+      - sw_config.xml
+      - isotag_config.xml
+    when: config_backup_folder_unix.stat.exists
+
+  - name: "Setup newly deployed scanner on UNIX/Linux endpoints"
+    include_role:
+      name: ilmt_scanner
+      tasks_from: setup_scanner_unix
+
+  - name: "Change owner to regular (not escalated) ansible user on UNIX/Linux endpoints"
+    file:
+      path: "{{ lmt_scanner_path_unix }}"
+      state: directory
+      recurse: true
+      owner: "{{ ansible_user }}"
+
+  - name: "Delete config_backup from UNIX/Linux endpoints"
+    file:
+      state: absent
+      path: "{{ lmt_scanner_path_unix }}/config_backup"
+    when: config_backup_folder_unix.stat.exists
+
+  vars:
+    scanner_package_file: "LMT-DisconnectedScanner-{{ lmt_scanner_platform }}-{{ cached_scanner_version }}-{{ cached_scanner_build }}.tar.gz"
+  when: not ilmt_scanner_installed_unix.stat.exists or
+        cached_scanner_version is version(scanner_version_on_endpoint,'>')

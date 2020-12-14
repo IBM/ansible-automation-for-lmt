@@ -9,7 +9,7 @@
    - **\[Windows\]** For more information, see: [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information) and [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html) in the Ansible documentation.
 
 
-4. To create an inventory of your managed nodes, edit the `lmt_disconnected_scans_inventory.yml` inventory file.
+4. To create an inventory of your managed nodes, you can use the [lmt_inventory_template.yml](../lmt_inventory_template.yml) template.
    
    - In the `lmt_server` parameter, define connection settings to the host where the License Metric Tool server is installed.
      - If you are running the playbook on the host where the License Metric Tool server is installed, use the default settings.
@@ -22,11 +22,11 @@
          ansible_user: ansible
        ```
      
-   - Define all managed hosts from which you want to collect scan results and their connection settings.
+   - Define all managed nodes from which you want to collect scan results and their connection settings.
    
       **Example**
 
-      The following example shows how to define a managed host with a default user:
+      The following example shows how to define a managed node with a default user.
       ```
       server1:
         ansible_host: 192.168.0.1
@@ -78,30 +78,3 @@
        lmt_server_datasource_path: '/my/disconnected/datasource'
    ```
     For more information about inventories, see: [How to build your inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) in the Ansible documentation.
-   
-5. For a non-root or non-Administrator user of Ansible, assign the user with correct privileges to the directory with disconnected scan results.
-   - **\[UNIX/Linux\]** Ensure that the user has the **rwx** privileges in the home directory of the disconnected scanner and in the directory with scan results packages (the `lmt_scanner_output_path_unix` directory).
-   
-   - **\[Windows\]** Ensure that the following requirements are met.
-     - The user has the `List folder contents`, `Read` and `Write` privileges in the directory with scan results packages (the `lmt_scanner_output_path_windows` directory). To verify that the user has the right privileges, select the user, open the `Advanced Security Settings` tab and click `View`. 
-     - The directory with scan result packages (the `lmt_scanner_output_path_windows` directory) has inheritance enabled. To enable inheritance, open the `Advanced Security Settings` tab, and click `Enable inheritance`. The inheritance should apply to `This folder, subfolder and files`. 
-
-6. To run the playbook every day, schedule the following command.
-
-   `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml`
-
-    The playbook is configured to run on all computers as it targets the `all` Ansible group. To run the playbook on specific hosts or groups only, use the `-l` switch in the command followed by `lmt_server,localhost` and the list of your hosts or host groups. For example, to target the playbook on unix1 host and windows group of hosts run the following command.
-
-   `ansible-playbook lmt_disconnected_scans_collector.yml -i lmt_disconnected_scans_inventory.yml -l lmt_server,localhost,unix1,windows` 
-   
-   **Example** 
-   
-   To schedule the command to run every day at 2:30 AM by using crontab, open the crontab.
-   
-   `crontab -e` 
-   
-   Then, add the following line to crontab configuration.
-   
-   `30 2 * * * "ansible-playbook <LMT_upload_playbook_files_directory>/lmt_disconnected_scans_collector.yml -i <LMT_upload_playbook_files_directory>/lmt_disconnected_scans_inventory.yml"`
-   
-   where `<LMT_upload_playbook_files_directory>` is the directory where the playbook files are stored.

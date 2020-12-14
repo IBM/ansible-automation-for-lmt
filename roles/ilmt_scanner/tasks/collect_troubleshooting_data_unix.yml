@@ -1,0 +1,69 @@
+---
+- name: "Verify scanner installation on UNIX/Linux endpoints"
+  include_role:
+    name: ilmt_scanner
+    tasks_from: verify_scanner_installation
+
+- name: "Read endpoint id value on UNIX/Linux endpoints"
+  command: "cat \"{{ lmt_scanner_path_unix }}/config/endpoint_id.txt\" "
+  register: unix_endpoint_id
+  changed_when: false
+
+- name: "Remove troubleshooting data archive from UNIX/Linux endpoints"
+  file:
+    state: absent
+    path: "{{ lmt_scanner_path_unix }}/work/{{ ansible_host }}_{{ unix_endpoint_id.stdout }}.tar.gz"
+
+- name: "Save useful ansible_facts to ansible_facts.txt file on UNIX/Linux endpoints"
+  copy:
+    content: "{\n
+              ansible_facts['hostname']: {{ ansible_facts['hostname'] | default('') | to_nice_json }}\n
+              ansible_facts['domain']: {{ ansible_facts['domain'] | default('') | to_nice_json }}\n
+              ansible_facts['fqdn']: {{ ansible_facts['fqdn'] | default('') | to_nice_json }}\n
+              ansible_facts['user_id'] {{ ansible_facts['user_id'] | default('') | to_nice_json }}\n
+              ansible_facts['user_dir']: {{ ansible_facts['user_dir'] | default('') | to_nice_json }}\n
+              ansible_facts['user_shell']: {{ ansible_facts['user_shell'] | default('') | to_nice_json }}\n
+              ansible_facts['architecture']: {{ ansible_facts['architecture'] | default('') | to_nice_json }}\n
+              ansible_facts['system']: {{ ansible_facts['system'] | default('') | to_nice_json }}\n
+              ansible_facts['os_family']: {{ ansible_facts['os_family'] | default('') | to_nice_json }}\n
+              ansible_facts['distribution']: {{ ansible_facts['distribution'] | default('') | to_nice_json }}\n
+              ansible_facts['distribution_major_version']: {{ ansible_facts['distribution_major_version'] | default('') | to_nice_json }}\n
+              ansible_facts['distribution_version']: {{ ansible_facts['distribution_version'] | default('') | to_nice_json }}\n
+              ansible_facts['distribution_release']: {{ ansible_facts['distribution_release'] | default('') | to_nice_json }}\n
+              ansible_facts['kernel']: {{ ansible_facts['kernel'] | default('') | to_nice_json }}\n
+              ansible_facts['machine_id']: {{ ansible_facts['machine_id'] | default('') | to_nice_json }}\n
+              ansible_facts['env']: {{ ansible_facts['env'] | default('') | to_nice_json }}\n
+              ansible_facts['python_version']: {{ ansible_facts['python_version'] | default('') | to_nice_json }}\n
+              ansible_facts['python']: {{ ansible_facts['python'] | default('') | to_nice_json }}\n
+              ansible_facts['selinux']: {{ ansible_facts['selinux'] | default('') | to_nice_json }}\n
+              }\n"
+    dest: "{{ lmt_scanner_path_unix }}/work/ansible_facts.txt"
+    force: true
+    owner: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: "Create troubleshooting data archive on UNIX/Linux endpoints"
+  community.general.archive:
+    path:
+    - "{{ lmt_scanner_path_unix }}/work/ansible_facts.txt"
+    - "{{ lmt_scanner_path_unix }}/config"
+    - "{{ lmt_scanner_path_unix }}/logs"
+    - "{{ lmt_scanner_path_unix }}/iso-swid"
+    - "{{ lmt_scanner_path_unix }}/work"
+    - "{{ lmt_scanner_path_unix }}/output"
+    dest: "{{ lmt_scanner_path_unix }}/work/{{ ansible_host }}_{{ unix_endpoint_id.stdout }}.tar.gz"
+    format: gz
+    force_archive: true
+
+- name: "Fetch troubleshooting data archive from UNIX/Linux endpoints"
+  fetch:
+    src: "{{ lmt_scanner_path_unix }}/work/{{ ansible_host }}_{{ unix_endpoint_id.stdout }}.tar.gz"
+    dest: "{{ lmt_local_file_storage_path }}/{{ lmt_troubleshooting_data_folder }}/"
+    flat: true
+  register: fetched_files
+
+- name: "Remove troubleshooting data archive from UNIX/Linux endpoints"
+  file:
+    state: absent
+    path: "{{ lmt_scanner_path_unix }}/work/{{ ansible_host }}_{{ unix_endpoint_id.stdout }}.tar.gz"
+  when: fetched_files is succeeded

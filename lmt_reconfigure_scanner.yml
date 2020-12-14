@@ -1,0 +1,33 @@
+---
+- name: "Run ILMT scanners setup script"
+  hosts: all
+  strategy: free
+  gather_facts: true
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Verify scanner installation on endpoints"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: verify_scanner_installation
+
+    - name: "Run ILMT scanners setup script on WINDOWS endpoints"
+      become: true
+      become_user: system
+      become_method: runas
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: setup_scanner_windows
+          vars:
+            only_configure: true
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Run ILMT scanners setup script on UNIX/Linux endpoints"
+      become: true
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: setup_scanner_unix
+          vars:
+            only_configure: true
+      when: ansible_facts['os_family'] != 'Windows'

@@ -1,0 +1,62 @@
+- name: "Configure Automatic Software Scans on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*SW_SCAN_SCHEDULE_ENABLED.*$"
+    line: "SW_SCAN_SCHEDULE_ENABLED={{ 'TRUE' if lmt_scanner_software_scans_enabled else 'FALSE' }}"
+
+- name: "Set {{ lmt_scanner_software_scans_frequency }} Software Scans on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*SW_SCAN_FREQUENCY.*$"
+    line: "SW_SCAN_FREQUENCY={{ lmt_scanner_software_scans_frequency }}"
+  when: lmt_scanner_software_scans_enabled
+
+- name: "Enable DAILY pack results on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*DAILY_PACK_RESULTS_CREATION_ENABLED.*$"
+    line: "DAILY_PACK_RESULTS_CREATION_ENABLED=TRUE"
+  when: lmt_scanner_daily_pack_results_enabled
+
+# On windows we need to disable the software scan after startup because the schedule for windows is a little bit
+# different them on Linux. On windows first scheduled scan will happen in a WEEK / DAY from now so this
+# scan by default is started automatically during setup in the background. We do not want it to start it in
+# background because it will block the next 'Run scanner setup script on Windows endpoints' task - 
+# so we are disabling this automatic software scan during setup and start it asynchronous at the next step:
+# 'Initiate initial software scan on Windows endpoints'.
+- name: "Disable start of the software scan during setup on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*DISABLE_SW_SCAN_AFTER_SETUP.*$"
+    line: "DISABLE_SW_SCAN_AFTER_SETUP=TRUE"
+  when: lmt_scanner_software_scans_enabled
+
+- name: "Run setup scanner script on Windows endpoints"
+  win_command: setup.bat
+  args:
+    chdir: "{{ lmt_scanner_path_windows }}"
+  async: "{{ lmt_scanner_setup_timeout }}"
+  poll: 5
+  when: not (only_configure | default(false))
+
+- name: "Run configure scanner script on Windows endpoints"
+  win_command: configure.bat
+  args:
+    chdir: "{{ lmt_scanner_path_windows }}\\automation"
+  async: "{{ lmt_scanner_setup_timeout }}"
+  poll: 5
+  when: (only_configure | default(false))
+
+- name: "Initiate initial software scan on Windows endpoints"
+  win_command: run_sw_and_pack.bat
+  args:
+    chdir: "{{ lmt_scanner_path_windows }}"
+  async: 518400 # 6 days
+  poll: 0
+  when: lmt_scanner_software_scans_enabled
+
+- name: "Checking if endpoint_id.txt file exists on Windows endpoints"
+  win_stat:
+    path: "{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt"
+  register: win_ilmt_install_fail_msg
+  failed_when: not win_ilmt_install_fail_msg.stat.exists

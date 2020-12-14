@@ -1,0 +1,64 @@
+---
+- name: "Verify scanner installation on Windows endpoints"
+  include_role:
+    name: ilmt_scanner
+    tasks_from: verify_scanner_installation
+
+- name: "Read endpoint id value on Windows endpoints"
+  win_command: "cmd.exe /c type \"{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt\" "
+  register: windows_endpoint_id
+
+- name: "Remove troubleshooting data archive from Windows endpoints"
+  win_file:
+    state: absent
+    path: "{{ lmt_scanner_path_windows }}\\work\\{{ ansible_host }}_{{ windows_endpoint_id.stdout_lines[0] }}.zip"
+
+- name: "Save useful ansible_facts to ansible_facts.txt file on Windows endpoints"
+  win_copy:
+    content: "{\n
+              ansible_facts['hostname']: {{ ansible_facts['hostname'] | default('') | to_nice_json }}\n
+              ansible_facts['domain']: {{ ansible_facts['domain'] | default('') | to_nice_json }}\n
+              ansible_facts['fqdn']: {{ ansible_facts['fqdn'] | default('') | to_nice_json }}\n
+              ansible_facts['ip_addresses']: {{ ansible_facts['ip_addresses'] | default('') | to_nice_json }}\n
+              ansible_facts['user_id'] {{ ansible_facts['user_id'] | default('') | to_nice_json }}\n
+              ansible_facts['user_dir']: {{ ansible_facts['user_dir'] | default('') | to_nice_json }}\n
+              ansible_facts['architecture']: {{ ansible_facts['architecture'] | default('') | to_nice_json }}\n
+              ansible_facts['system']: {{ ansible_facts['system'] | default('') | to_nice_json }}\n
+              ansible_facts['os_family']: {{ ansible_facts['os_family'] | default('') | to_nice_json }}\n
+              ansible_facts['distribution']: {{ ansible_facts['distribution'] | default('') | to_nice_json }}\n
+              ansible_facts['distribution_major_version']: {{ ansible_facts['distribution_major_version'] | default('') | to_nice_json }}\n
+              ansible_facts['distribution_version']: {{ ansible_facts['distribution_version'] | default('') | to_nice_json }}\n
+              ansible_facts['machine_id']: {{ ansible_facts['machine_id'] | default('') | to_nice_json }}\n
+              ansible_facts['powershell_version']: {{ ansible_facts['powershell_version'] | default('') | to_nice_json }}\n
+              ansible_facts['windows_domain_member']: {{ ansible_facts['windows_domain_member'] | default('') | to_nice_json }}\n
+              ansible_facts['domain']: {{ ansible_facts['domain'] | default('') | to_nice_json }}\n
+              ansible_facts['env']: {{ ansible_facts['env'] | default('') | to_nice_json }}\n
+              }\n"
+    dest: "{{ lmt_scanner_path_windows }}\\work\\ansible_facts.txt"
+    force: true
+
+- name: "Create troubleshooting data archive on Windows endpoints"
+  win_command: "cmd.exe /c \"\"{{ lmt_scanner_path_windows }}\\bin\\zip.exe\" -S -X -r \
+    \"{{ lmt_scanner_path_windows }}\\work\\{{ ansible_host }}_{{ windows_endpoint_id.stdout_lines[0] }}.zip\" \
+    \"{{ lmt_scanner_path_windows }}\\work\\ansible_facts.txt\" \
+    \"{{ lmt_scanner_path_windows }}\\config\" \
+    \"{{ lmt_scanner_path_windows }}\\logs\" \
+    \"{{ lmt_scanner_path_windows }}\\iso-swid\" \
+    \"{{ lmt_scanner_path_windows }}\\work\" \
+    \"{{ lmt_scanner_path_windows }}\\output\"\" "
+  args:
+    chdir: "{{ lmt_scanner_path_windows }}"
+
+- name: "Fetch troubleshooting data archive from Windows endpoints"
+  fetch:
+    src: "{{ lmt_scanner_path_windows }}\\work\\{{ ansible_host }}_{{ windows_endpoint_id.stdout_lines[0] }}.zip"
+    dest: "{{ lmt_local_file_storage_path }}/{{ lmt_troubleshooting_data_folder }}/"
+    flat: true
+  register: fetched_files
+
+- name: "Remove troubleshooting data archive from Windows endpoints"
+  win_file:
+    state: absent
+    path: "{{ lmt_scanner_path_windows }}\\work\\{{ ansible_host }}_{{ windows_endpoint_id.stdout_lines[0] }}.zip"
+    register: file_name
+  when: fetched_files is succeeded

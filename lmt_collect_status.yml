@@ -1,0 +1,29 @@
+---
+- name: "Check ILMT scanners version"
+  hosts: all
+  strategy: free
+  gather_facts: true
+  gather_subset: "!all,!min"
+  tasks:
+    - name: "Check ILMT scanners version on WINDOWS endpoints"
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: check_endpoint_status_windows
+      when: ansible_facts['os_family'] == 'Windows'
+
+    - name: "Check ILMT scanners version on UNIX/Linux endpoints"
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: check_endpoint_status_unix
+      when: ansible_facts['os_family'] != 'Windows'
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "Copy results to scanner_setup.csv file on Control Node"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: prepare_scanner_status_file

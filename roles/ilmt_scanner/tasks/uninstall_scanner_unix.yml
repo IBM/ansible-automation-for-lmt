@@ -1,0 +1,63 @@
+---
+- name: "Check whether ILMT Scanner is installed on UNIX/Linux endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_unix }}/config/endpoint_id.txt"
+  register: ilmt_scanner_installed_unix
+
+- block:
+  - block:
+    - name: "Create a config_backup backup directory on UNIX/Linux endpoints"
+      file:
+        path: "{{ lmt_scanner_path_unix }}/config_backup/"
+        state: directory
+        mode: '0755'
+
+    - name: "Copy endpoint_id and scan configs to config_backup directory on UNIX/Linux endpoints"
+      copy:
+        src: "{{ lmt_scanner_path_unix }}/config/{{ item }}"
+        dest: "{{ lmt_scanner_path_unix }}/config_backup/"
+        remote_src: yes
+      with_items:
+        - endpoint_id.txt
+        - sw_config.xml
+        - isotag_config.xml
+
+    - name: "Run script to uninstall ILMT Scanner from UNIX/Linux endpoints"
+      command: "./uninstall.sh"
+      args:
+        chdir: "{{ lmt_scanner_path_unix }}"
+      async: "{{ lmt_scanner_setup_timeout }}"
+      poll: 5
+    when: ilmt_scanner_installed_unix.stat.exists
+
+  - name: "Capture files to delete from UNIX/Linux endpoints"
+    find:
+      paths: "{{ lmt_scanner_path_unix }}"
+      file_type: any
+      excludes:
+        - "config_backup"
+    register: found_files
+
+  - name: "Delete all data from ILMT scanner folder except config backup from UNIX/Linux endpoints"
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items: "{{ found_files['files'] }}"
+    loop_control:
+      label: "{{ item.path | basename }}"
+  when: (leave_config_backup | default(false))
+
+- block:
+  - name: "Run script to uninstall ILMT Scanner from UNIX/Linux endpoints"
+    command: "./uninstall.sh"
+    args:
+      chdir: "{{ lmt_scanner_path_unix }}"
+    async: "{{ lmt_scanner_setup_timeout }}"
+    poll: 5
+    when: ilmt_scanner_installed_unix.stat.exists
+
+  - name: "Delete ILMT folder from UNIX/Linux endpoints"
+    file:
+      state: absent
+      path: "{{ lmt_scanner_path_unix }}"
+  when: not (leave_config_backup | default(false))
