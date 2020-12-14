@@ -80,7 +80,7 @@
     For more information about inventories, see: [How to build your inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) in the Ansible documentation.
    
 5. For a non-root or non-Administrator user of Ansible, assign the user with correct privileges to the directory with disconnected scan results.
-   - **\[UNIX/Linux\]** Ensure that the user has the **rwx** privileges in the home directory of the disconnected scanner and **rw** privileges in the directory with scan results packages (the `lmt_scanner_output_path_unix` directory).
+   - **\[UNIX/Linux\]** Ensure that the user has the **rwx** privileges in the home directory of the disconnected scanner and in the directory with scan results packages (the `lmt_scanner_output_path_unix` directory).
    
    - **\[Windows\]** Ensure that the following requirements are met.
      - The user has the `List folder contents`, `Read` and `Write` privileges in the directory with scan results packages (the `lmt_scanner_output_path_windows` directory). To verify that the user has the right privileges, select the user, open the `Advanced Security Settings` tab and click `View`. 
