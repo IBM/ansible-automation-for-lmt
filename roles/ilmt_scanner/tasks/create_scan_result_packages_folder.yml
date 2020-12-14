@@ -1,0 +1,7 @@
+---
+- name: "Creating a directory for storing packages with scan results on Control Node"
+  file:
+    path: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
+    state: directory
+    mode: '0755'
+  any_errors_fatal: true

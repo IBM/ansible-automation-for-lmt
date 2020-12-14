@@ -1,0 +1,35 @@
+---
+galaxy_info:
+  author: IBM License Metric Tool Team
+  description: Role provides function to install/run/uninstall ILMT Scanner
+  company: IBM
+  license: MIT
+  min_ansible_version: 2.10.2
+  galaxy_tags:
+    - ilmtscanner
+    - ilmt
+    - ibmlicense
+  role_name: ilmt_scanner
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: AIX
+      versions:
+        - all
+    - name: SLES
+      versions:
+        - all
+    - name: Solaris
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Windows
+      versions:
+        - all
+dependencies: []

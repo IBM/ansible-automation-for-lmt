@@ -1,0 +1,96 @@
+---
+- name: "Check if any cached scanner installers exists on Control Node"
+  stat:
+    path: "{{ lmt_local_file_storage_path }}/{{ lmt_scanner_installers_folder }}/version.txt"
+  register: cached_version_exists
+  delegate_to: localhost
+  any_errors_fatal: true
+
+- block:
+  - name: "Check version of cached scanner installers on Control Node"
+    set_fact:
+      scanner_build_file: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/build_date.txt', errors='ignore') }}"
+      any_errors_fatal: true
+
+  - name: "Check build date of cached scanner installers on Control Node"
+    set_fact:
+      scanner_version_file: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/version.txt', errors='ignore') }}"
+      any_errors_fatal: true
+  delegate_to: localhost
+  when: (cached_version_exists is defined) and (cached_version_exists.stat.exists)
+
+- name: "Find scanners version on ILMT Server on Windows"
+  win_find:
+    paths: "{{lmt_server_path + '\\disconnected-scanners' if (lmt_server_path is defined) \
+          else ansible_env['ProgramFiles'] + '\\ibm\\LMT\\disconnected-scanners'}}"
+    use_regex: true
+    patterns: ['^LMT-DisconnectedScanner-.+-.+\d{8}-\d{4}\.(tar.gz|zip)$']
+  register: scanner_installer_names_win
+  any_errors_fatal: true
+
+- name: "Check scanners version from LMT server"
+  fail: msg="No disconnected scanner packages found in ILMT server in 'disconnected-scanners' directory."
+  when: (scanner_installer_names_win is not defined) or
+        (scanner_installer_names_win.files is not defined) or
+        (scanner_installer_names_win.files|length == 0)
+  any_errors_fatal: true
+
+- name: "Setting scanner version variables"
+  set_fact:
+    current_scanner_version: "{{ scanner_installer_names_win.files[0].path | \
+                              regex_replace('.*LMT-DisconnectedScanner-.+-(.+)-\\d{8}-\\d{4}\\.(tar.gz|zip)$', '\\1') }}"
+    current_scanner_build: "{{ scanner_installer_names_win.files[0].path | \
+                              regex_replace('.*LMT-DisconnectedScanner-.+-.+-(\\d{8}-\\d{4})\\.(tar.gz|zip)$', '\\1') }}"
+    cached_scanner_version: "{% if scanner_version_file is defined and scanner_version_file != \"\" %}{{ scanner_version_file }}{% else %}0.0{% endif %}"
+    cached_scanner_build: "{% if scanner_build_file is defined and scanner_build_file != \"\" %}{{ scanner_build_file }}{% else %}0-0{% endif %}"
+  any_errors_fatal: true
+
+- name: "Prepare a new scanner version installers on Control Node"
+  block:
+    - name: "Removing scanner installers directory from Control Node"
+      file:
+        path: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' }}"
+        state: absent
+      delegate_to: localhost
+      any_errors_fatal: true
+
+    - name: "Creating a directory to store scanner installers on Control Node"
+      file:
+        path: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      any_errors_fatal: true
+
+    - name: "Download new scanner installers from LMT server on Windows"
+      fetch:
+        src: "{{ item.path }}"
+        dest: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' }}"
+        flat: true
+      register: download_installers_win
+      with_items: "{{ scanner_installer_names_win.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      any_errors_fatal: true
+
+    - name: "Create a version file in cache folder on Control Node"
+      copy:
+        dest: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/version.txt' }}"
+        content: "{{ current_scanner_version }}"
+        mode: '0644'
+      delegate_to: localhost
+      when: download_installers_win is succeeded
+      any_errors_fatal: true
+
+    - name: "Create a build date file in cache folder on Control Node"
+      copy:
+        dest: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/build_date.txt' }}"
+        content: "{{ current_scanner_build }}"
+        mode: '0644'
+      delegate_to: localhost
+      when: download_installers_win is succeeded
+      any_errors_fatal: true
+
+
+  when: (current_scanner_version is version(cached_scanner_version,'>')) or
+        ((current_scanner_version is version(cached_scanner_version,'==')) and (current_scanner_build != cached_scanner_build))

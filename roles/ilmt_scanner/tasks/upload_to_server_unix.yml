@@ -1,0 +1,28 @@
+---
+- name: "Setting server_datasource_path parameter specific for Linux"
+  set_fact:
+    tmp_lmt_server_datasource_path_unix: "{{lmt_server_datasource_path if (lmt_server_datasource_path is defined) \
+          else ( \
+            lmt_server_path + '/datasource' if (lmt_server_path is defined) \
+            else '/opt/ibm/LMT/datasource'
+          )}}"
+
+- name: "Checking if a datasource directory exists on Linux"
+  stat:
+    path: "{{ tmp_lmt_server_datasource_path_unix }}"
+  register: datasource_directory
+  failed_when: not (datasource_directory.stat.exists and datasource_directory.stat.isdir)
+
+- name: "Uploading packages with scan results to the License Metric Tool server on Linux"
+  copy:
+    src: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
+    dest: "{{ tmp_lmt_server_datasource_path_unix }}"
+    mode: '0644'
+  register: uploaded_files_unix
+
+- name: "Cleaning packages with scan results from the Control Node"
+  file:
+    path: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
+    state: absent
+  delegate_to: localhost
+  when: uploaded_files_unix is succeeded

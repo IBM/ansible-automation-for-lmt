@@ -1,0 +1,17 @@
+---  
+# Subdirectory in lmt_local_file_storage_path where troubleshooting data will be stored
+lmt_troubleshooting_data_folder: "troubleshooting_data"
+# Subdirectory in lmt_local_file_storage_path where collected scan results packages will be stored
+lmt_scan_result_packages_folder: "scan_result_packages"
+# Subdirectory in lmt_local_file_storage_path where cached scanner installers will be stored
+lmt_scanner_installers_folder: "scanner_installers"
+# required_window_space_in_MBs
+lmt_scanner_windows_scanner_minimum_disk_space: 80
+# required_linux_space_in_MBs
+lmt_scanner_linux_scanner_minimum_disk_space: 60
+# required_solaris_space_in_MBs
+lmt_scanner_solaris_scanner_minimum_disk_space: 100
+# required_aix_space_in_MBs
+lmt_scanner_aix_scanner_minimum_disk_space: 100
+# required_hpux_space_in_MBs
+lmt_scanner_hpux_scanner_minimum_disk_space: 100

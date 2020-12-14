@@ -98,7 +98,7 @@ For detailed instructions for manual installation, see the following topics in t
 ### 4. Schedule daily collection of scan results
 
 1. For a non-root or non-Administrator user of Ansible and in case when the installation was performed manually (not by using the installation playbook), assign the user with correct privileges to the directory with disconnected scan results.
-   - **\[UNIX/Linux\]** Ensure that the user has the **rwx** privileges in the home directory of the disconnected scanner and **rw** privileges in the directory with scan results packages (the `lmt_scanner_output_path_unix` directory).
+   - **\[UNIX/Linux\]** Ensure that the user has the **rwx** privileges in the home directory of the disconnected scanner and in the directory with scan results packages (the `lmt_scanner_output_path_unix` directory).
    
    - **\[Windows\]** Ensure that the following requirements are met.
      - The user has the `List folder contents`, `Read` and `Write` privileges in the directory with scan results packages (the `lmt_scanner_output_path_windows` directory). To verify that the user has the right privileges, select the user, open the `Advanced Security Settings` tab and click `View`. 

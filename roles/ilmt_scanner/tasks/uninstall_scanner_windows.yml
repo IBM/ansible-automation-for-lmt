@@ -1,0 +1,75 @@
+---
+- name: "Check whether ILMT Scanner is installed on Windows endpoints"
+  win_stat:
+    path: "{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt"
+  register: ilmt_scanner_installed_win
+
+- block:
+  - block:
+    - name: "Create a config_backup backup directory on Windows endpoints"
+      win_file:
+        path: "{{ lmt_scanner_path_windows }}\\config_backup\\"
+        state: directory
+
+    - name: "Copy endpoint_id and scan configs to config_backup directory on Windows endpoints"
+      win_copy:
+        src: "{{ lmt_scanner_path_windows }}\\config\\{{ item }}"
+        dest: "{{ lmt_scanner_path_windows }}\\config_backup\\"
+        remote_src: yes
+      with_items:
+        - endpoint_id.txt
+        - sw_config.xml
+        - isotag_config.xml
+
+    - name: "Run script to uninstall ILMT Scanner from Windows endpoints"
+      win_command: uninstall.bat
+      args:
+        chdir: "{{ lmt_scanner_path_windows }}\\"
+      async: "{{ lmt_scanner_setup_timeout }}"
+      poll: 5
+    when: ilmt_scanner_installed_win.stat.exists
+
+  - name: "Capture directories to delete from Windows endpoints"
+    win_find:
+      paths: "{{ lmt_scanner_path_windows }}"
+      file_type: directory
+    register: found_directories
+
+  - name: "Delete all directories from ILMT scanner folder except config_backup from Windows endpoints"
+    win_file:
+      state: absent
+      path: "{{ item.path }}"
+    when: ('config_backup' not in item.filename)
+    with_items: "{{ found_directories['files'] }}"
+    loop_control:
+      label: "{{ item.filename }}"
+
+  - name: "Capture files to delete from Windows endpoints"
+    win_find:
+      paths: "{{ lmt_scanner_path_windows }}"
+      file_type: file
+    register: found_files
+
+  - name: "Delete all file from ILMT scanner folder from Windows endpoints"
+    win_file:
+      state: absent
+      path: "{{ item.path }}"
+    with_items: "{{ found_files['files'] }}"
+    loop_control:
+      label: "{{ item.filename }}"
+  when: (leave_config_backup | default(false))
+
+- block:
+  - name: "Run script to uninstall ILMT Scanner from Windows endpoints"
+    win_command: uninstall.bat
+    args:
+      chdir: "{{ lmt_scanner_path_windows }}\\"
+    when: ilmt_scanner_installed_win.stat.exists
+    async: "{{ lmt_scanner_setup_timeout }}"
+    poll: 5
+
+  - name: "Delete ILMT Scanner directory from Windows endpoints"
+    win_file:
+      state: absent
+      path: "{{ lmt_scanner_path_windows }}"
+  when: not (leave_config_backup | default(false))

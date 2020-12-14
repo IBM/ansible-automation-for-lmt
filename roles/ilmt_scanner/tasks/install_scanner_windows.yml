@@ -1,0 +1,159 @@
+---
+- name: "Check if {{ lmt_scanner_path_windows }} directory exists on Windows endpoints"
+  win_stat:
+    path: "{{ lmt_scanner_path_windows }}"
+  register: ilmt_scanner_path_exists_windows
+
+- name: "Check if endpoint_id file exists on Windows endpoints"
+  win_stat:
+    path: "{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt"
+  register: ilmt_scanner_installed_win
+
+- name: "Find isotag file on Windows endpoints"
+  win_find:
+    paths: "{{ lmt_scanner_path_windows }}\\iso-swid\\"
+    use_regex: true
+    patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
+  register: scanner_installer_names
+  when: ilmt_scanner_path_exists_windows.stat.exists
+
+- name: "Setting scanner version variable on Windows endpoints"
+  set_fact:
+    scanner_version_on_endpoint: "{{ scanner_installer_names.files[0].path | regex_replace('.*ibm.com_IBM_License_Metric_Tool-(.+).swidtag$', '\\1') }}"
+  when: (scanner_installer_names is defined) and
+        (scanner_installer_names.files is defined) and
+        (scanner_installer_names.files|length > 0)
+
+- name: "Set scanner version variable to default if still not set on Windows endpoints"
+  set_fact:
+    scanner_version_on_endpoint: "0.0"
+  when: (scanner_installer_names is not defined) or
+        (scanner_installer_names.files is not defined) or
+        (scanner_installer_names.files|length == 0)
+
+- name: "Set local facts with cached scanner version from Control Node"
+  set_fact:
+    cached_scanner_version: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/version.txt', errors='ignore') }}"
+    cached_scanner_build: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/build_date.txt', errors='ignore') }}"
+
+- block:
+  - block:
+      - name: "Check if {{ lmt_scanner_path_windows }} directory is empty before proceeding on Windows endpoints"
+        win_find:
+          paths: "{{ lmt_scanner_path_windows }}"
+        register: files_in_scanner_folder_windows
+
+      - name: "Fail when {{ lmt_scanner_path_windows }} directory exists and is not empty and has no scanner installed on Windows endpoints"
+        fail:
+          msg: "Directory {{ lmt_scanner_path_windows }} configured in lmt_scanner_path_windows parameter is not empty. \
+                Please clear it (e.g. using uninstall playbook) or configure a different one."
+        when: files_in_scanner_folder_windows.matched > 0
+    when: ilmt_scanner_path_exists_windows.stat.exists and
+          scanner_version_on_endpoint == '0.0' and
+          not ilmt_scanner_installed_win.stat.exists
+
+  - name: "Removing previous installation preserving config backup on Windows endpoints"
+    include_role:
+      name: ilmt_scanner
+      tasks_from: uninstall_scanner_windows
+    vars:
+      leave_config_backup: "{{ ilmt_scanner_installed_win.stat.exists }}"
+    when: (scanner_version_on_endpoint != '0.0' or ilmt_scanner_installed_win.stat.exists)
+
+  - name: "Define installation root directory on Windows endpoints"
+    set_fact:
+      drive_name: "{{ lmt_scanner_path_windows.split(':')[0] }}"
+
+  - name: "Gathering disk stats from Windows endpoints"
+    win_command: wmic logicaldisk where caption="{{ drive_name }}:"
+      get freeSpace
+    register: driveStatResult
+
+  - name: "Finding Available diskspace on Windows endpoints"
+    set_fact:
+      win_available_disk_space: "{{ driveStatResult['stdout_lines'][2] |
+        replace(\" \", \"\")| int / 1048576}}"
+
+  - name: "Fail when file size exceeds Windows endpoints"
+    fail:
+      msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
+        Disk Space is : {{ win_available_disk_space }} MB, Required
+        Disk Space is : {{ lmt_scanner_windows_scanner_minimum_disk_space }} MB'
+    when: win_available_disk_space | int <
+      lmt_scanner_windows_scanner_minimum_disk_space | int
+
+  - name: "Creating disconnected scanner directory on Windows endpoints"
+    win_file:
+      path: "{{ lmt_scanner_path_windows }}"
+      state: directory
+
+  - name: "Upload scanner installer from Control Node to Windows endpoints"
+    vars:
+      source_file: "{{ scanner_package_file }}"
+    win_copy:
+      src: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' + scanner_package_file }}"
+      dest: "{{ lmt_scanner_path_windows }}"
+      force: true
+
+  - name: "Unpack Scanner package on WINDOWS endpoints"
+    win_unzip:
+      src: "{{ lmt_scanner_path_windows }}\\{{ scanner_package_file }}"
+      dest: "{{ lmt_scanner_path_windows }}\\"
+      remote_src: true
+
+  - name: "Removing scanner installer package from Windows endpoints"
+    win_file:
+      path: "{{ lmt_scanner_path_windows }}\\{{ scanner_package_file }}"
+      state: absent
+
+  - name: "Checking if config_backup exists on Windows endpoints"
+    win_stat:
+      path: "{{ lmt_scanner_path_windows }}\\config_backup"
+    register: config_backup_folder_win
+
+  - name: "Restore config from backup on Windows endpoints"
+    win_copy:
+      src: "{{ lmt_scanner_path_windows }}\\config_backup\\{{ item }}"
+      dest: "{{ lmt_scanner_path_windows }}\\config\\"
+      remote_src: yes
+    with_items:
+      - endpoint_id.txt
+      - sw_config.xml
+      - isotag_config.xml
+    when: config_backup_folder_win.stat.exists
+
+  - name: "Setup newly deployed scanner on Windows endpoints"
+    include_role:
+      name: ilmt_scanner
+      tasks_from: setup_scanner_windows
+
+  - name: "Give FullControl rights to {{ ansible_user }} for ILMT scanner directory on Windows endpoints"
+    ansible.windows.win_acl:
+      path: "{{ lmt_scanner_path_windows }}"
+      user: "{{ ansible_user }}"
+      type: allow
+      rights: Read,Write,Modify,FullControl,Delete
+      inherit: ContainerInherit, ObjectInherit
+      state: present
+      propagation: 'None'
+
+  #  I have no idea why it is needed to give special permissions for logs folder.. it should be cover by parent directory (above task)
+  - name: "Give FullControl rights to {{ ansible_user }} for logs directory on Windows endpoints"
+    ansible.windows.win_acl:
+      path: "{{ lmt_scanner_path_windows }}\\logs"
+      user: "{{ ansible_user }}"
+      type: allow
+      rights: Read,Write,Modify,FullControl,Delete
+      inherit: ContainerInherit, ObjectInherit
+      state: present
+      propagation: 'None'
+
+  - name: "Delete config_backup from Windows endpoints"
+    win_file:
+      state: absent
+      path: "{{ lmt_scanner_path_windows }}\\config_backup"
+
+  vars:
+    scanner_package_file: "LMT-DisconnectedScanner-windows-{{ cached_scanner_version }}-{{ cached_scanner_build }}.zip"
+  when: not ilmt_scanner_installed_win.stat.exists or
+        cached_scanner_version is version(scanner_version_on_endpoint,'>')

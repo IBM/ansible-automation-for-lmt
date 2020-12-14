@@ -1,0 +1,22 @@
+---
+- name: "Creating {{ lmt_local_file_storage_path }} directory on Control Node."
+  file:
+    path: "{{ lmt_local_file_storage_path }}"
+    state: directory
+    mode: '0755'
+
+- name: "Copy results to {{ lmt_local_file_storage_path }}/scanner_statuses.csv file"
+  copy:
+    content: "{% for host in groups.all %}{{(host + ',' + \
+              hostvars[host]['scanner_installation_path'] + ',' + hostvars[host]['endpoint_id'] + ',' + \
+              hostvars[host]['scanner_version'] + ',' + hostvars[host]['successful_setup_info'] + '\n') \
+              if (hostvars[host]['scanner_version'] is defined) else ''}}{%endfor%}"
+    dest: "{{ lmt_local_file_storage_path }}/scanner_statuses.csv"
+    mode: '0644'
+    force: true
+
+- name: "Add header information to scanner_statuses.csv file"
+  lineinfile:
+    path: "{{ lmt_local_file_storage_path }}/scanner_statuses.csv"
+    line: 'Ansible Host,Scanner Path,Endpoint ID,Scanner Version,Installation status'
+    insertbefore: BOF
