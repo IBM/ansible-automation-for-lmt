@@ -4,7 +4,7 @@
 <div style="text-align: center;"><h4 style="background-color: #fef6c8;">Important</h4></div>
 
 The minimal supported version of License Metric Tool disconnected scanner to use with Ansible automation is **9.2.22**.<br>
-The solution is tested on Ansible **2.10.2**. However, it is recommended to use the latest version of Ansible that is available.
+The minimal supported version of Ansible is **2.10.2**. However, it is recommended to use the latest version of Ansible that is available.
 
 ---
 
