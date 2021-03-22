@@ -1,0 +1,4 @@
+---
+- name: "Print License Metric Tool playbooks version"
+  debug:
+    msg: "Playbooks version: {{ lmt_playbooks_version }}"

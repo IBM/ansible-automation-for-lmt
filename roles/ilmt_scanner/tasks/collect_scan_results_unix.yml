@@ -1,14 +1,14 @@
 ---
-- name: "Getting the list of packages with scan results from UNIX/Linux endpoints"
+- name: "Get the list of packages with scan results from UNIX/Linux endpoints"
   find:
-    paths: "{{lmt_scanner_output_path_unix \
-              if (lmt_scanner_output_path_unix is defined) \
-              else lmt_scanner_path_unix + '/output'}}"
+    paths: "{{ lmt_scanner_output_path_unix \
+              if ( lmt_scanner_output_path_unix is defined ) \
+              else lmt_scanner_path_unix + '/output' }}"
     use_regex: true
     patterns: ['^\d{12}-.+-\d{10}\.tar\.gz$']
   register: files_to_copy_unix
 
-- name: "Fetching packages with scan results from UNIX/Linux endpoints"
+- name: "Fetch packages with scan results from UNIX/Linux endpoints"
   fetch:
     src: "{{ item.path }}"
     dest: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
@@ -18,7 +18,7 @@
   loop_control:
     label: "{{ item.path | basename }}"
 
-- name: "Cleaning up packages on UNIX/Linux endpoints"
+- name: "Clean up packages on UNIX/Linux endpoints"
   file:
     state: absent
     path: "{{ item.path }}"

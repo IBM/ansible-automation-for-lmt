@@ -45,7 +45,7 @@
     \"{{ lmt_scanner_path_windows }}\\logs\" \
     \"{{ lmt_scanner_path_windows }}\\iso-swid\" \
     \"{{ lmt_scanner_path_windows }}\\work\" \
-    \"{{ lmt_scanner_path_windows }}\\output\"\" "
+    \"{{ lmt_scanner_output_path_windows if ( lmt_scanner_output_path_windows is defined) else lmt_scanner_path_windows + '\\output' }}\"\" "
   args:
     chdir: "{{ lmt_scanner_path_windows }}"
 

@@ -3,6 +3,14 @@
   connection: local
   gather_facts: false
   tasks:
+    - include_role:
+        name: ilmt_scanner
+        tasks_from: print_playbooks_version
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
     - name: "Create folder for troubleshooting data on Control Node"
       include_role:
         name: ilmt_scanner

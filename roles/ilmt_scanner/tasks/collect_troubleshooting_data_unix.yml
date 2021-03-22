@@ -45,12 +45,12 @@
 - name: "Create troubleshooting data archive on UNIX/Linux endpoints"
   community.general.archive:
     path:
-    - "{{ lmt_scanner_path_unix }}/work/ansible_facts.txt"
-    - "{{ lmt_scanner_path_unix }}/config"
-    - "{{ lmt_scanner_path_unix }}/logs"
-    - "{{ lmt_scanner_path_unix }}/iso-swid"
-    - "{{ lmt_scanner_path_unix }}/work"
-    - "{{ lmt_scanner_path_unix }}/output"
+      - "{{ lmt_scanner_path_unix }}/work/ansible_facts.txt"
+      - "{{ lmt_scanner_path_unix }}/config"
+      - "{{ lmt_scanner_path_unix }}/logs"
+      - "{{ lmt_scanner_path_unix }}/iso-swid"
+      - "{{ lmt_scanner_path_unix }}/work"
+      - "{{ lmt_scanner_output_path_unix if ( lmt_scanner_output_path_unix is defined ) else lmt_scanner_path_unix + '/output' }}"
     dest: "{{ lmt_scanner_path_unix }}/work/{{ ansible_host }}_{{ unix_endpoint_id.stdout }}.tar.gz"
     format: gz
     force_archive: true

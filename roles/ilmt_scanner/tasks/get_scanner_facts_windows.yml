@@ -1,0 +1,26 @@
+---
+- name: "Check if endpoint_id file exists on Windows endpoints"
+  win_stat:
+    path: "{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt"
+  register: ilmt_scanner_installed_win
+
+- name: "Read endpoint id value on Windows endpoints"
+  win_command: "cmd.exe /c type \"{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt\" "
+  register: windows_endpoint_id
+  when: ilmt_scanner_installed_win.stat.exists
+
+- name: "Find isotag file on Windows endpoints"
+  win_find:
+    paths: "{{ lmt_scanner_path_windows }}\\iso-swid\\"
+    use_regex: true
+    patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
+  register: scanner_swidtag_names
+
+- name: "Set scanner version variable on Windows endpoints"
+  set_fact:
+    scanner_version: "{{ (scanner_swidtag_names.files[0].path | regex_replace('.*ibm.com_IBM_License_Metric_Tool-(.+).swidtag$', '\\1')) \
+      if ((scanner_swidtag_names is defined) and (scanner_swidtag_names.files is defined) and \
+         (scanner_swidtag_names.files|length > 0)) \
+      else '0.0' }}"
+    endpoint_id: "{{ windows_endpoint_id.stdout_lines[0] if ilmt_scanner_installed_win.stat.exists else 'Not available' }}"
+    scanner_installation_path: "{{ lmt_scanner_path_windows }}"
