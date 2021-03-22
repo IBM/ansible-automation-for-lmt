@@ -3,7 +3,7 @@
 
 ### 1. Define a disconnected data source
 
-For detailed instructions, see: [Adding a data source](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_datasource.html) in the License Metric Tool documentation.   
+For detailed instructions, see: [Adding a data source](https://ibm.biz/LMT_adding_data_source) in the License Metric Tool documentation.   
 
 ### 2. Configure Ansible to manage the selected computers
 
@@ -49,7 +49,7 @@ The solution is tested on Ansible 2.10.2. However, it is recommended to use the 
 <details>
 <summary>License Metric Tool requirements for managed nodes</summary>
 
-  - For the list of disconnected scanner requirements, see: [Supported operating systems for ILMT 9.2.21 disconnected scanners](https://www.ibm.com/software/reports/compatibility/clarity-reports/report/html/osForProduct?deliverableId=5CBD9B00A02711EA88F5BE8EBF8F323B&osPlatforms=AIX|HP|IBM%20i|Linux|Solaris|Windows&duComponentIds=A002).
+  - For the list of disconnected scanner requirements, see: [IBM License Metric Tool - Supported Operating Systems](https://ibm.biz/LMT_supported_OS). On the page that opens, click Disconnected scanner.
 </details>
 
 **Procedure**
@@ -90,9 +90,9 @@ Another possible approach to installing disconnected scanners is the manual inst
 When the Ansible inventory is configured without root or administrator rights, only the `lmt_collect_results.yml` playbook is supported.
 
 For detailed instructions for manual installation, see the following topics in the License Metric Tool documentation.
-1. [Downloading the disconnected scanner package](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_downloading.html).
-2. [Installing the scanner and gathering the initial data](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_setup_all.html).
-3. [Running software scans and gathering scan results](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/t_disc_scans_software.html).
+1. [Downloading the disconnected scanner package](https://ibm.biz/LMT_download_disc_package).
+2. [Installing the scanner and gathering the initial data](https://ibm.biz/LMT_install_disc_scanner).
+3. [Running software scans and gathering scan results](https://ibm.biz/LMT_run_disc_sw_scan).
 > **Tip**: Schedule regular software scans. In case of weekly software scans, schedule daily creation of scan results packages.
 
 ### 4. Schedule daily collection of scan results
@@ -128,7 +128,7 @@ For detailed instructions for manual installation, see the following topics in t
 ### 5. Maintain the environment 
 
 After you successfully configure your environment, monitor it on an ongoing basis and fix potential configuration problems if necessary (for example, expired keys or passwords). 
-- You can monitor the environment on the License Metric Tool dashboard. For more information, see: [Dashboard](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/overview/c_dashboard.html) in the License Metric Tool documentation. Pay special attention to the `Delayed Data Upload` status on the [Deployment Health](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/probdet/r_probs_agents.html) widget and the Outdated Scan status on the [Capacity Scan Health](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/admin/c_agent_statuses.html) widget.
+- You can monitor the environment on the License Metric Tool dashboard. For more information, see: [Dashboard](https://ibm.biz/LMT_dashboard) in the License Metric Tool documentation. Pay special attention to the `Delayed Data Upload` status on the [Deployment Health](https://ibm.biz/LMT_deployment_health) widget and the Outdated Scan status on the [Capacity Scan Health](https://ibm.biz/LMT_capacity_scan_health) widget.
 - In case of problems with the disconnected scanner, you can use the <code>lmt_collect_troubleshooting_data</code> playbook to collect 
 data such as logs or raw scan data for troubleshooting purposes. 
 - Keep your environment up to date and upgrade the scanner to the latest version by using the `lmt_install_or_upgrade_scanner` playbook after you upgrade the License Metric Tool server. 

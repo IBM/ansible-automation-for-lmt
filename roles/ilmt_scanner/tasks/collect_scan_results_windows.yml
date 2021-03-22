@@ -1,9 +1,9 @@
 ---
-- name: "Getting list of scan result packages from Windows endpoints"
+- name: "Get list of scan result packages from Windows endpoints"
   win_find:
-    paths: "{{lmt_scanner_output_path_windows \
-              if (lmt_scanner_output_path_windows is defined) \
-              else lmt_scanner_path_windows + '\\output'}}"
+    paths: "{{ lmt_scanner_output_path_windows \
+              if ( lmt_scanner_output_path_windows is defined) \
+              else lmt_scanner_path_windows + '\\output' }}"
     use_regex: true
     patterns: ['^\d{12}-.+-\d{10}\.zip$']
   register: files_to_copy_windows

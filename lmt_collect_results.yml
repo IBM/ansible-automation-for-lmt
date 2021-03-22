@@ -5,6 +5,14 @@
   tasks:
     - include_role:
         name: ilmt_scanner
+        tasks_from: print_playbooks_version
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: ilmt_scanner
         tasks_from: create_scan_result_packages_folder
 
 - hosts: all

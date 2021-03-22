@@ -1,4 +1,12 @@
 ---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: ilmt_scanner
+        tasks_from: print_playbooks_version
+
 - name: "Refreshing scanners installer cache on Control Node"
   hosts: lmt_server
   gather_facts: true

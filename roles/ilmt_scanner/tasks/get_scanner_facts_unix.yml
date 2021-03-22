@@ -1,0 +1,26 @@
+---
+- name: "Check if endpoint_id file exists on UNIX/Linux endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_unix }}/config/endpoint_id.txt"
+  register: ilmt_scanner_installed_unix
+
+- name: "Read endpoint id value on UNIX/Linux endpoints"
+  command: "cat \"{{ lmt_scanner_path_unix }}/config/endpoint_id.txt\" "
+  register: unix_endpoint_id
+  when: ilmt_scanner_installed_unix.stat.exists
+
+- name: "Find isotag file on UNIX/Linux endpoints"
+  find:
+    paths: "{{ lmt_scanner_path_unix }}/iso-swid/"
+    use_regex: true
+    patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
+  register: scanner_swidtag_names
+
+- name: "Set scanner version variable on UNIX/Linux endpoints"
+  set_fact:
+    scanner_version: "{{ (scanner_swidtag_names.files[0].path | regex_replace('.*ibm.com_IBM_License_Metric_Tool-(.+).swidtag$', '\\1')) \
+      if ((scanner_swidtag_names is defined) and (scanner_swidtag_names.files is defined) and \
+         (scanner_swidtag_names.files|length > 0)) \
+      else '0.0' }}"
+    endpoint_id: "{{ unix_endpoint_id.stdout if ilmt_scanner_installed_unix.stat.exists else 'Not available' }}"
+    scanner_installation_path: "{{ lmt_scanner_path_unix }}"

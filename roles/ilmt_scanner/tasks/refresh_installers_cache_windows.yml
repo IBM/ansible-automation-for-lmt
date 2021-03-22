@@ -6,23 +6,24 @@
   delegate_to: localhost
   any_errors_fatal: true
 
-- block:
-  - name: "Check version of cached scanner installers on Control Node"
-    set_fact:
-      scanner_build_file: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/build_date.txt', errors='ignore') }}"
-      any_errors_fatal: true
+- name: "Check cached versions block on Control Node"
+  block:
+    - name: "Check version of cached scanner installers on Control Node"
+      set_fact:
+        scanner_build_file: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/build_date.txt', errors='ignore') }}"
+        any_errors_fatal: true
 
-  - name: "Check build date of cached scanner installers on Control Node"
-    set_fact:
-      scanner_version_file: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/version.txt', errors='ignore') }}"
-      any_errors_fatal: true
+    - name: "Check build date of cached scanner installers on Control Node"
+      set_fact:
+        scanner_version_file: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/version.txt', errors='ignore') }}"
+        any_errors_fatal: true
   delegate_to: localhost
   when: (cached_version_exists is defined) and (cached_version_exists.stat.exists)
 
 - name: "Find scanners version on ILMT Server on Windows"
   win_find:
-    paths: "{{lmt_server_path + '\\disconnected-scanners' if (lmt_server_path is defined) \
-          else ansible_env['ProgramFiles'] + '\\ibm\\LMT\\disconnected-scanners'}}"
+    paths: "{{ lmt_server_path + '\\disconnected-scanners' if (lmt_server_path is defined) \
+          else ansible_env['ProgramFiles'] + '\\ibm\\LMT\\disconnected-scanners' }}"
     use_regex: true
     patterns: ['^LMT-DisconnectedScanner-.+-.+\d{8}-\d{4}\.(tar.gz|zip)$']
   register: scanner_installer_names_win
@@ -35,7 +36,7 @@
         (scanner_installer_names_win.files|length == 0)
   any_errors_fatal: true
 
-- name: "Setting scanner version variables"
+- name: "Set scanner version variables"
   set_fact:
     current_scanner_version: "{{ scanner_installer_names_win.files[0].path | \
                               regex_replace('.*LMT-DisconnectedScanner-.+-(.+)-\\d{8}-\\d{4}\\.(tar.gz|zip)$', '\\1') }}"
@@ -47,14 +48,14 @@
 
 - name: "Prepare a new scanner version installers on Control Node"
   block:
-    - name: "Removing scanner installers directory from Control Node"
+    - name: "Remove scanner installers directory from Control Node"
       file:
         path: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' }}"
         state: absent
       delegate_to: localhost
       any_errors_fatal: true
 
-    - name: "Creating a directory to store scanner installers on Control Node"
+    - name: "Create a directory to store scanner installers on Control Node"
       file:
         path: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' }}"
         state: directory
@@ -90,7 +91,6 @@
       delegate_to: localhost
       when: download_installers_win is succeeded
       any_errors_fatal: true
-
 
   when: (current_scanner_version is version(cached_scanner_version,'>')) or
         ((current_scanner_version is version(cached_scanner_version,'==')) and (current_scanner_build != cached_scanner_build))

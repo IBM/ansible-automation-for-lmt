@@ -11,17 +11,47 @@
     line: "SW_SCAN_FREQUENCY={{ lmt_scanner_software_scans_frequency }}"
   when: lmt_scanner_software_scans_enabled
 
-- name: "Enable DAILY pack results on Windows endpoints"
+- name: "Configure scheduled pack results on Windows endpoints"
   win_lineinfile:
     path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
     regexp: "^\\s*DAILY_PACK_RESULTS_CREATION_ENABLED.*$"
-    line: "DAILY_PACK_RESULTS_CREATION_ENABLED=TRUE"
-  when: lmt_scanner_daily_pack_results_enabled
+    line: "DAILY_PACK_RESULTS_CREATION_ENABLED={{ 'TRUE' if lmt_scanner_daily_pack_results_enabled else 'FALSE' }}"
 
+- name: "Configure scanner output path on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*PACKAGE_OUTPUT_DIR.*$"
+    line: "PACKAGE_OUTPUT_DIR={{ lmt_scanner_output_path_windows if ( lmt_scanner_output_path_windows is defined ) else '.\\output' }}"
+
+- name: "Configure optional public cloud type on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*PUBLIC_CLOUD_TYPE.*$"
+    line: "PUBLIC_CLOUD_TYPE=\"{{ lmt_scanner_public_cloud_type if ( lmt_scanner_public_cloud_type is defined ) else '' }}\""
+
+# using duplicated get_scanner_facts_windows code due to "skipping" tasks issue if set_fact is called twice for the same variable
+- name: "Find isotag file on Windows endpoints"
+  win_find:
+    paths: "{{ lmt_scanner_path_windows }}\\iso-swid\\"
+    use_regex: true
+    patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
+  register: scanner_swidtag_names
+
+- name: "Set scanner version temp variable on Windows endpoints"
+  set_fact:
+    scanner_version_temp: "{{ (scanner_swidtag_names.files[0].path | regex_replace('.*ibm.com_IBM_License_Metric_Tool-(.+).swidtag$', '\\1')) \
+      if ((scanner_swidtag_names is defined) and (scanner_swidtag_names.files is defined) and \
+         (scanner_swidtag_names.files|length > 0)) \
+      else '0.0' }}"
+
+# Applies only for 9.2.22 or lower versions, starting from 9.2.23 the scheduling has been fixed for Windows
+# and the Windows scheduler now starts the software scan asynchronously (it does not block) 2 minutes after
+# installation like on Unix and Linux (the scheduling is now exactly the same on Windows and Unix/Linux.
+#
 # On windows we need to disable the software scan after startup because the schedule for windows is a little bit
 # different them on Linux. On windows first scheduled scan will happen in a WEEK / DAY from now so this
 # scan by default is started automatically during setup in the background. We do not want it to start it in
-# background because it will block the next 'Run scanner setup script on Windows endpoints' task - 
+# background because it will block the next 'Run scanner setup script on Windows endpoints' task -
 # so we are disabling this automatic software scan during setup and start it asynchronous at the next step:
 # 'Initiate initial software scan on Windows endpoints'.
 - name: "Disable start of the software scan during setup on Windows endpoints"
@@ -29,7 +59,8 @@
     path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
     regexp: "^\\s*DISABLE_SW_SCAN_AFTER_SETUP.*$"
     line: "DISABLE_SW_SCAN_AFTER_SETUP=TRUE"
-  when: lmt_scanner_software_scans_enabled
+  when: lmt_scanner_software_scans_enabled and
+        scanner_version_temp is version('9.2.22.0', '<=')
 
 - name: "Run setup scanner script on Windows endpoints"
   win_command: setup.bat
@@ -47,15 +78,20 @@
   poll: 5
   when: (only_configure | default(false))
 
+# Applies only for 9.2.22 or lower versions, starting from 9.2.23 the scheduling has been fixed for Windows
+# and the Windows scheduler now starts the software scan asynchronously (it does not block) 2 minutes after
+# installation like on Unix and Linux (the scheduling is now exactly the same on Windows and Unix/Linux.
+# So there is not need to start the software scan "manually"
 - name: "Initiate initial software scan on Windows endpoints"
   win_command: run_sw_and_pack.bat
   args:
     chdir: "{{ lmt_scanner_path_windows }}"
-  async: 518400 # 6 days
+  async: 518400  # 6 days
   poll: 0
-  when: lmt_scanner_software_scans_enabled
+  when: lmt_scanner_software_scans_enabled and
+        scanner_version_temp is version('9.2.22.0', '<=')
 
-- name: "Checking if endpoint_id.txt file exists on Windows endpoints"
+- name: "Check if endpoint_id.txt file exists on Windows endpoints"
   win_stat:
     path: "{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt"
   register: win_ilmt_install_fail_msg

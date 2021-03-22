@@ -1,25 +1,25 @@
 ---
-- name: "Setting server_datasource_path parameter specific for Windows"
+- name: "Set server_datasource_path parameter specific for Windows"
   set_fact:
-    tmp_lmt_server_datasource_path_win: "{{lmt_server_datasource_path if (lmt_server_datasource_path is defined) \
+    tmp_lmt_server_datasource_path_win: "{{ lmt_server_datasource_path if (lmt_server_datasource_path is defined) \
           else ( \
             lmt_server_path + '\\datasource' if (lmt_server_path is defined) \
             else ansible_env['ProgramFiles'] + '\\ibm\\LMT\\datasource'
-          )}}"
+          ) }}"
 
-- name: "Checking if a datasource directory exists on Windows"
+- name: "Check if a datasource directory exists on Windows"
   win_stat:
     path: "{{ tmp_lmt_server_datasource_path_win }}"
   register: datasource_directory
   failed_when: not (datasource_directory.stat.exists and datasource_directory.stat.isdir)
 
-- name: "Uploading packages with scan results to the License Metric Tool server on Windows"
+- name: "Upload packages with scan results to the License Metric Tool server on Windows"
   win_copy:
     src: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
     dest: "{{ tmp_lmt_server_datasource_path_win }}"
   register: uploaded_files_win
 
-- name: "Cleaning packages with scan results from the Control Node"
+- name: "Clean packages with scan results from the Control Node"
   file:
     path: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
     state: absent

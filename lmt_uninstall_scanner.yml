@@ -1,4 +1,12 @@
 ---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: ilmt_scanner
+        tasks_from: print_playbooks_version
+
 - name: "Uninstall ILMT scanners"
   hosts: all
   strategy: free

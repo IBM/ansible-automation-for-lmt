@@ -1,5 +1,5 @@
 ---
-- name: "Creating {{ lmt_local_file_storage_path }}/{{ lmt_troubleshooting_data_folder }} for storing \
+- name: "Create {{ lmt_local_file_storage_path }}/{{ lmt_troubleshooting_data_folder }} for storing \
           troubleshooting data from endpoints on Control Node."
   file:
     path: "{{ lmt_local_file_storage_path }}/{{ lmt_troubleshooting_data_folder }}"

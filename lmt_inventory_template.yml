@@ -42,9 +42,8 @@ all:
     ##==============================================================================
     ## Description:
     ##   Path on a the control node where results packages from all the endpoints 
-    ##   are stored. If not defined the default ./lmt_file_storage is used,
-    ##   which is created as a subdirectory of a directory where playbooks that role
-    ##   are located.
+    ##   are stored. If not defined the default ./lmt_file_storage is used, which
+    ##   is created as a subdirectory of a directory where playbooks are located.
     ################################################################################
 
     # lmt_scanner_path_windows:
@@ -220,4 +219,35 @@ all:
     ##   If you set the value of this parameter to true, the first pack results 
     ##   is initiated 23 hours after you install the scanner. 
     ##   Subsequent packages will be generated with the daily frequency.
+    ################################################################################
+    
+    #lmt_scanner_public_cloud_type:
+    ################################################################################
+    ## Parameter        | lmt_scanner_public_cloud_type
+    ##==============================================================================
+    ## Corresponds to   | PUBLIC_CLOUD_TYPE disconnected scanner parameter
+    ##==============================================================================
+    ## Default Value    | Empty (none)
+    ## Possible Values  | Name of a supported public cloud:
+    ##                  |   "IBM Power Virtual Server"
+    ##                  |   "IBM SoftLayer"
+    ##                  |   "Microsoft Azure"
+    ##                  |   "Amazon EC2"
+    ##                  |   "Google Compute Engine"
+    ##                  |   "Oracle Compute Instance"
+    ##                  |   "Alibaba Elastic Compute Service"
+    ##                  |   "Tencent Cloud Server Instance"
+    ##                  |   "NEC Cloud IaaS Instance"
+    ##==============================================================================
+    ## Description:
+    ##   Specifies the type of a public cloud on which the computer is running.
+    ##   It allows for properly counting the number of Processor Value Units (PVUs)
+    ##   per virtual core.
+    ##
+    ##   Example:
+    ##   lmt_scanner_public_cloud_type: "Microsoft Azure"
+    ##   Note: Ensure the name of the public cloud is enclosed in quotation marks.
+    ##
+    ##   For more information about supported types of public clouds, see:
+    ##   https://ibm.biz/LMT_public_clouds_disconnected.
     ################################################################################

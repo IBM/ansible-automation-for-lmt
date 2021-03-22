@@ -297,4 +297,38 @@
 	</td>
   </tr>
 
+  <tr>
+    <td rowspan="2"> 
+        <code>lmt_scanner_public_cloud_type</code> 
+    </td>
+    <td>true</td>
+    <td>All managed nodes</td>
+    <td>
+        <code>install_or_upgrade</code><br/>
+        <code>reconfigure</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        Specifies the type of a public cloud on which the computer is running. It allows for properly counting the number of Processor Value Units (PVUs) per virtual core.
+        <br/><br/>
+        Example:<br/>
+        <code>lmt_scanner_public_cloud_type: "Microsoft Azure"</code><br/>
+        <b>Note:</b> Ensure the name of the public cloud is enclosed in quotation marks.
+        <br/><br/>
+        Possible values are name of a supported public clouds like:<br>
+        <code>"IBM Power Virtual Server"</code><br>
+        <code>"IBM SoftLayer"</code><br>
+        <code>"Microsoft Azure"</code><br>
+        <code>"Amazon EC2"</code><br>
+        <code>"Google Compute Engine"</code><br>
+        <code>"Oracle Compute Instance"</code><br>
+        <code>"Alibaba Elastic Compute Service"</code><br>
+        <code>"Tencent Cloud Server Instance"</code><br>
+        <code>"NEC Cloud IaaS Instance"</code><br>
+        <br/>
+        For more information about supported types of public clouds, see: https://ibm.biz/LMT_public_clouds_disconnected.
+    </td>
+  </tr>
+
 </table>

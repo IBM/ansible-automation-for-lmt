@@ -1,6 +1,6 @@
 # License Metric Tool playbooks
 
-License Metric Tool playbooks are supported on operating systems that are supported by the disconnected scanner except for **IBM i**. For a list of supported operating systems, see: [IBM License Metric Tool 9.2 - Supported Operating Systems](https://www.ibm.com/support/pages/ibm-license-metric-tool-92-supported-operating-systems).
+License Metric Tool playbooks are supported on operating systems that are supported by the disconnected scanner except for **IBM i**. For a list of supported operating systems, see: [IBM License Metric Tool 9.2 - Supported Operating Systems](https://ibm.biz/LMT_supported_OS).
 
 <table>
 
@@ -106,7 +106,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
         Root / Local Administrator rights
     </td>
     <td>
-        none
+        <code>localhost</code><br/>
     </td>
   </tr>
   <tr>    
@@ -129,13 +129,14 @@ License Metric Tool playbooks are supported on operating systems that are suppor
         Root / Local Administrator rights
     </td>
     <td>
-        none
+        <code>localhost</code><br/>
     </td>
   </tr>
   <tr>    
     <td colspan="4">
         This playbook allows you to change the configuration of the existing disconnected scanners.     
-        It can be useful, for example when you want to change the software scan schedule, or modify extra settings on Solaris (DSD mode) or Linux on System z. Before you run this playbook, update Ansible parameters accordingly.
+        It can be useful, for example when you want to change the software scan schedule, or modify extra settings on Solaris (DSD mode) or Linux on System z. Before you run this playbook, update Ansible parameters accordingly.<br/>
+        <b>NOTE:</b> Every time you run this playbook, the schedule of hardware and software scans as well as the schedule of packing scan results is updated.
     </td>
   </tr>
 

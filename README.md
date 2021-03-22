@@ -52,6 +52,9 @@ An inventory template that you can use with License Metric Tool playbooks is in 
 
 AWX is an open source, easy-to-use user interface, dashboard and REST API for Ansible. Ansible Tower is a commercial version of AWX supported by Red Hat.
 You can use either of these tools to manage the disconnected scanner. For detailed instructions, see:  [Managing the disconnected scanner with AWX or Tower](docs/doc_automating_with_awx_tower.md).
+
+## Defect fixes
  
+ For information about defects that were solved in Ansible playbooks that are delivered with License Metric Tool, see: [Release notes](docs/release_notes.md).
 
 
