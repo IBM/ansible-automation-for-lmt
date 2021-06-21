@@ -29,6 +29,23 @@
     regexp: "^\\s*PUBLIC_CLOUD_TYPE.*$"
     line: "PUBLIC_CLOUD_TYPE=\"{{ lmt_scanner_public_cloud_type if ( lmt_scanner_public_cloud_type is defined ) else '' }}\""
 
+- name: "Configure Capacity Scan on Virtualization Hosts Settings on Linux endpoints"
+  block:
+    - name: "Configure Capacity Scan on Virtualization Hosts on Linux endpoints"
+      lineinfile:
+        path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
+        regexp: "^\\s*VIRTUALIZATION_HOST_SCAN_ENABLED.*$"
+        line: "VIRTUALIZATION_HOST_SCAN_ENABLED={{ 'TRUE' if lmt_scanner_virt_host_scan_enabled else 'FALSE' }}"
+
+    - name: "Configure Host Hostname Collection on Linux endpoints"
+      lineinfile:
+        path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
+        regexp: "^\\s*COLLECT_HOST_HOSTNAME.*$"
+        line: "COLLECT_HOST_HOSTNAME={{ 'TRUE' if lmt_scanner_collect_host_hostname else 'FALSE' }}"
+  when: (ansible_facts['os_family'] == 'RedHat' or
+        ansible_facts['os_family'] == 'Suse' or
+        ansible_facts['os_family'] == 'Debian')
+
 - name: "Change config on System z platform to fail scanner configuration in case of missing required hardware information."
   lineinfile:
     path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"

@@ -7,6 +7,11 @@ The minimal supported version of License Metric Tool disconnected scanner to use
 The minimal supported version of Ansible is **2.10.2**. However, it is recommended to use the latest version of Ansible that is available.
 
 ---
+<div style="text-align: center;"><h4 style="background-color: #fef6c8;">Version of License Metric Tool playbooks</h4></div>
+
+The current version of License Metric Tool playbooks is **9.2.24**.
+
+---
 
 ## Disconnected scan
 
@@ -42,9 +47,10 @@ This repository contains the following set of Ansible playbooks that can help yo
 - `lmt_reconfigure_scanner.yml` - updates the scanner configuration, for example, changes frequency of software scans.
 - `lmt_uninstall_scanner.yml` - uninstalls the disconnected scanner from the targeted computers.
 
-For a detailed list of all playbooks, their description and information which parameters are relevant for them, see: [License Metric Tool playbooks](docs/doc_playbooks_list.md).
-
-For the list of parameters, see: [License Metric Tool parameters](docs/doc_lmt_parameters.md).
+For more information about playbooks, see the following links:
+- [License Metric Tool playbooks](docs/doc_playbooks_list.md)
+- [License Metric Tool parameters](docs/doc_lmt_parameters.md)
+- [Updating License Metric Tool playbooks](docs/doc_updating_lmt_playbooks.md) 
 
 An inventory template that you can use with License Metric Tool playbooks is in the `lmt_inventory_template.yml` file. 
 

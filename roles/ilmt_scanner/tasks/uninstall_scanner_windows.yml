@@ -4,6 +4,17 @@
     path: "{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt"
   register: ilmt_scanner_installed_win
 
+- name: "Read endpoint id value block on Windows endpoints"
+  block:
+    - name: "Read endpoint id value on Windows endpoints"
+      win_command: "cmd.exe /c type \"{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt\" "
+      register: windows_endpoint_id_for_delete
+
+    - name: "Set endpoint_id_for_delete variable on Windows endpoints"
+      set_fact:
+        endpoint_id_for_delete: "{{ windows_endpoint_id_for_delete.stdout_lines[0] }}"
+  when: ilmt_scanner_installed_win.stat.exists and (remove_computer_from_server | default(false)) and lmt_server_token is defined
+
 - name: "Leave config backup block on Windows endpoints"
   block:
     - name: "Uninstall scanner block on Windows endpoints"

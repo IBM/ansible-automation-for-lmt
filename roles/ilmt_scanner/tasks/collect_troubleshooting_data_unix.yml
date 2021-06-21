@@ -39,7 +39,7 @@
               }\n"
     dest: "{{ lmt_scanner_path_unix }}/work/ansible_facts.txt"
     force: true
-    owner: "{{ ansible_user }}"
+    owner: "{{ ansible_user if ( ansible_user is defined ) else ansible_facts['user_id'] }}"
     mode: '0644'
 
 - name: "Create troubleshooting data archive on UNIX/Linux endpoints"

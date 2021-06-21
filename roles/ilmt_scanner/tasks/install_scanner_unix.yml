@@ -161,7 +161,7 @@
       register: config_backup_folder_unix
 
     - name: "Restore config from backup on UNIX/Linux endpoints"
-      block:       
+      block:
         - name: "Restore endpoint.id and agent scan config file from backup on UNIX/Linux endpoints"
           copy:
             src: "{{ lmt_scanner_path_unix }}/config_backup/{{ item }}"
@@ -172,7 +172,7 @@
             - endpoint_id.txt
             - sw_config.xml
             - isotag_config.xml
-            
+
         - name: "Check whether uuid.dat file exists in backup folder on UNIX/Linux endpoints"
           stat:
             path: "{{ lmt_scanner_path_unix }}/config_backup/uuid.dat"
@@ -183,7 +183,19 @@
             src: "{{ lmt_scanner_path_unix }}/config_backup/uuid.dat"
             dest: "{{ lmt_scanner_path_unix }}/config/"
             remote_src: true
-          when: uuid_file_exists_in_backup.stat.exists            
+          when: uuid_file_exists_in_backup.stat.exists
+
+        - name: "Check whether vmman_host_id file exists in backup folder on UNIX/Linux endpoints"
+          stat:
+            path: "{{ lmt_scanner_path_unix }}/config_backup/vmman_host_id"
+          register: vmman_host_id_file_exists_in_backup
+
+        - name: "Restore vmman_host_id file from backup on UNIX/Linux endpoints"
+          copy:
+            src: "{{ lmt_scanner_path_unix }}/config_backup/vmman_host_id"
+            dest: "{{ lmt_scanner_path_unix }}/config/"
+            remote_src: true
+          when: vmman_host_id_file_exists_in_backup.stat.exists
 
       when: config_backup_folder_unix.stat.exists
 
@@ -197,7 +209,7 @@
         path: "{{ lmt_scanner_path_unix }}"
         state: directory
         recurse: true
-        owner: "{{ ansible_user }}"
+        owner: "{{ ansible_user if ( ansible_user is defined ) else ansible_facts['user_id'] }}"
 
     - name: "Delete config_backup from UNIX/Linux endpoints"
       file:

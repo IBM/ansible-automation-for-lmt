@@ -1,0 +1,20 @@
+---
+- name: "Decommission endpoint from ILMT server"
+  uri:
+    url: https://{{ hostvars['lmt_server']['ansible_host'] }}:{{ lmt_server_port }}/api/sam/v2/computers?token={{ lmt_server_token }}&disconnected_endpoint_id={{ endpoint_id_for_delete }}
+    validate_certs: false
+    timeout: 10
+    method: DELETE
+  register: delete_result
+  failed_when: false
+  ignore_errors: true
+  delegate_to: localhost
+
+- name: "Print decommission status"
+  debug:
+    msg: "{{ 'The computer has been successfully decommissioned from the License Metric Tool server.' \
+          if (delete_result is succeeded and delete_result.status is defined and delete_result.status == 200) \
+          else ('[WARNING] Failed to decommission the computer from the License Metric Tool server. Error message from the server: ' + delete_result.json.error + \
+          '. Delete the computer from the server manually.' \
+          if (delete_result.json is defined and delete_result.json.error) else \
+          '[WARNING] Failed to decommission the computer from the License Metric Tool server. Delete the computer from the server manually.') }}"

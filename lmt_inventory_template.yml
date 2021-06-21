@@ -104,6 +104,29 @@ all:
     ##   Path to main directory of LMT Server on 'lmt_server' node.
     ################################################################################
 
+    # lmt_server_port: 9081
+    ################################################################################
+    ## Parameter        | lmt_server_port
+    ##==============================================================================
+    ## Default Value    | 9081
+    ##==============================================================================
+    ## Description:
+    ##   Port number of the License Metric Tool server. It is used to connect 
+    ##   to the License Metric Tool server API while decommissioning computers.
+    ################################################################################
+    
+    # lmt_server_token:
+    ################################################################################
+    ## Parameter        | lmt_server_token
+    ##==============================================================================
+    ## Default Value    | Empty (none)
+    ##==============================================================================
+    ## Description:
+    ##   API token of the License Metric Tool server.If the token is defined, 
+    ##   the disconnected computer is automatically decommissioned from 
+    ##   the License Metric Tool server during scanner uninstallation.
+    ################################################################################
+
     # lmt_server_datasource_path:
     ################################################################################
     ## Parameter        | lmt_server_datasource_path
@@ -238,6 +261,7 @@ all:
     ##                  |   "Alibaba Elastic Compute Service"
     ##                  |   "Tencent Cloud Server Instance"
     ##                  |   "NEC Cloud IaaS Instance"
+    ##                  |   "Fujitsu Cloud IaaS Instance"
     ##==============================================================================
     ## Description:
     ##   Specifies the type of a public cloud on which the computer is running.
@@ -250,4 +274,56 @@ all:
     ##
     ##   For more information about supported types of public clouds, see:
     ##   https://ibm.biz/LMT_public_clouds_disconnected.
+    ################################################################################
+    
+    #lmt_scanner_virt_host_scan_enabled: false
+    ################################################################################
+    ## Parameter        | lmt_scanner_virt_host_scan_enabled
+    ##==============================================================================
+    ## Corresponds to   | VIRTUALIZATION_HOST_SCAN_ENABLED disconnected scanner 
+    ##                  | parameter
+    ##==============================================================================
+    ## Default Value    | false
+    ## Possible Values  | true/false
+    ##==============================================================================
+    ## Description:
+    ##   You can use this option only on Linux.   
+    ##
+    ##   Enables capacity scan on the virtualization host to retrieve capacity data
+    ##   from all virtual machines that are managed by that host.
+    ##
+    ##   After this scan is enabled, it becomes a part of the regular capacity scan. 
+    ##
+    ##   Supported virtualization technologies:
+    ##     * Xen on Linux x86
+    ##     * KVM on Linux x86
+    ##     * KVM on Power Linux
+    ##
+    ##   Prerequisites on the KVM host:
+    ##     * Operating system: Linux x86 or ppc64
+    ##     * Libvirt-client library installed on the host (virsh command available)
+    ##       or xl command available
+    ##     * Libxml2 library installed on the host (xmllint command available)
+    ##     * Bash shell available
+    ##
+    ##   Prerequisites on the Xen host:
+    ##     It is recommended to collect capacity data from Xen by using the
+    ##     VM Manager Tool instead of setting this parameter. For more information,
+    ##     see the product documentation.
+    ################################################################################
+    
+    #lmt_scanner_collect_host_hostname: false
+    ################################################################################
+    ## Parameter        | lmt_scanner_collect_host_hostname
+    ##==============================================================================
+    ## Corresponds to   | COLLECT_HOST_HOSTNAME disconnected scanner parameter
+    ##==============================================================================
+    ## Default Value    | false
+    ## Possible Values  | true/false
+    ##==============================================================================
+    ## Description:
+    ##   Set the value of this parameter to TRUE to collect information about
+    ##   host names of virtualization hosts during the virtualization host scan.
+    ##   The lmt_scanner_virt_host_scan_enabled parameter must be set to TRUE before
+    ##   you can enable collection of host names.
     ################################################################################
