@@ -4,6 +4,7 @@
 
   <tr>
     <th rowspan="2">Parameter</th>
+	<th>Available from</th>
     <th>Default value</th>
     <th>Applicable nodes</th>
     <th>Playbooks that use the parameter</th>   
@@ -16,6 +17,7 @@
     <td rowspan="2"> 
 		<code>lmt_local_file_storage_path</code> 
 	</td>
+	<td>9.2.22</td>
     <td>
 		<code>./lmt_file_storage</code> <br/>
 		It is a subdirectory of the directory where the playbooks are located.
@@ -41,6 +43,7 @@
     <td rowspan="2"> 
 		<code>lmt_server_path</code> 
 	</td>
+	<td>9.2.22</td>
     <td>
 		<b>[Linux]</b> <code>/opt/ibm/LMT</code><br/>
 		<b>[Windows]</b> <code>{{ansible_env['ProgramFiles']}}</code><br/><code>\ibm\LMT</code>
@@ -63,6 +66,7 @@
     <td rowspan="2"> 
 		<code>lmt_server_datasource_path</code> 
 	</td>
+	<td>9.2.22</td>
     <td>
 		<b>[Linux]</b> <code>{{lmt_server_path}}/datasource</code><br/>
 		<b>[Windows]</b> <code>{{lmt_server_path}}\\datasource</code>
@@ -84,6 +88,7 @@
     <td rowspan="2">
 		<code>lmt_scanner_path_unix</code>
 	</td>
+	<td>9.2.22</td>
     <td><code>/var/opt/ibm/LMTScanner</code></td>
     <td>Managed nodes on UNIX/Linux</td>
 	<td>
@@ -107,7 +112,12 @@
     <td rowspan="2"> 
 		<code>lmt_scanner_output_path_unix</code>
 	</td>
-    <td><code>{{lmt_scanner_path_unix}}/output</code></td>
+	<td>9.2.22</td>
+    <td>
+        <code>{{lmt_scanner_path_unix}}</code><br/>
+        &nbsp;
+        <code>/output</code>
+    </td>
     <td>Managed nodes on UNIX/Linux</td>
 	<td>
 		<code>collect_results</code>
@@ -125,6 +135,7 @@
     <td rowspan="2"> 
 		<code>lmt_scanner_path_windows</code> 
 	</td>
+	<td>9.2.22</td>
     <td>
         <code>{{ansible_env['ProgramFiles']}}</code><br>
         &nbsp;
@@ -152,7 +163,12 @@
     <td rowspan="2"> 
 		<code>lmt_scanner_output_path_windows</code>
 	</td>
-    <td><code>{{lmt_scanner_path_windows}}\output</code></td>
+	<td>9.2.22</td>
+    <td>
+        <code>{{lmt_scanner_path_windows}}</code><br/>
+        &nbsp;
+        <code>\output</code>
+    </td>
     <td>Managed nodes on Windows</td>
 	<td>
 		<code>collect_results</code>
@@ -170,6 +186,7 @@
     <td rowspan="2"> 
 		<code>lmt_scanner_setup_timeout</code> 
 	</td>
+	<td>9.2.22</td>
     <td>300</td>
     <td>All managed nodes</td>
 	<td>
@@ -189,6 +206,7 @@
     <td rowspan="2">
 		<code>lmt_scanner_solaris_dsd_mode</code> 
 	</td>
+	<td>9.2.22</td>
     <td>"yes"</td>
     <td>Managed nodes on Solaris</td>
 	<td>
@@ -212,6 +230,7 @@
 		<code>shared_pool_capacity</code><br/>
 		<code>system_active_processors</code><br/> 
 	</td>
+	<td>9.2.22</td>
     <td>Not set. It assumes that automatic capacity configuration is supported. Otherwise, installation or reconfiguration fails.</td>
     <td>Managed nodes on Linux on System z</td>
 	<td>
@@ -242,6 +261,7 @@
     <td rowspan="2"> 
 		<code>lmt_scanner_software_scans_enabled</code> 
 	</td>
+	<td>9.2.22</td>
     <td>true</td>
     <td>All managed nodes</td>
 	<td>
@@ -263,6 +283,7 @@
     <td rowspan="2"> 
 		<code>lmt_scanner_software_scans_frequency</code> 
 	</td>
+	<td>9.2.22</td>
     <td>WEEKLY</td>
     <td>All managed nodes</td>
 	<td>
@@ -282,6 +303,7 @@
     <td rowspan="2"> 
 		<code>lmt_scanner_daily_pack_results_enabled</code> 
 	</td>
+	<td>9.2.22</td>
     <td>true</td>
     <td>All managed nodes</td>
 	<td>
@@ -301,7 +323,8 @@
     <td rowspan="2"> 
         <code>lmt_scanner_public_cloud_type</code> 
     </td>
-    <td>true</td>
+	<td>9.2.23</td>
+    <td>Empty (none)</td>
     <td>All managed nodes</td>
     <td>
         <code>install_or_upgrade</code><br/>
@@ -331,4 +354,100 @@
     </td>
   </tr>
 
+  <tr>
+    <td rowspan="2"> 
+        <code>lmt_scanner_virt_host_scan_enabled</code> 
+    </td>
+    <td>9.2.24</td>
+    <td>false</td>
+    <td>Managed nodes on Linux</td>
+    <td>
+        <code>install_or_upgrade</code><br/>
+        <code>reconfigure</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        Enables capacity scan on virtualization host to retrieve capacity data from all virtual machines that are managed by the specified host. 
+        Schedule the scan on every host that manages virtual machines which have the BigFix client installed.
+        <br/><br/>
+        Supported virtualization technologies:<br/>
+        <ul>
+          <li>Xen on Linux x86</li>
+          <li>KVM on Linux x86</li>
+          <li>KVM on Power Linux</li>
+        </ul>
+        <br/>
+        Prerequisites on the KVM host:<br/>
+        <ul>
+          <li>Operating system: Linux x86 or ppc64</li>
+          <li>Libvirt-client library installed on the host (virsh command available) or xl command available</li>
+          <li>Libxml2 library installed on the host (xmllint command available)</li>
+          <li>Bash shell available</li>
+        </ul>
+        <br/>
+        Prerequisites on the Xen host:<br/>
+        It is recommended to collect capacity from Xen data by using the VM Manager Tool instead of this task. For more information, see the product documentation.
+        <br/><br/>
+        Possible values: true/false.
+    </td>
+  </tr>
+
+  <tr>
+    <td rowspan="2"> 
+        <code>lmt_scanner_collect_host_hostname</code> 
+    </td>
+    <td>9.2.24</td>
+    <td>false</td>
+    <td>Managed nodes on Linux</td>
+    <td>
+        <code>install_or_upgrade</code><br/>
+        <code>reconfigure</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        Enable this option if you want to collect information about host names of virtualization hosts during virtualization host scan (the lmt_scanner_virt_host_scan_enabled parameter needs to be enabled).
+        <br/><br/>
+        Possible values: true/false.
+    </td>
+  </tr>
+
+  <tr>
+    <td rowspan="2"> 
+        <code>lmt_server_token</code> 
+    </td>
+    <td>9.2.24</td>
+    <td>Empty (none)</td>
+    <td>All managed nodes</td>
+    <td>
+        <code>uninstall</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        API token of the License Metric Tool server.If the token is defined, the disconnected computer is automatically decommissioned from the License Metric Tool server during scanner uninstallation.
+        <br/><br/>
+        Possible values: String
+    </td>
+  </tr>
+
+  <tr>
+    <td rowspan="2"> 
+        <code>lmt_server_port</code> 
+    </td>
+    <td>9.2.24</td>
+    <td>9081</td>
+    <td>All managed nodes</td>
+    <td>
+        <code>uninstall</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        Port number of the License Metric Tool server. It is used to connect to the License Metric Tool server API while decommissioning computers.
+        <br/><br/>
+        Possible values: Number.
+    </td>
+  </tr>
 </table>

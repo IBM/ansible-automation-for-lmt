@@ -116,6 +116,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
             <li><b>[UNIX/Linux]</b> <code>{{lmt_scanner_path_unix}}</code></li>
             <li><b>[Windows]</b> <code>{{lmt_scanner_path_windows}}</code></li>
         </ul>
+        If the <code>{{lmt_scanner_token}}</code> parameter is defined, the computer is automatically decommissioned from the License Metric Tool server after the scanner is unintstalled from that computer.<br/><br/>  
         <b>NOTE:</b> This playbook removes the entire folder in which the disconnected scanner is installed.<br/><br/>
       Because it removes the internal endpoint ID, a new endpoint ID is generated if you install the scanner on the same computer. As a result, the computer is reported in License Metric Tool as a different computer than before.
     </td>
