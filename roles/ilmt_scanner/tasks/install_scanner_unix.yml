@@ -172,6 +172,7 @@
             - endpoint_id.txt
             - sw_config.xml
             - isotag_config.xml
+            - slmtag_config.xml            
 
         - name: "Check whether uuid.dat file exists in backup folder on UNIX/Linux endpoints"
           stat:
@@ -196,6 +197,18 @@
             dest: "{{ lmt_scanner_path_unix }}/config/"
             remote_src: true
           when: vmman_host_id_file_exists_in_backup.stat.exists
+
+        - name: "Check whether computer_properties.yml file exists in backup folder on UNIX/Linux endpoints"
+          stat:
+            path: "{{ lmt_scanner_path_unix }}/config_backup/computer_properties.yml"
+          register: computer_properties_file_exists_in_backup
+
+        - name: "Restore computer_properties.yml file from backup on UNIX/Linux endpoints"
+          copy:
+            src: "{{ lmt_scanner_path_unix }}/config_backup/computer_properties.yml"
+            dest: "{{ lmt_scanner_path_unix }}/config/"
+            remote_src: true
+          when: computer_properties_file_exists_in_backup.stat.exists
 
       when: config_backup_folder_unix.stat.exists
 

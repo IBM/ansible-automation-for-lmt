@@ -100,7 +100,20 @@
         - endpoint_id.txt
         - sw_config.xml
         - isotag_config.xml
+        - slmtag_config.xml        
       when: config_backup_folder_win.stat.exists
+
+    - name: "Check whether computer_properties.yml file exists in backup folder on Windows endpoints"
+      win_stat:
+        path: "{{ lmt_scanner_path_windows }}\\config_backup\\computer_properties.yml"
+      register: computer_properties_file_exists_in_backup_win
+
+    - name: "Restore computer_properties.yml file from backup on Windows endpoints"
+      win_copy:
+        src: "{{ lmt_scanner_path_windows }}\\config_backup\\computer_properties.yml"
+        dest: "{{ lmt_scanner_path_windows }}\\config\\"
+        remote_src: true
+      when: computer_properties_file_exists_in_backup_win.stat.exists
 
     - name: "Set up newly deployed scanner on Windows endpoints"
       include_role:

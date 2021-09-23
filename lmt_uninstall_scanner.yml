@@ -39,5 +39,5 @@
       block:
         - include_role:
             name: ilmt_scanner
-            tasks_from: decommisson_computer
+            tasks_from: decommission_computer
       when: endpoint_id_for_delete is defined and lmt_server_token is defined
