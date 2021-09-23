@@ -7,6 +7,11 @@ The following table provides information about defects that were fixed in Ansibl
 <th colname="col2">Symptoms</th>
 <th colname="col3">Behavior after you install the update</th>
 <th colname="col4">Available since</th>
+</tr><tr>
+<td>199336</td>
+<td>Playbook for uninstalling the disconnected scanner fails if it is used when the scans are running.</td>
+<td>The problem does not occur.</td>
+<td align="center">9.2.24</td>
 </tr>
 <tr>
 <td>198832</td>

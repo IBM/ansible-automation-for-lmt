@@ -129,14 +129,14 @@ lmt_scanner_setup_timeout: 300
 ## Following parameters are not relevant for collector playbook               ##
 ################################################################################
 
-lmt_scanner_solaris_dsd_mode: "no"
+lmt_scanner_solaris_dsd_mode: false
 ################################################################################
 ## Parameter        | lmt_scanner_solaris_dsd_mode
 ##==============================================================================
 ## Corresponds to   | DSD_MODE env variable during disconnected scanner install
 ##==============================================================================
-## Default Value    | "no"
-## Possible Values  | "yes"/"no"
+## Default Value    | false
+## Possible Values  | true/false
 ##==============================================================================
 ## Description:
 ##   Information whether Solaris system is in the DSD domain, applicable only
@@ -233,6 +233,7 @@ lmt_scanner_daily_pack_results_enabled: true
 ##                  |   "Tencent Cloud Server Instance"
 ##                  |   "NEC Cloud IaaS Instance"
 ##                  |   "Fujitsu Cloud IaaS Instance"
+##                  |   "NTT Enterprise Cloud Server"
 ##==============================================================================
 ## Description:
 ##   Specifies the type of a public cloud on which the computer is running.

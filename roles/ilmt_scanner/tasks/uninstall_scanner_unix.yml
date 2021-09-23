@@ -35,6 +35,7 @@
             - endpoint_id.txt
             - sw_config.xml
             - isotag_config.xml
+            - slmtag_config.xml
 
         - name: "Check whether uuid.dat file exists on UNIX/Linux endpoints"
           stat:
@@ -53,12 +54,24 @@
             path: "{{ lmt_scanner_path_unix }}/config/vmman_host_id"
           register: vmman_host_id_file_exists
 
-        - name: "Copy uuid.dat to config_backup directory on UNIX/Linux endpoints"
+        - name: "Copy vmman_host_id to config_backup directory on UNIX/Linux endpoints"
           copy:
             src: "{{ lmt_scanner_path_unix }}/config/vmman_host_id"
             dest: "{{ lmt_scanner_path_unix }}/config_backup/"
             remote_src: true
           when: vmman_host_id_file_exists.stat.exists
+
+        - name: "Check whether computer_properties.yml file exists on UNIX/Linux endpoints"
+          stat:
+            path: "{{ lmt_scanner_path_unix }}/config/computer_properties.yml"
+          register: computer_properties_file_exists
+
+        - name: "Copy computer_properties.yml to config_backup directory on UNIX/Linux endpoints"
+          copy:
+            src: "{{ lmt_scanner_path_unix }}/config/computer_properties.yml"
+            dest: "{{ lmt_scanner_path_unix }}/config_backup/"
+            remote_src: true
+          when: computer_properties_file_exists.stat.exists
 
         - name: "Run script to uninstall ILMT Scanner from UNIX/Linux endpoints"
           command: "./uninstall.sh"
@@ -77,9 +90,9 @@
       register: found_files
 
     - name: "Delete all data from ILMT scanner folder except config backup from UNIX/Linux endpoints"
-      file:
-        path: "{{ item.path }}"
-        state: absent
+      shell: "rm -rf \"{{ item.path }}\""
+      args:
+        warn: false
       with_items: "{{ found_files['files'] }}"
       loop_control:
         label: "{{ item.path | basename }}"
@@ -96,7 +109,7 @@
       when: ilmt_scanner_installed_unix.stat.exists
 
     - name: "Delete ILMT folder from UNIX/Linux endpoints"
-      file:
-        state: absent
-        path: "{{ lmt_scanner_path_unix }}"
+      shell: "rm -rf \"{{ lmt_scanner_path_unix }}\""
+      args:
+        warn: false
   when: not (leave_config_backup | default(false))

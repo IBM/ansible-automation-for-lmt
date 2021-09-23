@@ -16,4 +16,4 @@ lmt_scanner_aix_scanner_minimum_disk_space: 100
 # required_hpux_space_in_MBs
 lmt_scanner_hpux_scanner_minimum_disk_space: 100
 # Playbooks version - should be in-line with LMT server version and upgraded during each release
-lmt_playbooks_version: "9.2.24.0"
+lmt_playbooks_version: "9.2.25.0"

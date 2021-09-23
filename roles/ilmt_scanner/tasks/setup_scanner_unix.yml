@@ -60,7 +60,7 @@
 - name: "Run scanner setup script block on UNIX/Linux endpoints"
   block:
     - name: "Run scanner setup script on Solaris endpoints"
-      shell: "export DSD_MODE={{ lmt_scanner_solaris_dsd_mode | lower }}; ./setup.sh"
+      shell: "export DSD_MODE={{ 'yes' if lmt_scanner_solaris_dsd_mode else 'no' }}; ./setup.sh"
       args:
         chdir: "{{ lmt_scanner_path_unix }}"
       async: "{{ lmt_scanner_setup_timeout }}"
@@ -101,7 +101,7 @@
 - name: "Run configure scanner block on UNIX/Linux endpoints"
   block:
     - name: "Run configure scanner script on Solaris endpoints"
-      shell: "export DSD_MODE={{ lmt_scanner_solaris_dsd_mode | lower }}; ./configure.sh"
+      shell: "export DSD_MODE={{ 'yes' if lmt_scanner_solaris_dsd_mode else 'no' }}; ./configure.sh"
       args:
         chdir: "{{ lmt_scanner_path_unix }}/automation"
       async: "{{ lmt_scanner_setup_timeout }}"

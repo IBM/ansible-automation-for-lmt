@@ -163,9 +163,8 @@ all:
     ##==============================================================================
     ## Corresponds to   | DSD_MODE env variable during disconnected scanner install
     ##==============================================================================
-    ## Default Value    | "no"
-    ## Possible Values  | String "yes" or "no". It cannot be yes/no bool value, 
-    ##                  |   but string.
+    ## Default Value    | false
+    ## Possible Values  | true/false
     ##==============================================================================
     ## Description:
     ##   Information whether Solaris system is in the DSD domain, applicable only
@@ -262,6 +261,7 @@ all:
     ##                  |   "Tencent Cloud Server Instance"
     ##                  |   "NEC Cloud IaaS Instance"
     ##                  |   "Fujitsu Cloud IaaS Instance"
+    ##                  |   "NTT Enterprise Cloud Server"    
     ##==============================================================================
     ## Description:
     ##   Specifies the type of a public cloud on which the computer is running.

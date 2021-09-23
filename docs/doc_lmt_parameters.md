@@ -207,7 +207,7 @@
 		<code>lmt_scanner_solaris_dsd_mode</code> 
 	</td>
 	<td>9.2.22</td>
-    <td>"yes"</td>
+    <td>false</td>
     <td>Managed nodes on Solaris</td>
 	<td>
 		<code>install_or_upgrade</code><br/>
@@ -218,7 +218,7 @@
     <td colspan="4">
 		Applicable only for Solaris. Information whether the Solaris system is in the DSD domain. 
 		<br/><br/>
-		Possible values: "yes" or "no" (with quotes).
+		Possible values: true/false.
 	</td>
   </tr>
 
@@ -241,7 +241,7 @@
   <tr>    
     <td colspan="4">
 		A set of parameters that describe underlying hardware of the System z host on which the scanner is going to be installed. The parameters need to be defined if the automatic capacity configuration is not supported.
-        Remember to set all four parameters in such case othervise the scanner installation or configuration may hang.
+        Remember to set all four parameters in such case otherwise the scanner installation or configuration may hang.
 		<br/><br/>
 		Automatic capacity configuration is supported on Linux on z/KVM and on System z10 starting from model E64 (type 2097) mainframes with z/VM 6.3 and later that supports the Store Hypervisor Information (STHYI) instruction.<br/>
 		Additionally, global performance data control option must be set in HMC for LPARs for the automatic capacity configuration to work.
@@ -349,6 +349,8 @@
         <code>"Alibaba Elastic Compute Service"</code><br>
         <code>"Tencent Cloud Server Instance"</code><br>
         <code>"NEC Cloud IaaS Instance"</code><br>
+        <code>"Fujitsu Cloud IaaS Instance"</code><br>
+        <code>"NTT Enterprise Cloud Server"</code><br>
         <br/>
         For more information about supported types of public clouds, see: https://ibm.biz/LMT_public_clouds_disconnected.
     </td>
