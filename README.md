@@ -9,7 +9,7 @@ The minimal supported version of Ansible is **2.10.2**. However, it is recommend
 ---
 <div style="text-align: center;"><h4 style="background-color: #fef6c8;">Version of License Metric Tool playbooks</h4></div>
 
-The current version of License Metric Tool playbooks is **9.2.24**.
+The current version of License Metric Tool playbooks is **9.2.25**.
 
 ---
 
@@ -18,7 +18,7 @@ The current version of License Metric Tool playbooks is **9.2.24**.
 Disconnected scans allow for discovering software and hardware inventory on computers that do not have connection to the BigFix server. Scripts that are provided in the disconnected scanner package initiate software and capacity scans, and create a package with scan results that you later upload to License Metric Tool.
 You can use Ansible to automate the process of uploading scan results from the managed nodes to the License Metric Tool server.
 
->**Note:** For more information, see: [Disconnected scan configuration](https://www.ibm.com/support/knowledgecenter/SS8JFY_9.2.0/com.ibm.lmt.doc/Inventory/planinconf/c_disc_main.html) in the License Metric Tool documentation.
+>**Note:** For more information, see: [Disconnected scan configuration](http://ibm.biz/disconnected_scan_config) in the License Metric Tool documentation.
 
 ## Automating collection of disconnected scan results with Ansible 
 
