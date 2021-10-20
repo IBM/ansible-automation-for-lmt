@@ -9,7 +9,7 @@ The minimal supported version of Ansible is **2.10.2**. However, it is recommend
 ---
 <div style="text-align: center;"><h4 style="background-color: #fef6c8;">Version of License Metric Tool playbooks</h4></div>
 
-The current version of License Metric Tool playbooks is **9.2.26**.
+The current version of License Metric Tool playbooks is **9.2.25**.
 
 ---
 <div style="text-align: center;"><h4 style="background-color: #fef6c8;">Supported operating systems</h4></div>
