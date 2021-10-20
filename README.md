@@ -12,6 +12,11 @@ The minimal supported version of Ansible is **2.10.2**. However, it is recommend
 The current version of License Metric Tool playbooks is **9.2.25**.
 
 ---
+<div style="text-align: center;"><h4 style="background-color: #fef6c8;">Supported operating systems</h4></div>
+
+Playbooks that are delivered with License Metric Tool are supported on AIX, Linux, Solaris and Windows. They are not supported on HP-UX and IBM i. For information about exact versions, see the [list of operating systems that are supported by the disconnected scanner](https://www.ibm.com/support/pages/node/561443). 
+
+---
 
 ## Disconnected scan
 
