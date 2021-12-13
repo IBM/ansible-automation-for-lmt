@@ -120,7 +120,7 @@
             awk '{print $4}'
           register: hpux_available_disk_space
 
-        - name: Fail when file size exceeds on Linux
+        - name: Fail when file size exceeds on HPUX
           fail:
             msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
               Disk Space is: {{ hpux_available_disk_space.stdout }} MB, Required

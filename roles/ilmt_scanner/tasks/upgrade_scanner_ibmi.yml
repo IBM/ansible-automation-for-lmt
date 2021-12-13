@@ -1,0 +1,14 @@
+- name: "Run scanner upgrade script block on IBM i endpoints"
+  block:
+    - name: "Run scanner upgrade script on IBM i endpoints"
+      command: "qsh update.sh"
+      args:
+        chdir: "{{ lmt_scanner_path_ibmi }}"
+      async: "{{ lmt_scanner_setup_timeout }}"
+      poll: 5
+
+- name: "Check if endpoint_id.txt file exists on IBM i endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_ibmi }}/config/endpoint_id.txt"
+  register: ilmt_install_fail_msg
+  failed_when: not ilmt_install_fail_msg.stat.exists

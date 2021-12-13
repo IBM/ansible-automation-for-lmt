@@ -11,6 +11,18 @@
     line: "SW_SCAN_FREQUENCY={{ lmt_scanner_software_scans_frequency }}"
   when: lmt_scanner_software_scans_enabled
 
+- name: "Configure optional software scan day of week on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*SW_SCAN_DAY_OF_WEEK.*$"
+    line: "SW_SCAN_DAY_OF_WEEK={{ lmt_scanner_software_scan_day_of_week if ( lmt_scanner_software_scan_day_of_week is defined ) else '' }}"
+
+- name: "Configure optional software scan local time on Windows endpoints"
+  win_lineinfile:
+    path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"
+    regexp: "^\\s*SW_SCAN_LOCAL_TIME.*$"
+    line: "SW_SCAN_LOCAL_TIME={{ lmt_scanner_software_scan_local_time if ( lmt_scanner_software_scan_local_time is defined ) else '' }}"
+
 - name: "Configure scheduled pack results on Windows endpoints"
   win_lineinfile:
     path: "{{ lmt_scanner_path_windows }}\\config\\setup_config.ini"

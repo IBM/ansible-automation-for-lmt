@@ -1,6 +1,6 @@
 # License Metric Tool playbooks
 
-License Metric Tool playbooks are supported on operating systems that are supported by the disconnected scanner except for **IBM i**. For a list of supported operating systems, see: [IBM License Metric Tool 9.2 - Supported Operating Systems](https://ibm.biz/LMT_supported_OS).
+License Metric Tool playbooks are supported on operating systems that are supported by the disconnected scanner except for **HP-UX** and **IBM i**. For a list of supported operating systems, see: [IBM License Metric Tool 9.2 - Supported Operating Systems](https://ibm.biz/LMT_supported_OS).
 
 <table>
 
@@ -15,7 +15,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
 
   <tr>
     <td rowspan="2"> 
-        <code>lmt_collect_results</code> 
+        <code id=lmt_collect_results>lmt_collect_results</code> 
     </td>
     <td>
         Read, execute and write access to the scanner output directories 
@@ -40,7 +40,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
 
   <tr>
     <td rowspan="2"> 
-        <code>lmt_install_or_upgrade_scanner</code> 
+        <code id=lmt_install_or_upgrade_scanner>lmt_install_or_upgrade_scanner</code> 
     </td>
     <td>
         Root / Local Administrator rights
@@ -54,7 +54,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
   <tr>    
     <td colspan="4">
         This playbook installs or upgrades the disconnected scanner to the same version as the version of your License Metric Tool server.<br>
-        <b>NOTE:</b> Before you run this playbook, review the default values of the <a href="doc_lmt_parameters.md">License Metric Tool parameters</a> and adjust them if needed.<br/>
+        <b>NOTE:</b> Before you run this playbook, review the default values of the <a href="doc_lmt_parameters.md">Parameters used in playbooks</a> and adjust them if needed.<br/>
         <p>
         <br>
         The following tasks are performed within this playbook:<br/>
@@ -100,7 +100,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
 
   <tr>
     <td rowspan="2"> 
-        <code>lmt_uninstall_scanner</code> 
+        <code id=lmt_uninstall_scanner>lmt_uninstall_scanner</code> 
     </td>
     <td>
         Root / Local Administrator rights
@@ -124,7 +124,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
 
   <tr>
     <td rowspan="2"> 
-        <code>lmt_reconfigure_scanner</code> 
+        <code id=lmt_reconfigure_scanner>lmt_reconfigure_scanner</code> 
     </td>
     <td>
         Root / Local Administrator rights
@@ -143,7 +143,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
 
   <tr>
     <td rowspan="2"> 
-        <code>lmt_collect_status</code> 
+        <code id=lmt_collect_status>lmt_collect_status</code> 
     </td>
     <td>
         Read rights to the <code>config</code> and <code>iso-swid</code> disconnected scanner folders
@@ -186,7 +186,7 @@ License Metric Tool playbooks are supported on operating systems that are suppor
 
   <tr>
     <td rowspan="2"> 
-        <code>lmt_collect_troubleshooting_data</code> 
+        <code id=lmt_collect_troubleshooting_data>lmt_collect_troubleshooting_data</code> 
     </td>
     <td>
         Read rights to entire disconnected scanner folder and write rights to the <code>work</code> subdirectory

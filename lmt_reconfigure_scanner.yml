@@ -38,4 +38,4 @@
             tasks_from: setup_scanner_unix
           vars:
             only_configure: true
-      when: ansible_facts['os_family'] != 'Windows'
+      when: ansible_facts['os_family'] != 'Windows' and ansible_facts['os_family'] != 'OS400'

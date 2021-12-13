@@ -5,15 +5,19 @@ lmt_troubleshooting_data_folder: "troubleshooting_data"
 lmt_scan_result_packages_folder: "scan_result_packages"
 # Subdirectory in lmt_local_file_storage_path where cached scanner installers will be stored
 lmt_scanner_installers_folder: "scanner_installers"
+# Installation path on IBM i (constant)
+lmt_scanner_path_ibmi: "/cit"
 # required_window_space_in_MBs
-lmt_scanner_windows_scanner_minimum_disk_space: 80
+lmt_scanner_windows_scanner_minimum_disk_space: 100
 # required_linux_space_in_MBs
-lmt_scanner_linux_scanner_minimum_disk_space: 60
+lmt_scanner_linux_scanner_minimum_disk_space: 100
 # required_solaris_space_in_MBs
 lmt_scanner_solaris_scanner_minimum_disk_space: 100
 # required_aix_space_in_MBs
 lmt_scanner_aix_scanner_minimum_disk_space: 100
 # required_hpux_space_in_MBs
 lmt_scanner_hpux_scanner_minimum_disk_space: 100
+# required_ibmi_space_in_MBs
+lmt_scanner_ibmi_scanner_minimum_disk_space: 120
 # Playbooks version - should be in-line with LMT server version and upgraded during each release
-lmt_playbooks_version: "9.2.25.0"
+lmt_playbooks_version: "9.2.26.0"

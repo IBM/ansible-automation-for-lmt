@@ -46,4 +46,11 @@
         - include_role:
             name: ilmt_scanner
             tasks_from: install_scanner_unix
-      when: ansible_facts['os_family'] != 'Windows'
+      when: ansible_facts['os_family'] != 'Windows' and ansible_facts['os_family'] != 'OS400'
+
+    - name: "Install or upgrade ILMT scanners on IBM i endpoints"
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: install_scanner_ibmi
+      when: ansible_facts['os_family'] == 'OS400'

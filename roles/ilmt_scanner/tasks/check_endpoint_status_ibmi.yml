@@ -1,0 +1,16 @@
+---
+- name: "Get scanner facts on IBM i endpoints"
+  include_role:
+    name: ilmt_scanner
+    tasks_from: get_scanner_facts_ibmi
+
+- name: "Check if successful_setup.info file exists on IBM i endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_ibmi }}/config/successful_setup.info"
+  register: successful_setup_info_ibmi
+
+- name: "Set successful setup info variable on IBM i endpoints"
+  set_fact:
+    successful_setup_info: "{{ 'Successful' if successful_setup_info_ibmi.stat.exists else \
+      ('Not available' if hostvars[inventory_hostname]['scanner_version'] == '0.0' else \
+      ('Failed' if hostvars[inventory_hostname]['scanner_version'] is version('9.2.26.0', '>=') else 'Unknown'  )) }}"

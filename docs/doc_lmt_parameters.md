@@ -1,4 +1,7 @@
-# License Metric Tool parameters
+# Parameters used in playbooks
+
+Before you run License Metric Tool playbooks, review default values of License Metric Tool parameters and adjust them according to your needs.
+
 
 <table>
 
@@ -301,6 +304,50 @@
 
   <tr>
     <td rowspan="2"> 
+        <code>lmt_scanner_software_scan_day_of_week</code> 
+    </td>
+    <td>9.2.26</td>
+    <td>Empty (none)</td>
+    <td>All managed nodes</td>
+    <td>
+        <code>install_or_upgrade</code><br/>
+        <code>reconfigure</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        Defines the day of the week on which the weekly scan will run. This parameter is relevant only if the <code>lmt_scanner_software_scans_frequency</code> parameter is set to WEEKLY. By default, this parameter is empty which means that the weekly scan will be scheduled starting from the time when the <code>install or upgrade</code> or <code>reconfigure</code> playbook was run.
+        <br/><br/>
+        Possible values: EMPTY/MON/TUE/WED/THU/FRI/SAT/SUN.
+    </td>
+  </tr>
+
+  <tr>
+    <td rowspan="2"> 
+        <code>lmt_scanner_software_scan_local_time</code> 
+    </td>
+    <td>9.2.26</td>
+    <td>Empty (none)</td>
+    <td>All managed nodes</td>
+    <td>
+        <code>install_or_upgrade</code><br/>
+        <code>reconfigure</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        Defines the time (hour and minutes) during the day in the LOCAL time zone of manage node when the scheduled software scan (weekly or daily) will run. By default, this parameter is empty which means that the scan will start at the time of the day when the <code>install or upgrade</code> or <code>reconfigure</code> playbook was run.
+        <br/><br/>
+        Example:<br/>
+        <code>lmt_scanner_software_scan_local_time: "20:30"</code><br/>
+        <b>Note:</b> Ensure the time string is enclosed in quotation marks.
+        <br/><br/>
+        Possible values: EMPTY or time in the "HH:MM" format.
+    </td>
+  </tr>
+
+  <tr>
+    <td rowspan="2"> 
 		<code>lmt_scanner_daily_pack_results_enabled</code> 
 	</td>
 	<td>9.2.22</td>
@@ -339,7 +386,7 @@
         <code>lmt_scanner_public_cloud_type: "Microsoft Azure"</code><br/>
         <b>Note:</b> Ensure the name of the public cloud is enclosed in quotation marks.
         <br/><br/>
-        Possible values are name of a supported public clouds like:<br>
+        Possible values include names of supported public clouds such as:<br>
         <code>"IBM Power Virtual Server"</code><br>
         <code>"IBM SoftLayer"</code><br>
         <code>"Microsoft Azure"</code><br>
@@ -352,7 +399,7 @@
         <code>"Fujitsu Cloud IaaS Instance"</code><br>
         <code>"NTT Enterprise Cloud Server"</code><br>
         <br/>
-        For more information about supported types of public clouds, see: https://ibm.biz/LMT_public_clouds_disconnected.
+        For more information about supported types of public clouds, see:  [Identifying disconnected computers as running on public clouds](https://ibm.biz/LMT_public_clouds_disconnected) in License Metric Tool documentation.
     </td>
   </tr>
 
@@ -410,6 +457,26 @@
   <tr>    
     <td colspan="4">
         Enable this option if you want to collect information about host names of virtualization hosts during virtualization host scan (the lmt_scanner_virt_host_scan_enabled parameter needs to be enabled).
+        <br/><br/>
+        Possible values: true/false.
+    </td>
+  </tr>
+
+  <tr>
+    <td rowspan="2"> 
+        <code>lmt_scanner_docker_scan_enabled</code> 
+    </td>
+    <td>9.2.26</td>
+    <td>false</td>
+    <td>Managed nodes on Linux</td>
+    <td>
+        <code>install_or_upgrade</code><br/>
+        <code>reconfigure</code>
+    </td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+        Set the value of this parameter to TRUE to enable the scan of all Docker containers that are deployed on the target managed node.
         <br/><br/>
         Possible values: true/false.
     </td>

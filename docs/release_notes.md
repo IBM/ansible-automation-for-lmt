@@ -1,6 +1,6 @@
 # Release notes
 
-The following table provides information about defects that were fixed in Ansible playbooks that are delivered with License Metric Tool application update 9.2.23.
+The following table provides information about defects that were fixed in Ansible playbooks that are delivered with License Metric Tool.
 
 <table frame="topbot" id="table_dwh_bg5_y4b">
 <th colname="col1">Defect</th>

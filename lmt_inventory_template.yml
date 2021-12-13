@@ -226,6 +226,44 @@ all:
     ##   Defines the frequency of software scans, either daily or weekly.
     ################################################################################
 
+    # lmt_scanner_software_scan_day_of_week:
+    ################################################################################
+    ## Parameter        | lmt_scanner_software_scan_day_of_week
+    ##==============================================================================
+    ## Corresponds to   | SW_SCAN_DAY_OF_WEEK disconnected scanner parameter
+    ##==============================================================================
+    ## Default Value    | EMPTY
+    ## Possible Values  | EMPTY/MON/TUE/WED/THU/FRI/SAT/SUN
+    ##==============================================================================
+    ## Description:
+    ##   Defines the day of the week on which the weekly scan will run.
+    ##   This parameter is relevant only if the lmt_scanner_software_scans_frequency 
+    ##   parameter is set to WEEKLY. By default, this parameter is empty which means 
+    ##   that the weekly scan will be scheduled starting from the time when the
+    ##   install or upgrade or reconfigure playbook was run.
+    ################################################################################
+    
+    # lmt_scanner_software_scan_local_time:
+    ################################################################################
+    ## Parameter        | lmt_scanner_software_scan_local_time
+    ##==============================================================================
+    ## Corresponds to   | SW_SCAN_LOCAL_TIME disconnected scanner parameter
+    ##==============================================================================
+    ## Default Value    | EMPTY
+    ## Possible Values  | EMPTY or time in the "HH:MM" format
+    ##==============================================================================
+    ## Description:
+    ##   Defines the time (hour and minutes) during the day in the LOCAL time zone
+    ##   of manage node when the scheduled software scan (weekly or daily) will run. 
+    ##   By default, this parameter is empty which means that the scan will start at
+    ##   the time of the day when the install or upgrade or reconfigure playbook was
+    ##   run.
+    ##
+    ##   Example:
+    ##   lmt_scanner_software_scan_local_time: "20:30"
+    ##   Note: Ensure the time string is enclosed in quotation marks.    
+    ################################################################################ 
+
     # lmt_scanner_daily_pack_results_enabled:
     ################################################################################
     ## Parameter        | lmt_scanner_daily_pack_results_enabled
@@ -327,3 +365,19 @@ all:
     ##   The lmt_scanner_virt_host_scan_enabled parameter must be set to TRUE before
     ##   you can enable collection of host names.
     ################################################################################
+
+    #lmt_scanner_docker_scan_enabled: false
+    ################################################################################
+    ## Parameter        | lmt_scanner_docker_scan_enabled
+    ##==============================================================================
+    ## Corresponds to   | DOCKER_SCAN_ENABLED disconnected scanner parameter
+    ##==============================================================================
+    ## Default Value    | false
+    ## Possible Values  | true/false
+    ##==============================================================================
+    ## Description:
+    ##   This parameter only applies to machines with Linux operating system.
+    ##   Set the value of this parameter to TRUE to enable the scan of all Docker 
+    ##   containers that are deployed on the target managed node. 
+    ################################################################################    
+    
