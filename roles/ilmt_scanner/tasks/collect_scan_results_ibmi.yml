@@ -1,0 +1,27 @@
+---
+- name: "Get the list of packages with scan results from IBM i endpoints"
+  find:
+    paths: "{{ lmt_scanner_path_ibmi }}"
+    use_regex: true
+    patterns: ['^\d{12}-.+\.zip$']
+  register: files_to_copy_ibmi
+
+- name: "Fetch packages with scan results from IBM i endpoints"
+  fetch:
+    src: "{{ item.path }}"
+    dest: "{{ lmt_local_file_storage_path }}/{{ lmt_scan_result_packages_folder }}/"
+    flat: true
+  register: fetched_files
+  with_items: "{{ files_to_copy_ibmi.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+
+- name: "Clean up packages on IBM i endpoints"
+  file:
+    state: absent
+    path: "{{ item.path }}"
+  with_items: "{{ files_to_copy_ibmi.files }}"
+  when: fetched_files is succeeded
+  ignore_errors: true
+  loop_control:
+    label: "{{ item.path | basename }}"

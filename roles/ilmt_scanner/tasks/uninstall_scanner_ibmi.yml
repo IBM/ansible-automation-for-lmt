@@ -1,0 +1,39 @@
+---
+# this code is for compatibility with versions before 9.2.26.0
+- name: "Check if endpoint_id file exists on IBM i endpoints"
+  include_role:
+    name: ilmt_scanner
+    tasks_from: create_endpoint_id_file_ibmi
+
+# uninstall scanner playbook
+- name: "Check whether ILMT Scanner is installed on IBM i endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_ibmi }}/config/endpoint_id.txt"
+  register: ilmt_scanner_installed_ibmi
+
+- name: "Read endpoint id value block on IBM i endpoints"
+  block:
+    - name: "Read endpoint id value on IBM i endpoints"
+      command: "cat \"{{ lmt_scanner_path_ibmi }}/config/endpoint_id.txt\" "
+      register: ibmi_endpoint_id_for_delete
+
+    - name: "Set endpoint_id_for_delete variable on IBM i endpoints"
+      set_fact:
+        endpoint_id_for_delete: "{{ ibmi_endpoint_id_for_delete.stdout }}"
+  when: ilmt_scanner_installed_ibmi.stat.exists and (remove_computer_from_server | default(false)) and lmt_server_token is defined
+
+- name: "Uninstall scanner block on IBM i endpoints"
+  block:
+    - name: "Run script to uninstall ILMT Scanner from IBM i endpoints"
+      command: "qsh uninstall.sh"
+      args:
+        chdir: "{{ lmt_scanner_path_ibmi }}"
+      async: "{{ lmt_scanner_setup_timeout }}"
+      poll: 5
+      when: ilmt_scanner_installed_ibmi.stat.exists
+
+    - name: "Delete ILMT folder from IBM i endpoints"
+      shell: "rm -rf \"{{ lmt_scanner_path_ibmi }}\""
+      args:
+        warn: false
+  when: not (leave_config_backup | default(false))

@@ -1,7 +1,7 @@
 
-## Managing the disconnected scanner with AWX or Tower
+## Managing disconnected scans with AWX or Tower
 
-[AWX]((https://github.com/ansible/awx)) is an open source, easy-to-use UI, dashboard and REST API for Ansible. [Ansible Tower](https://www.ansible.com/products/tower) is a commercial version of AWX supported by Red Hat. To manage the disconnected scanner with either of these tools, perform the following steps.
+[AWX]((https://github.com/ansible/awx)) is an open source, easy-to-use UI, dashboard and REST API for Ansible. [Ansible Tower](https://www.ansible.com/products/tower) is a commercial version of AWX supported by Red Hat. To manage the disconnected scans with either of these tools, perform the following steps.
 
 1. Install AWX or Tower.
 
@@ -11,11 +11,9 @@
 
    - In the `lmt_server` parameter, define connection settings to the host where the License Metric Tool server is installed.
  
-   - Define setting of License Metric Tool (parameters that start with `lmt_`) to match your environment. For the list of parameters, see: [License Metric Tool parameters](doc_lmt_parameters.md).
+   - Define setting of License Metric Tool (parameters that start with `lmt_`) to match your environment. For the list of parameters, see: [Parameters used in playbooks](doc_lmt_parameters.md).
     >**Note:** You do not need to define the settings if you use the default values.
 
-4. Choose Credential type and define it.
+5. Create a Job Template to install the disconnected scanner. Provide its name, inventory, credentials, and project. Then, choose `lmt_install_or_upgrade_scanner` as the playbook. 
 
-5. Create a Job Template. Provide its name, inventory, credentials, and project. Then, choose `lmt_disconnected_scans_collector.yml` as the playbook.
-
-6. Schedule the job to run every day.
+6. Create a Job Template to schedule daily collection of scan results. Provide its name, inventory, credentials, and project. Then, choose `lmt_collect_results` as the playbook. 

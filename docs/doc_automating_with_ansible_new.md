@@ -1,6 +1,12 @@
 # Setting up a new Ansible environment
 
+If Ansible is not yet implemented in your organization, start by installing and configuring it. Then, clone or download this Github repository. Next, configure connections to the managed nodes and create an inventory of these nodes.
+
+
+## Procedure
 1. Install Ansible. For detailed instructions, see the [Ansible documentation](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-the-control-node).
+
+    >**Note:** The minimal supported version of Ansible is **2.10.2**. However, it is recommended to use the latest version of Ansible that is available.
 
 2. Clone or download the Github repository.
 
@@ -11,7 +17,7 @@
 
 4. To create an inventory of your managed nodes, you can use the [lmt_inventory_template.yml](../lmt_inventory_template.yml) template.
    
-   - In the `lmt_server` parameter, define connection settings to the host where the License Metric Tool server is installed.
+   a. In the `lmt_server` parameter, define connection settings to the host where the License Metric Tool server is installed.
      - If you are running the playbook on the host where the License Metric Tool server is installed, use the default settings.
      - If you are running the playbook on a different host, define the host connection parameters and remove the `ansible_connection: local` line. 
 
@@ -22,7 +28,7 @@
          ansible_user: ansible
        ```
      
-   - Define all managed nodes from which you want to collect scan results and their connection settings.
+   b. Define all managed nodes from which you want to collect scan results and their connection settings.
    
       **Example**
 
@@ -31,11 +37,11 @@
       server1:
         ansible_host: 192.168.0.1
       ```
-   - Review the default settings of License Metric Tool (parameters that start with `lmt_`) and customize them if needed. For the list of parameters, see: [License Metric Tool parameters](doc_lmt_parameters.md).
+   c. Review the default settings of License Metric Tool (parameters that start with `lmt_`) and customize them if needed. For the list of parameters, see: [Parameters used in playbooks](doc_lmt_parameters.md).
        
      **Example**
 
-     In the following example, the `c:\my\lmt_scanner\output` directory is specified as a disconnected scanner output directory on all Windows computers and the `/my/disconnected/datasource` is specified as a disconnected data source directory configured on the License Metric Tool server. The remaining parameters that are not defined use the default values.
+     In the following example, the `c:\my\lmt_scanner\output` directory is specified as a disconnected scanner output directory on all Windows computers and the `/my/disconnected/datasource` directory is specified as a disconnected data source directory configured on the License Metric Tool server. The remaining parameters that are not defined use the default values.
      ```
      vars:
        lmt_scanner_output_path_windows: 'c:\\my\\lmt_scanner\\output'
@@ -50,15 +56,15 @@
        lmt_server:
          ansible_host: localhost
          ansible_connection: local
-      linux1:
+       linux1:
         ansible_host: 192.168.0.1
-      linux2:
+       linux2:
         ansible_host: 192.168.0.2
-      solaris1:
+       solaris1:
         ansible_host: 192.168.0.3
         ansible_user: different_user
         lmt_scanner_output_path_unix: /ilmt_disconnected/custom/path/output
-      windows1:
+       windows1:
         ansible_host: 192.168.0.4
         ansible_user: windows1_user
         ansible_password: windows1_password
@@ -78,3 +84,9 @@
        lmt_server_datasource_path: '/my/disconnected/datasource'
    ```
     For more information about inventories, see: [How to build your inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) in the Ansible documentation.
+
+<br>
+
+## What to do next
+
+Run the `lmt_install_or_upgrade_scanner` playbook to install the disconnected scanner and perform its initial configuration. For more information, see: [Install the disconnected scanner and schedule scans](doc_install_scanner.md).

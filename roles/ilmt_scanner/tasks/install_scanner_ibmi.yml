@@ -1,0 +1,184 @@
+---
+# this code is for compatibility with versions before 9.2.26.0
+- name: "Check if endpoint_id file exists on IBM i endpoints"
+  include_role:
+    name: ilmt_scanner
+    tasks_from: create_endpoint_id_file_ibmi
+
+# install scanner playbook
+- name: "Check if {{ lmt_scanner_path_ibmi }} directory exists on IBM i endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_ibmi }}"
+  register: ilmt_scanner_path_exists_ibmi
+
+- name: "Get scanner facts on IBM i endpoints"
+  include_role:
+    name: ilmt_scanner
+    tasks_from: get_scanner_facts_ibmi
+
+- name: "Set local facts with cached scanner version from Control Node"
+  set_fact:
+    cached_scanner_version: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/version.txt', errors='ignore') }}"
+    cached_scanner_build: "{{ lookup('file', lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/build_date.txt', errors='ignore') }}"
+
+- name: "Perform upgrade block IBM i endpoints"
+  block:
+    - name: "Check if {{ lmt_scanner_path_ibmi }} directory is empty block on IBM i endpoints"
+      block:
+        - name: "Check if {{ lmt_scanner_path_ibmi }} directory is empty before proceeding on IBM i endpoints"
+          find:
+            paths: "{{ lmt_scanner_path_ibmi }}"
+          register: files_in_scanner_folder_ibmi
+
+        - name: "Fail when {{ lmt_scanner_path_ibmi }} directory exists and is not empty and has no scanner installed on IBM i endpoints"
+          fail:
+            msg: "Directory {{ lmt_scanner_path_ibmi }} is not empty. \
+                  Please clear it (e.g. using uninstall playbook)."
+          when: files_in_scanner_folder_ibmi.matched > 0
+      when: ilmt_scanner_path_exists_ibmi.stat.exists and
+            hostvars[inventory_hostname]['scanner_version'] == '0.0' and
+            not ilmt_scanner_installed_ibmi.stat.exists
+
+    - name: "Leave config backup block on IBM i endpoints"
+      block:
+        - name: "Uninstall scanner block on IBM i endpoints"
+          block:
+            - name: "Create a config_backup backup directory on IBM i endpoints"
+              file:
+                path: "{{ lmt_scanner_path_ibmi }}/config_backup/"
+                state: directory
+                mode: '0755'
+
+            - name: "Copy endpoint_id and scan configs to config_backup directory on IBM i endpoints"
+              copy:
+                src: "{{ lmt_scanner_path_ibmi }}/config/{{ item }}"
+                dest: "{{ lmt_scanner_path_ibmi }}/config_backup/"
+                remote_src: true
+                mode: preserve
+              with_items:
+                - endpoint_id.txt
+                - sw_config.xml
+
+            - name: "Check whether computer_properties.yml file exists on IBM i endpoints"
+              stat:
+                path: "{{ lmt_scanner_path_ibmi }}/config/computer_properties.yml"
+              register: computer_properties_file_exists
+
+            - name: "Copy computer_properties.yml to config_backup directory on IBM i endpoints"
+              copy:
+                src: "{{ lmt_scanner_path_ibmi }}/config/computer_properties.yml"
+                dest: "{{ lmt_scanner_path_ibmi }}/config_backup/"
+                remote_src: true
+              when: computer_properties_file_exists.stat.exists
+      when: (hostvars[inventory_hostname]['scanner_version'] != '0.0' or ilmt_scanner_installed_ibmi.stat.exists)
+
+    - name: "Define installation root directory on IBM i endpoints"
+      set_fact:
+        ibmi_root_dir: "{{ '/' + lmt_scanner_path_ibmi.split('/')[1] | lower + '/' + lmt_scanner_path_ibmi.split('/')[2] | lower \
+          if (lmt_scanner_path_ibmi.split('/')|length > 3) \
+          else ( \
+          '/' + lmt_scanner_path_ibmi.split('/')[1] | lower \
+          if (lmt_scanner_path_ibmi.split('/')|length > 2) \
+          else '/' \
+          ) }}"
+
+    - name: "Check if there is enough space to install scanner on IBM i Platform"
+      block:
+        - name: "Gather disk stats"
+          shell: df -m "{{ ibmi_root_dir }}" | awk '{s+=$3} END {print s}'
+          register: ibmi_available_disk_space
+
+        - name: Fail when file size exceeds on IBM i
+          fail:
+            msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
+              Disk Space is: {{ ibmi_available_disk_space.stdout }} MB, Required
+              Disk Space is : {{ lmt_scanner_ibmi_scanner_minimum_disk_space }} MB'
+          when: ibmi_available_disk_space.stdout | int <
+            lmt_scanner_ibmi_scanner_minimum_disk_space | int
+
+    - name: "Create disconnected scanner directory on IBM i endpoints"
+      file:
+        path: "{{ lmt_scanner_path_ibmi }}"
+        state: directory
+        mode: '0755'
+
+    - name: "Upload scanner installer from Control Node to IBM i endpoints"
+      vars:
+        source_file: "{{ scanner_package_file }}"
+      copy:
+        src: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' + scanner_package_file }}"
+        dest: "{{ lmt_scanner_path_ibmi }}"
+        force: true
+        mode: '0644'
+
+    - name: "Unpack Scanner package on IBM i endpoints"
+      shell: "jar -xvf '{{ lmt_scanner_path_ibmi }}/{{ scanner_package_file }}'"
+      args:
+        chdir: "{{ lmt_scanner_path_ibmi }}/"
+        warn: false
+
+    - name: "Remove scanner installer package from IBM i endpoints"
+      file:
+        path: "{{ lmt_scanner_path_ibmi }}/{{ scanner_package_file }}"
+        state: absent
+
+    - name: "Check if config_backup exists on IBM i endpoints"
+      stat:
+        path: "{{ lmt_scanner_path_ibmi }}/config_backup"
+      register: config_backup_folder_ibmi
+
+    - name: "Restore config from backup on IBM i endpoints"
+      block:
+        - name: "Restore agent scan config file from backup on IBM i endpoints"
+          copy:
+            src: "{{ lmt_scanner_path_ibmi }}/config_backup/{{ item }}"
+            dest: "{{ lmt_scanner_path_ibmi }}/config/"
+            remote_src: true
+            mode: preserve
+          with_items:
+            - endpoint_id.txt
+            - sw_config.xml
+
+        - name: "Check whether computer_properties.yml file exists in backup folder on IBM i endpoints"
+          stat:
+            path: "{{ lmt_scanner_path_ibmi }}/config_backup/computer_properties.yml"
+          register: computer_properties_file_exists_in_backup
+
+        - name: "Restore computer_properties.yml file from backup on IBM i endpoints"
+          copy:
+            src: "{{ lmt_scanner_path_ibmi }}/config_backup/computer_properties.yml"
+            dest: "{{ lmt_scanner_path_ibmi }}/config/"
+            remote_src: true
+          when: computer_properties_file_exists_in_backup.stat.exists
+
+      when: config_backup_folder_ibmi.stat.exists
+
+    - name: "Setup newly deployed scanner on IBM i endpoints"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: setup_scanner_ibmi
+      when: not ilmt_scanner_path_exists_ibmi.stat.exists
+
+    - name: "Upgrade scanner on IBM i endpoints"
+      include_role:
+        name: ilmt_scanner
+        tasks_from: upgrade_scanner_ibmi
+      when: ilmt_scanner_path_exists_ibmi.stat.exists
+
+    - name: "Change owner to regular (not escalated) ansible user on IBM i endpoints"
+      file:
+        path: "{{ lmt_scanner_path_ibmi }}"
+        state: directory
+        recurse: true
+        owner: "{{ ansible_user if ( ansible_user is defined ) else ansible_facts['user_id'] }}"
+
+    - name: "Delete config_backup from IBM i endpoints"
+      file:
+        state: absent
+        path: "{{ lmt_scanner_path_ibmi }}/config_backup"
+      when: config_backup_folder_ibmi.stat.exists
+
+  vars:
+    scanner_package_file: "LMT-DisconnectedScanner-ibm_i-{{ cached_scanner_version }}-{{ cached_scanner_build }}.zip"
+  when: not ilmt_scanner_installed_ibmi.stat.exists or
+        cached_scanner_version is version(hostvars[inventory_hostname]['scanner_version'],'>')

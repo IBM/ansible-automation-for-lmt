@@ -33,7 +33,16 @@
             tasks_from: uninstall_scanner_unix
           vars:
             remove_computer_from_server: true
-      when: ansible_facts['os_family'] != 'Windows'
+      when: ansible_facts['os_family'] != 'Windows' and ansible_facts['os_family'] != 'OS400'
+      
+    - name: "Uninstall ILMT scanners from IBM i endpoints"
+      block:
+        - include_role:
+            name: ilmt_scanner
+            tasks_from: uninstall_scanner_ibmi
+          vars:
+            remove_computer_from_server: true
+      when: ansible_facts['os_family'] == 'OS400'
 
     - name: "Decommission computer from ILMT server"
       block:

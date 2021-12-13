@@ -1,0 +1,17 @@
+---
+# this code is for compatibility with versions before 9.2.26.0
+- name: "Check if endpoint_id file exists on IBM i endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_ibmi }}/config/endpoint_id.txt"
+  register: endpoint_id_file_exists_ibmi
+
+- name: "Check if computer.yml file exists on IBM i endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_ibmi }}/config/computer.yml"
+  register: computer_file_exists_ibmi
+  when: not endpoint_id_file_exists_ibmi.stat.exists
+
+- name: "Create endpoint_id file on IBM i endpoints"
+  shell: "grep endpointID: \"{{ lmt_scanner_path_ibmi }}/config/computer.yml\" | tr -d ' ' | cut -f2- -d: | head -1 > \"{{ lmt_scanner_path_ibmi }}/config/endpoint_id.txt\""
+  when: not endpoint_id_file_exists_ibmi.stat.exists and
+        computer_file_exists_ibmi.stat.exists

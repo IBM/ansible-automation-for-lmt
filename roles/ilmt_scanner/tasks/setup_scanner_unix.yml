@@ -11,6 +11,18 @@
     line: "SW_SCAN_FREQUENCY={{ lmt_scanner_software_scans_frequency }}"
   when: lmt_scanner_software_scans_enabled
 
+- name: "Configure optional software scan day of week on UNIX/Linux endpoints"
+  lineinfile:
+    path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
+    regexp: "^\\s*SW_SCAN_DAY_OF_WEEK.*$"
+    line: "SW_SCAN_DAY_OF_WEEK={{ lmt_scanner_software_scan_day_of_week if ( lmt_scanner_software_scan_day_of_week is defined ) else '' }}"
+
+- name: "Configure optional software scan local time on UNIX/Linux endpoints"
+  lineinfile:
+    path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
+    regexp: "^\\s*SW_SCAN_LOCAL_TIME.*$"
+    line: "SW_SCAN_LOCAL_TIME={{ lmt_scanner_software_scan_local_time if ( lmt_scanner_software_scan_local_time is defined ) else '' }}"
+
 - name: "Configure scheduled pack results on UNIX/Linux endpoints"
   lineinfile:
     path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
@@ -42,6 +54,12 @@
         path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
         regexp: "^\\s*COLLECT_HOST_HOSTNAME.*$"
         line: "COLLECT_HOST_HOSTNAME={{ 'TRUE' if lmt_scanner_collect_host_hostname else 'FALSE' }}"
+        
+    - name: "Configure Docker Scan Enabled on Linux endpoints"
+      lineinfile:
+        path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
+        regexp: "^\\s*DOCKER_SCAN_ENABLED.*$"
+        line: "DOCKER_SCAN_ENABLED={{ 'TRUE' if lmt_scanner_docker_scan_enabled else 'FALSE' }}"
   when: (ansible_facts['os_family'] == 'RedHat' or
         ansible_facts['os_family'] == 'Suse' or
         ansible_facts['os_family'] == 'Debian')

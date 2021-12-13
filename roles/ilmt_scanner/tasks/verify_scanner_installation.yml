@@ -4,7 +4,7 @@
     path: "{{ lmt_scanner_path_unix }}/config/endpoint_id.txt"
   register: ilmt_scanner_installed_unix
   failed_when: not ilmt_scanner_installed_unix.stat.exists
-  when: ansible_facts['os_family'] != 'Windows'
+  when: ansible_facts['os_family'] != 'Windows' and ansible_facts['os_family'] != 'OS400'
 
 - name: "Fail when ILMT Scanner is not installed on WINDOWS endpoints"
   win_stat:
@@ -12,3 +12,11 @@
   register: ilmt_scanner_installed_win
   failed_when: not ilmt_scanner_installed_win.stat.exists
   when: ansible_facts['os_family'] == 'Windows'
+
+- name: "Fail when ILMT Scanner is not installed on IBM i endpoints"
+  stat:
+    path: "{{ lmt_scanner_path_ibmi }}/config/endpoint_id.txt"
+  register: ilmt_scanner_installed_ibmi
+  failed_when: not ilmt_scanner_installed_ibmi.stat.exists
+  when: ansible_facts['os_family'] == 'OS400'
+  
