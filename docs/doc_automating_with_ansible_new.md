@@ -8,18 +8,18 @@ If Ansible is not yet implemented in your organization, start by installing and 
 
     >**Note:** The minimal supported version of Ansible is **2.10.2**. However, it is recommended to use the latest version of Ansible that is available.
 
-2. Clone or download the Github repository.
+2. Clone or download this Github repository.
 
 3. Configure connections to your managed nodes.
    - **\[UNIX/Linux\]** For more information, see: [Connecting to remote nodes](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#connecting-to-remote-nodes) in the Ansible documentation.
-   - **\[Windows\]** For more information, see: [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html#remote-connection-information) and [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html) in the Ansible documentation.
+   - **\[Windows\]** For more information, see: [Setting up a Windows Host](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html) and [Windows WinRM configuration](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html) in the Ansible documentation.
 
 
 4. To create an inventory of your managed nodes, you can use the [lmt_inventory_template.yml](../lmt_inventory_template.yml) template.
    
    a. In the `lmt_server` parameter, define connection settings to the host where the License Metric Tool server is installed.
-     - If you are running the playbook on the host where the License Metric Tool server is installed, use the default settings.
-     - If you are running the playbook on a different host, define the host connection parameters and remove the `ansible_connection: local` line. 
+     - If you are running the playbooks on the host where the License Metric Tool server is installed, use the default settings.
+     - If you are running the playbooks on a different host, define the host connection parameters and remove the `ansible_connection: local` line. 
 
        **Example**
        ```
@@ -75,7 +75,7 @@ If Ansible is not yet implemented in your organization, start by installing and 
         # not recommended, ignores certificate validation for self-signed certificates (test environments only)
         ansible_winrm_server_cert_validation: ignore
 
-        # It an example for a test purposes only - Windows endpoints can be configured in a more secure manner, refer to the existing documentation for details:
+        # It is an example for test purposes only - Windows endpoints can be configured in a more secure manner, refer to the existing documentation for details:
         #https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html#winrm-setup
         #https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
      

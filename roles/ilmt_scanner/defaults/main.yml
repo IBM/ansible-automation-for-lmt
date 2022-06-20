@@ -263,6 +263,7 @@ lmt_scanner_daily_pack_results_enabled: true
 ## Possible Values  | Name of a supported public cloud:
 ##                  |   "IBM Power Virtual Server"
 ##                  |   "IBM SoftLayer"
+##                  |   "IBM Cloud LinuxONE VS"
 ##                  |   "Microsoft Azure"
 ##                  |   "Amazon EC2"
 ##                  |   "Google Compute Engine"
@@ -272,6 +273,7 @@ lmt_scanner_daily_pack_results_enabled: true
 ##                  |   "NEC Cloud IaaS Instance"
 ##                  |   "Fujitsu Cloud IaaS Instance"
 ##                  |   "NTT Enterprise Cloud Server"
+##                  |   "NTT IaaS Powered by VMware"
 ##==============================================================================
 ## Description:
 ##   Specifies the type of a public cloud on which the computer is running.

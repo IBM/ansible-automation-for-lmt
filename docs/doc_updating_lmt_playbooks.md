@@ -1,6 +1,6 @@
 # Updating playbooks
 
-To update License Metric Tool playboks, keep your current invetory file. Then, download the latest version of playbooks from the Github repository.
+To update License Metric Tool playbooks, keep your current invetory file. Then, download the latest version of playbooks from the Github repository.
 
 <br>
 

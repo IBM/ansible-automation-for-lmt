@@ -260,6 +260,28 @@ Before you run License Metric Tool playbooks, review default values of License M
 	</td>
   </tr>
 
+<tr>
+    <td rowspan="2"> 
+		<code>lmt_scanner_software_scan_cpu_threshold_percentage</code> 
+	</td>
+	<td>9.2.27</td>
+    <td>Empty (none)</td>
+    <td>All managed nodes</td>
+	<td>
+		<code>install_or_upgrade</code><br/>
+		<code>reconfigure</code>
+	</td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+		Limits the amount of processor resources that the scanner consumes. By default, the value is empty which indicates that the scan can consume up to 100% of a single CPU that is available to the scanner. The higher value you specify as the threshold, the higher is the consumption limit. For example, if you specify 75, scanner processes use the average of 75% of a single CPU that is available on the target computer.
+    <br/><br/>
+     <b>Important:</b> Setting the threshold does not guarantee that CPU consumption is always below the specified value. It fluctuates around that value, sometimes exceeding it and sometimes dropping below it. Temporary peaks are expected. Setting the threshold might lengthen the time of the scan. 
+		<br/><br/>
+		Possible values: Empty, or integer between 5 - 100
+	  </td>
+  </tr>
+
   <tr>
     <td rowspan="2"> 
 		<code>lmt_scanner_software_scans_enabled</code> 
@@ -389,6 +411,7 @@ Before you run License Metric Tool playbooks, review default values of License M
         Possible values include names of supported public clouds such as:<br>
         <code>"IBM Power Virtual Server"</code><br>
         <code>"IBM SoftLayer"</code><br>
+        <code>"IBM Cloud LinuxONE VS"</code><br>
         <code>"Microsoft Azure"</code><br>
         <code>"Amazon EC2"</code><br>
         <code>"Google Compute Engine"</code><br>
@@ -398,8 +421,9 @@ Before you run License Metric Tool playbooks, review default values of License M
         <code>"NEC Cloud IaaS Instance"</code><br>
         <code>"Fujitsu Cloud IaaS Instance"</code><br>
         <code>"NTT Enterprise Cloud Server"</code><br>
+        <code>"NTT IaaS Powered by VMware"</code><br>
         <br/>
-        For more information about supported types of public clouds, see:  [Identifying disconnected computers as running on public clouds](https://ibm.biz/LMT_public_clouds_disconnected) in License Metric Tool documentation.
+        For more information about supported types of public clouds, see:  <a href="https://ibm.biz/LMT_public_clouds_disconnected">Identifying disconnected computers as running on public clouds</a> in License Metric Tool documentation.
     </td>
   </tr>
 
@@ -418,7 +442,7 @@ Before you run License Metric Tool playbooks, review default values of License M
   <tr>    
     <td colspan="4">
         Enables capacity scan on virtualization host to retrieve capacity data from all virtual machines that are managed by the specified host. 
-        Schedule the scan on every host that manages virtual machines which have the BigFix client installed.
+        Schedule the scan on every host that manages virtual machines which have the disconnected scanner installed.
         <br/><br/>
         Supported virtualization technologies:<br/>
         <ul>
@@ -495,7 +519,7 @@ Before you run License Metric Tool playbooks, review default values of License M
   </tr>
   <tr>    
     <td colspan="4">
-        API token of the License Metric Tool server.If the token is defined, the disconnected computer is automatically decommissioned from the License Metric Tool server during scanner uninstallation.
+        API token of the License Metric Tool server. If the token is defined, the disconnected computer is automatically decommissioned from the License Metric Tool server during scanner uninstallation.
         <br/><br/>
         Possible values: String
     </td>
@@ -516,7 +540,7 @@ Before you run License Metric Tool playbooks, review default values of License M
     <td colspan="4">
         Port number of the License Metric Tool server. It is used to connect to the License Metric Tool server API while decommissioning computers.
         <br/><br/>
-        Possible values: Number.
+        Possible values: Number
     </td>
   </tr>
 </table>
