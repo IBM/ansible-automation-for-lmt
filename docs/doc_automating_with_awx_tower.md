@@ -1,7 +1,7 @@
 
 ## Managing disconnected scans with AWX or Tower
 
-[AWX]((https://github.com/ansible/awx)) is an open source, easy-to-use UI, dashboard and REST API for Ansible. [Ansible Tower](https://www.ansible.com/products/tower) is a commercial version of AWX supported by Red Hat. To manage the disconnected scans with either of these tools, perform the following steps.
+[AWX]((https://github.com/ansible/awx)) is an open source, easy-to-use UI, dashboard and REST API for Ansible. [Ansible Tower](https://access.redhat.com/products/ansible-tower-red-hat ) is a commercial version of AWX supported by Red Hat. To manage the disconnected scans with either of these tools, perform the following steps.
 
 1. Install AWX or Tower.
 

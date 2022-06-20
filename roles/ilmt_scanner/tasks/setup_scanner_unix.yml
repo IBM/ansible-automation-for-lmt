@@ -23,6 +23,12 @@
     regexp: "^\\s*SW_SCAN_LOCAL_TIME.*$"
     line: "SW_SCAN_LOCAL_TIME={{ lmt_scanner_software_scan_local_time if ( lmt_scanner_software_scan_local_time is defined ) else '' }}"
 
+- name: "Configure CPU threshold percentage on UNIX/Linux endpoints"
+  lineinfile:
+    path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"
+    regexp: "^\\s*SW_SCAN_CPU_THRESHOLD_PERCENTAGE.*$"
+    line: "SW_SCAN_CPU_THRESHOLD_PERCENTAGE={{ lmt_scanner_software_scan_cpu_threshold_percentage if ( lmt_scanner_software_scan_cpu_threshold_percentage is defined ) else '' }}"
+
 - name: "Configure scheduled pack results on UNIX/Linux endpoints"
   lineinfile:
     path: "{{ lmt_scanner_path_unix }}/config/setup_config.ini"

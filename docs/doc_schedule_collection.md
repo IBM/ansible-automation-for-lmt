@@ -1,5 +1,5 @@
 # 3. Schedule daily collection of scan results
-After you install and configure the disconnetced scanner, schedule daily collection of scan results to ensure fresheness of data that is available in License Metric Tool.
+After you install and configure the disconnetced scanner, schedule daily collection of scan results to ensure freshness of data that is available in License Metric Tool.
 
 <br>
 
@@ -10,9 +10,9 @@ After you install and configure the disconnetced scanner, schedule daily collect
    
    - **\[Windows\]** Ensure that the following requirements are met.
      - The user has the `List folder contents`, `Read` and `Write` privileges in the directory with scan results packages (the `lmt_scanner_output_path_windows` directory). To verify that the user has the right privileges, select the user, open the `Advanced Security Settings` tab and click `View`. 
-     - The directory with scan result packages (the `lmt_scanner_output_path_windows` directory) has inheritance enabled. To enable inheritance, open the `Advanced Security Settings` tab, and click `Enable inheritance`. The inheritance should apply to `This folder, subfolder and files`. 
+     - The directory with scan results packages (the `lmt_scanner_output_path_windows` directory) has inheritance enabled. To enable inheritance, open the `Advanced Security Settings` tab, and click `Enable inheritance`. The inheritance should apply to `This folder, subfolders and files`. 
 
-2. To run the playbook that collects scan results daily, issue the following command:
+2. To run the playbook that collects scan results, issue the following command:
 
    `ansible-playbook lmt_collect_results.yml -i lmt_inventory.yml`
 
