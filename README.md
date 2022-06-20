@@ -13,7 +13,7 @@ The current version of License Metric Tool playbooks is **9.2.28**
 
 - **Supported version of the disconnected scanner**
 
-    The minimal supported version of License Metric Tool disconnected scanner to use with Ansible automation is **9.2.22**.
+    The minimal supported version of License Metric Tool disconnected scanner to use with Ansible automation is **9.2.22**. 
 
 - **Supported operating systems**
 
