@@ -2,7 +2,7 @@
 
 Disconnected scans allow for discovering software and hardware inventory by running scripts that are provided in the disconnected scanner package. The scripts initiate software and capacity scans, and create a package with scan results that you later need to upload to the License Metric Tool server. You can automate management of disconnected scans by using [Ansible](https://docs.ansible.com/ansible/latest/index.html#about-ansible).
 
-The current version of License Metric Tool playbooks is **9.2.28**
+The current version of License Metric Tool playbooks is **9.2.29**
 
 
 ## Prerequisites
@@ -13,7 +13,7 @@ The current version of License Metric Tool playbooks is **9.2.28**
 
 - **Supported version of the disconnected scanner**
 
-    The minimal supported version of License Metric Tool disconnected scanner to use with Ansible automation is **9.2.22**. 
+    The minimal supported version of License Metric Tool disconnected scanner to use with Ansible automation is **9.2.22**.
 
 - **Supported operating systems**
 
