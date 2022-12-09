@@ -1,6 +1,6 @@
 # License Metric Tool playbooks
 
-License Metric Tool playbooks are supported on operating systems that are supported by the disconnected scanner except for **HP-UX** and **IBM i**. For a list of supported operating systems, see: [IBM License Metric Tool 9.2 - Supported Operating Systems](https://ibm.biz/LMT_supported_OS).
+License Metric Tool playbooks are supported on operating systems that are supported by the disconnected scanner except for **IBM i**. For a list of supported operating systems, see: [IBM License Metric Tool 9.2 - Supported Operating Systems](https://ibm.biz/LMT_supported_OS).
 
 <table>
 
@@ -72,7 +72,6 @@ License Metric Tool playbooks are supported on operating systems that are suppor
             <li><b>[Linux]</b> 60 MB</li>
             <li><b>[Windows]</b> 80 MB</li>
             <li><b>[AIX]</b> 100 MB</li>
-            <li><b>[HP-UX]</b> 100 MB</li>
             <li><b>[Solaris]</b> 100 MB</li>
         </ul>
         5. The disconnected scanner package that is suitable for the operating system of the managed node is uploaded to the following directory:<br/>

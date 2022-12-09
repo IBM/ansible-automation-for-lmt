@@ -2,7 +2,7 @@
 
 Disconnected scans allow for discovering software and hardware inventory by running scripts that are provided in the disconnected scanner package. The scripts initiate software and capacity scans, and create a package with scan results that you later need to upload to the License Metric Tool server. You can automate management of disconnected scans by using [Ansible](https://docs.ansible.com/ansible/latest/index.html#about-ansible).
 
-The current version of License Metric Tool playbooks is **9.2.29**
+The current version of License Metric Tool playbooks is **9.2.30**
 
 
 ## Prerequisites
@@ -17,7 +17,7 @@ The current version of License Metric Tool playbooks is **9.2.29**
 
 - **Supported operating systems**
 
-    Playbooks that are delivered with License Metric Tool are supported on AIX, Linux, Solaris and Windows. They are not supported on HP-UX and IBM i. For information about exact versions, see the [list of operating systems that are supported by the disconnected scanner](https://www.ibm.com/support/pages/node/561443). 
+    Playbooks that are delivered with License Metric Tool are supported on AIX, Linux, Solaris and Windows. They are not supported on IBM i. For information about exact versions, see the [list of operating systems that are supported by the disconnected scanner](https://www.ibm.com/support/pages/node/561443). 
 
 
 <br>
