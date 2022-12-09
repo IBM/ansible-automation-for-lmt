@@ -8,13 +8,12 @@
         ansible_facts['os_family'] == 'Suse' or
         ansible_facts['os_family'] == 'Debian' or
         ansible_facts['os_family'] == 'AIX' or
-        ansible_facts['os_family'] == 'Solaris' or
-        ansible_facts['os_family'] == 'HP-UX')
+        ansible_facts['os_family'] == 'Solaris')
 
 - name: "Set platform fact on UNIX/Linux endpoints."
   set_fact:
     lmt_scanner_platform: '{{ {"RedHat": "linux", "Suse": "linux", "Debian": "linux", "AIX": "aix",
-              "Solaris": "solaris", "HP-UX": "hp-ux"}[ansible_facts["os_family"]] }}'
+              "Solaris": "solaris"}[ansible_facts["os_family"]] }}'
 
 - name: "Check if {{ lmt_scanner_path_unix }} directory exists on UNIX/Linux endpoints"
   stat:
@@ -112,22 +111,6 @@
           when: aix_available_disk_space.stdout | int <
             lmt_scanner_aix_scanner_minimum_disk_space | int
       when: lmt_scanner_platform == 'aix'
-
-    - name: "Check if there is enough space to install scanner on HPUX Platform"
-      block:
-        - name: "Gather disk stats"
-          shell: df -m "{{ unix_root_dir }}" --total | grep -i total |
-            awk '{print $4}'
-          register: hpux_available_disk_space
-
-        - name: Fail when file size exceeds on HPUX
-          fail:
-            msg: 'Not Enough Disk space to Install Disconnected Scanner. Available
-              Disk Space is: {{ hpux_available_disk_space.stdout }} MB, Required
-              Disk Space is : {{ lmt_scanner_linux_scanner_minimum_disk_space }} MB'
-          when: hpux_available_disk_space.stdout | int <
-            lmt_scanner_linux_scanner_minimum_disk_space | int
-      when: lmt_scanner_platform == 'hpux'
 
     - name: "Create disconnected scanner directory on UNIX/Linux endpoints"
       file:
