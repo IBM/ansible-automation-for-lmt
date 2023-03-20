@@ -9,6 +9,20 @@
   register: unix_endpoint_id
   changed_when: false
 
+- name: "Run collect troubleshooting data script on UNIX/Linux endpoints"
+  shell: ./collect_support_data.sh
+  args:
+    chdir: "{{ lmt_scanner_path_unix }}"
+
+- name: "Get files in folder support_data on UNIX/Linux endpoints"
+  find:
+    paths: "{{ lmt_scanner_path_unix }}/support_data"
+  register: found_support_data
+
+- name: "Get latest troubleshooting data file on UNIX/Linux endpoints"
+  set_fact:
+    latest_support_file: "{{ (found_support_data.files | sort(attribute='mtime') | last).path }}"
+
 - name: "Remove troubleshooting data archive from UNIX/Linux endpoints"
   file:
     state: absent
@@ -46,14 +60,17 @@
   community.general.archive:
     path:
       - "{{ lmt_scanner_path_unix }}/work/ansible_facts.txt"
-      - "{{ lmt_scanner_path_unix }}/config"
-      - "{{ lmt_scanner_path_unix }}/logs"
-      - "{{ lmt_scanner_path_unix }}/iso-swid"
-      - "{{ lmt_scanner_path_unix }}/work"
-      - "{{ lmt_scanner_output_path_unix if ( lmt_scanner_output_path_unix is defined ) else lmt_scanner_path_unix + '/output' }}"
+      - "{{ latest_support_file }}"
     dest: "{{ lmt_scanner_path_unix }}/work/{{ ansible_host }}_{{ unix_endpoint_id.stdout }}.tar.gz"
     format: gz
     force_archive: true
+  register: archive
+
+- name: "Remove troubleshooting data collected by script from UNIX/Linux endpoints"
+  file:
+    state: absent
+    path: "{{ latest_support_file }}"
+  when: archive is succeeded
 
 - name: "Fetch troubleshooting data archive from UNIX/Linux endpoints"
   fetch:

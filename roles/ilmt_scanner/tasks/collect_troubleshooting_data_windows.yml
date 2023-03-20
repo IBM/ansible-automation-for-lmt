@@ -8,6 +8,20 @@
   win_command: "cmd.exe /c type \"{{ lmt_scanner_path_windows }}\\config\\endpoint_id.txt\" "
   register: windows_endpoint_id
 
+- name: "Run collect troubleshooting data script on Windows endpoints"
+  win_command: collect_support_data.bat
+  args:
+    chdir: "{{ lmt_scanner_path_windows }}"
+
+- name: Get files in folder support_data
+  ansible.windows.win_find:
+    paths: "{{ lmt_scanner_path_windows }}\\support_data"
+  register: found_support_data
+
+- name: Get latest troubleshooting data file
+  set_fact:
+    latest_support_file: "{{ (found_support_data.files | sort(attribute='lastwritetime') | last).path }}"
+
 - name: "Remove troubleshooting data archive from Windows endpoints"
   win_file:
     state: absent
@@ -41,13 +55,16 @@
   win_command: "cmd.exe /c \"\"{{ lmt_scanner_path_windows }}\\bin\\zip.exe\" -S -X -r \
     \"{{ lmt_scanner_path_windows }}\\work\\{{ ansible_host }}_{{ windows_endpoint_id.stdout_lines[0] }}.zip\" \
     \"{{ lmt_scanner_path_windows }}\\work\\ansible_facts.txt\" \
-    \"{{ lmt_scanner_path_windows }}\\config\" \
-    \"{{ lmt_scanner_path_windows }}\\logs\" \
-    \"{{ lmt_scanner_path_windows }}\\iso-swid\" \
-    \"{{ lmt_scanner_path_windows }}\\work\" \
-    \"{{ lmt_scanner_output_path_windows if ( lmt_scanner_output_path_windows is defined) else lmt_scanner_path_windows + '\\output' }}\"\" "
+    \"{{ latest_support_file }}\"\" "
   args:
     chdir: "{{ lmt_scanner_path_windows }}"
+  register: archive
+
+- name: "Remove troubleshooting data collected by script from Windows endpoints"
+  win_file:
+    state: absent
+    path: "{{ latest_support_file }}"
+  when: archive is succeeded
 
 - name: "Fetch troubleshooting data archive from Windows endpoints"
   fetch:
