@@ -131,7 +131,6 @@
       shell: "gzip -dc '{{ lmt_scanner_path_unix }}/{{ scanner_package_file }}' | tar -xf -"
       args:
         chdir: "{{ lmt_scanner_path_unix }}/"
-        warn: false
 
     - name: "Remove scanner installer package from UNIX/Linux endpoints"
       file:
