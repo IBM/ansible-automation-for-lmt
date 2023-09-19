@@ -274,6 +274,8 @@ lmt_scanner_daily_pack_results_enabled: true
 ##                  |   "Fujitsu Cloud IaaS Instance"
 ##                  |   "NTT Enterprise Cloud Server"
 ##                  |   "NTT IaaS Powered by VMware"
+##                  |   "NTT Data"
+##                  |   "KDDI Virtual Server"
 ##==============================================================================
 ## Description:
 ##   Specifies the type of a public cloud on which the computer is running.
