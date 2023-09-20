@@ -9,12 +9,12 @@
   register: windows_endpoint_id
   when: ilmt_scanner_installed_win.stat.exists
 
-- name: "Find isotag file on Windows endpoints"
-  win_find:
-    paths: "{{ lmt_scanner_path_windows }}\\iso-swid\\"
-    use_regex: true
-    patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
-  register: scanner_swidtag_names
+#- name: "Find isotag file on Windows endpoints"
+#  win_find:
+#    paths: "{{ lmt_scanner_path_windows }}\\iso-swid\\"
+#    use_regex: true
+#    patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
+#  register: scanner_swidtag_names
 
 - name: "Set scanner version variable on Windows endpoints"
   set_fact:
