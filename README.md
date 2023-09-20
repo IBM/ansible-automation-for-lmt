@@ -48,4 +48,5 @@ After you configure Ansible, run the `lmt_install_or_upgrade_scanner` playbook t
 <br>
 
 ## Other resources
-- [Installing License Metric Tool with Ansible](https://www.ibm.com/docs/en/license-metric-tool?topic=installing-disconnected-scanners-ansible-lite) 
+- [Installing License Metric Tool with Ansible](https://www.ibm.com/docs/en/license-metric-tool?topic=installing-disconnected-scanners-ansible-lite)
+ 
