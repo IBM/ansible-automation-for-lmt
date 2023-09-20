@@ -72,7 +72,7 @@
         source_file: "{{ scanner_package_file }}"
       win_copy:
         src: "{{ lmt_local_file_storage_path + '/' + lmt_scanner_installers_folder + '/' + scanner_package_file }}"
-        dest: "{{ lmt_scanner_path_windows }}"
+        dest: "{{ lmt_scanner_path_windows }}\\"
         force: true
 
     - name: "Unpack Scanner package on WINDOWS endpoints"
