@@ -1,0 +1,7 @@
+---
+collections:
+  - chocolatey.chocolatey
+  - ansible.windows
+  - community.windows
+  - community.general
+  - microsoft.ad
