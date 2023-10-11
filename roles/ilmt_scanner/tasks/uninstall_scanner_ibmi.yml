@@ -34,6 +34,4 @@
 
     - name: "Delete ILMT folder from IBM i endpoints"
       shell: "rm -rf \"{{ lmt_scanner_path_ibmi }}\""
-      args:
-        warn: false
   when: not (leave_config_backup | default(false))
