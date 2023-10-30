@@ -15,6 +15,7 @@
     use_regex: true
     patterns: ['^ibm.com_IBM_License_Metric_Tool-.+\.swidtag$']
   register: scanner_swidtag_names
+  ignore_errors: true
 
 - name: "Set scanner version variable on Windows endpoints"
   set_fact:
