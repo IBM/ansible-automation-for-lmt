@@ -1,14 +1,17 @@
 ---
 - name: "Decommission endpoint from ILMT server"
   uri:
-    url: https://{{ hostvars['lmt_server']['ansible_host'] }}:{{ lmt_server_port }}/api/sam/v2/computers?token={{ lmt_server_token }}&disconnected_endpoint_id={{ endpoint_id_for_delete }}
+    url: https://{{ hostvars['lmt_server']['ansible_host'] }}:{{ lmt_server_port }}/api/sam/v2/computers?disconnected_endpoint_id={{ endpoint_id_for_delete }}
     validate_certs: false
     timeout: 10
     method: DELETE
+    headers:
+      Token: "{{ lmt_server_token }}"
   register: delete_result
   failed_when: false
   ignore_errors: true
   delegate_to: localhost
+  no_log: true
 
 - name: "Print decommission status"
   debug:
