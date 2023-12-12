@@ -56,6 +56,12 @@
         leave_config_backup: "{{ ilmt_scanner_installed_unix.stat.exists }}"
       when: (hostvars[inventory_hostname]['scanner_version'] != '0.0' or ilmt_scanner_installed_unix.stat.exists)
 
+    - name: "Create disconnected scanner directory on UNIX/Linux endpoints"
+      file:
+        path: "{{ lmt_scanner_path_unix }}"
+        state: directory
+        mode: '0755'
+
     - name: "Define installation root directory on UNIX/Linux endpoints"
       set_fact:
         unix_root_dir: "{{ '/' + lmt_scanner_path_unix.split('/')[1] | lower + '/' + lmt_scanner_path_unix.split('/')[2] | lower \
@@ -111,12 +117,6 @@
           when: aix_available_disk_space.stdout | int <
             lmt_scanner_aix_scanner_minimum_disk_space | int
       when: lmt_scanner_platform == 'aix'
-
-    - name: "Create disconnected scanner directory on UNIX/Linux endpoints"
-      file:
-        path: "{{ lmt_scanner_path_unix }}"
-        state: directory
-        mode: '0755'
 
     - name: "Upload scanner installer from Control Node to UNIX/Linux endpoints"
       vars:
