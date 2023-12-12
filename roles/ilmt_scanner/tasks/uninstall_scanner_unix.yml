@@ -91,8 +91,6 @@
 
     - name: "Delete all data from ILMT scanner folder except config backup from UNIX/Linux endpoints"
       shell: "rm -rf \"{{ item.path }}\""
-      args:
-        warn: false
       with_items: "{{ found_files['files'] }}"
       loop_control:
         label: "{{ item.path | basename }}"
@@ -110,6 +108,4 @@
 
     - name: "Delete ILMT folder from UNIX/Linux endpoints"
       shell: "rm -rf \"{{ lmt_scanner_path_unix }}\""
-      args:
-        warn: false
   when: not (leave_config_backup | default(false))

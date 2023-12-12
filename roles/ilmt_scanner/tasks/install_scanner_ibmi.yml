@@ -115,7 +115,6 @@
       shell: "jar -xvf '{{ lmt_scanner_path_ibmi }}/{{ scanner_package_file }}'"
       args:
         chdir: "{{ lmt_scanner_path_ibmi }}/"
-        warn: false
 
     - name: "Remove scanner installer package from IBM i endpoints"
       file:
