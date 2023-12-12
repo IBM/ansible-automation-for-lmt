@@ -72,6 +72,12 @@
               when: computer_properties_file_exists.stat.exists
       when: (hostvars[inventory_hostname]['scanner_version'] != '0.0' or ilmt_scanner_installed_ibmi.stat.exists)
 
+    - name: "Create disconnected scanner directory on IBM i endpoints"
+      file:
+        path: "{{ lmt_scanner_path_ibmi }}"
+        state: directory
+        mode: '0755'
+
     - name: "Define installation root directory on IBM i endpoints"
       set_fact:
         ibmi_root_dir: "{{ '/' + lmt_scanner_path_ibmi.split('/')[1] | lower + '/' + lmt_scanner_path_ibmi.split('/')[2] | lower \
@@ -95,12 +101,6 @@
               Disk Space is : {{ lmt_scanner_ibmi_scanner_minimum_disk_space }} MB'
           when: ibmi_available_disk_space.stdout | int <
             lmt_scanner_ibmi_scanner_minimum_disk_space | int
-
-    - name: "Create disconnected scanner directory on IBM i endpoints"
-      file:
-        path: "{{ lmt_scanner_path_ibmi }}"
-        state: directory
-        mode: '0755'
 
     - name: "Upload scanner installer from Control Node to IBM i endpoints"
       vars:
