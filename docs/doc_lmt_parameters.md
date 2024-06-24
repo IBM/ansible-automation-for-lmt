@@ -409,6 +409,7 @@ Before you run License Metric Tool playbooks, review default values of License M
         <b>Note:</b> Ensure the name of the public cloud is enclosed in quotation marks.
         <br/><br/>
         Possible values include names of supported public clouds such as:<br>
+        <code>"IBM Cloud Virtual Server"</code><br>
         <code>"IBM Power Virtual Server"</code><br>
         <code>"IBM SoftLayer"</code><br>
         <code>"IBM Cloud LinuxONE VS"</code><br>

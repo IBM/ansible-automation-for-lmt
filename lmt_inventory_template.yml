@@ -312,6 +312,7 @@ all:
     ##===================================================================================
     ## Default Value    | Empty (none)
     ## Possible Values  | Name of a supported public cloud:
+    ##                  |   "IBM Cloud Virtual Server"    
     ##                  |   "IBM Power Virtual Server"
     ##                  |   "IBM SoftLayer"
     ##                  |   "IBM Cloud LinuxONE VS"
