@@ -369,6 +369,15 @@ all:
     ##     * Operating system: Linux x86 or ppc64
     ##     * Libvirt-client library installed on the host (virsh command available)
     ##       or xl command available
+    ## 	   * In case of containerization technology usage: Podman or Docker:
+    ##       one of following actions takes place:
+    ##     	  ** if one of recommended nova_virtqemud or nova_libvirt containers is
+    ##           running, the virsh scan is executed in the first one found
+    ##     	  ** if one of recommended nova_virtqemud or nova_libvirt images has
+    ##           a running container, the virsh scan is executed in the first one
+    ##           which has Libvirst/virsh command installed
+    ##     	  ** if any of running containers has Libvirst/virsh command installed,
+    ##           the virsh scan is executed in the first one found
     ##     * Libxml2 library installed on the host (xmllint command available)
     ##     * Bash shell available
     ##
