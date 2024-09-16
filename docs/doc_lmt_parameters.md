@@ -457,7 +457,7 @@ Before you run License Metric Tool playbooks, review default values of License M
         Prerequisites on the KVM host:<br/>
         <ul>
           <li>Operating system: Linux x86 or ppc64</li>
-          <li>Libvirt-client library installed on the host (virsh command available) or xl command available</li>
+          <li>Libvirt-client library installed directly on the hypervisor or inside a container running within the hypervisor (virsh command available) or xl command available</li>
           <li>Libxml2 library installed on the host (xmllint command available)</li>
           <li>Bash shell available</li>
         </ul>
