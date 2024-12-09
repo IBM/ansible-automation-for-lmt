@@ -45,14 +45,12 @@
         drive_name: "{{ lmt_scanner_path_windows.split(':')[0] }}"
 
     - name: "Gather disk stats from Windows endpoints"
-      win_command: wmic logicaldisk where caption="{{ drive_name }}:"
-        get freeSpace
+      win_shell: Get-PSDrive {{ drive_name }} | Select-Object @{Name='FreeSpace(MB)';Expression={[math]::round($_.Free/1MB, 0)}}
       register: driveStatResult
 
     - name: "Find Available disk space on Windows endpoints"
       set_fact:
-        win_available_disk_space: "{{ driveStatResult['stdout_lines'][2] |
-          replace(\" \", \"\")| int / 1048576 }}"
+        win_available_disk_space: "{{ driveStatResult['stdout_lines'][3] }}"
 
     - name: "Fail when file size exceeds Windows endpoints"
       fail:
