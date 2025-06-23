@@ -328,6 +328,7 @@ all:
     ##                  |   "NTT IaaS Powered by VMware"
     ##                  |   "NTT Data"
     ##                  |   "KDDI Virtual Server"
+    ##                  |   "NTT Data OpenCanvas"
     ##===================================================================================
     ## Description:
     ##   Specifies the type of a public cloud on which the computer is running.
