@@ -425,6 +425,7 @@ Before you run License Metric Tool playbooks, review default values of License M
         <code>"NTT IaaS Powered by VMware"</code><br>
         <code>"NTT Data"</code><br>
         <code>"KDDI Virtual Server"</code><br>
+        <code>"NTT Data OpenCanvas"</code><br>
         <br/>
         For more information about supported types of public clouds, see:  <a href="https://ibm.biz/LMT_public_clouds_disconnected">Identifying disconnected computers as running on public clouds</a> in License Metric Tool documentation.
     </td>
