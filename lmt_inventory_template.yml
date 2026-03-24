@@ -286,6 +286,21 @@ all:
     ##   exceeding it and sometimes dropping below it. Temporary peaks are expected.
     ##   Setting the threshold might lengthen the time of the scan. 
     #####################################################################################
+
+    # lmt_scanner_ums_scan_enabled:
+    #####################################################################################
+    ## Parameter        | lmt_scanner_ums_scan_enabled
+    ##===================================================================================
+    ## Corresponds to   | UMS_SCAN_ENABLED disconnected scanner parameter
+    ##===================================================================================
+    ## Default Value    | true
+    ## Possible Values  | true/false
+    ##===================================================================================
+    ## Description:
+    ##   Enables the collection of adoption data during software scans (scheduled
+    ##   and on-demand). ​The data is stored on the License Metric Tool server and
+    ##   can be further sent to IBM Software Central.
+    #####################################################################################
     
     # lmt_scanner_daily_pack_results_enabled:
     #####################################################################################
