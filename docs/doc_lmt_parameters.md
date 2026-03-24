@@ -370,6 +370,26 @@ Before you run License Metric Tool playbooks, review default values of License M
 
   <tr>
     <td rowspan="2"> 
+		<code>lmt_scanner_ums_scan_enabled</code> 
+	</td>
+	<td>9.2.43</td>
+    <td>true</td>
+    <td>All managed nodes</td>
+	<td>
+		<code>install_or_upgrade</code><br/>
+		<code>reconfigure</code>
+	</td>
+  </tr>
+  <tr>    
+    <td colspan="4">
+		Enables the collection of adoption data during software scans (scheduled and on-demand). ​The data is stored on the License Metric Tool server and can be further sent to IBM Software Central.
+		<br/><br/>
+		Possible values: true/false.
+	</td>
+  </tr>
+
+  <tr>
+    <td rowspan="2"> 
 		<code>lmt_scanner_daily_pack_results_enabled</code> 
 	</td>
 	<td>9.2.22</td>

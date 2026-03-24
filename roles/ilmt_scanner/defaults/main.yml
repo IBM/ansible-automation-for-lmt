@@ -236,6 +236,21 @@ lmt_scanner_software_scans_frequency: "WEEKLY"
 ##   Note: Ensure the time string is enclosed in quotation marks.    
 ################################################################################ 
 
+lmt_scanner_ums_scan_enabled: true
+################################################################################
+## Parameter        | lmt_scanner_ums_scan_enabled
+##==============================================================================
+## Corresponds to   | UMS_SCAN_ENABLED disconnected scanner parameter
+##==============================================================================
+## Default Value    | true
+## Possible Values  | true/false
+##==============================================================================
+## Description:
+##   Enables the collection of adoption data during software scans (scheduled
+##   and on-demand). ​The data is stored on the License Metric Tool server and
+##   can be further sent to IBM Software Central.
+################################################################################
+
 lmt_scanner_daily_pack_results_enabled: true
 ################################################################################
 ## Parameter        | lmt_scanner_daily_pack_results_enabled
@@ -277,6 +292,7 @@ lmt_scanner_daily_pack_results_enabled: true
 ##                  |   "NTT IaaS Powered by VMware"
 ##                  |   "NTT Data"
 ##                  |   "KDDI Virtual Server"
+##                  |   "NTT Data OpenCanvas"
 ##==============================================================================
 ## Description:
 ##   Specifies the type of a public cloud on which the computer is running.
